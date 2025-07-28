@@ -1,0 +1,140 @@
+/* Custom Logo Styling */
+.logo.custom-logo-text {
+  font-size: 3rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
+  font-weight: 800; /* Extra bold */
+  line-height: 1.2; /* Ensure proper line height */
+  padding: 0.25rem 0; /* Add some vertical padding */
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+/* Dark mode gradient */
+.dark .logo.custom-logo-text {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .logo.custom-logo-text {
+    font-size: 2rem; /* Slightly smaller on mobile */
+    line-height: 1.2;
+    padding: 0.25rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo.custom-logo-text {
+    font-size: 1.75rem; /* Even smaller on very small screens */
+    line-height: 1.2;
+    padding: 0.25rem 0;
+  }
+}
+
+/* Custom Homepage Image Hover Effect */
+.custom-homepage-image-container {
+  position: relative;
+  display: inline-block;
+  width: 144px;
+  height: 144px;
+  margin-bottom: 2rem;
+  cursor: default;
+}
+
+.custom-homepage-image {
+  width: 144px;
+  height: 144px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: opacity 0.3s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: default;
+  border: 3px solid transparent;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4) padding-box,
+              linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4) border-box;
+}
+
+/* Simple cursor override for nozoom images */
+.custom-homepage-image.nozoom {
+  cursor: default !important;
+}
+
+.custom-homepage-image.primary {
+  opacity: 1;
+}
+
+.custom-homepage-image.secondary {
+  opacity: 0;
+}
+
+.custom-homepage-image-container:hover .custom-homepage-image.primary {
+  opacity: 0;
+}
+
+.custom-homepage-image-container:hover .custom-homepage-image.secondary {
+  opacity: 1;
+}
+
+/* Add a subtle shadow to the image container */
+.custom-homepage-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.custom-homepage-image-container:hover::after {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive sizing for homepage image */
+@media (max-width: 768px) {
+  .custom-homepage-image-container {
+    width: 120px;
+    height: 120px;
+  }
+  .custom-homepage-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-homepage-image-container {
+    width: 100px;
+    height: 100px;
+  }
+  .custom-homepage-image {
+    width: 100px;
+    height: 100px;
+  }
+}
