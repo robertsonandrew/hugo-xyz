@@ -1,0 +1,75 @@
+<!-- Inspirational Quote Banner -->
+<div id="quote-banner" class="quote-banner-wrapper" style="display: none;">
+  <div class="quote-banner-content">
+    <span id="quote-text"></span>
+    <span id="quote-author"></span>
+  </div>
+  <button id="quote-close" aria-label="Close banner">&times;</button>
+</div>
+
+<style>
+.quote-banner-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box; /* Ensures padding is included in the width */
+}
+.dark .quote-banner-wrapper {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+}
+.quote-banner-content {
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+.quote-banner-content.fade {
+  opacity: 0;
+}
+#quote-text {
+  font-style: italic;
+}
+#quote-author {
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-left: 0.75em;
+}
+#quote-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  padding: 0 15px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+  margin-left: 20px;
+}
+#quote-close:hover {
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .quote-banner-wrapper {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+  #quote-author {
+    font-size: 11px;
+  }
+  #quote-close {
+    font-size: 20px;
+  }
+}
+</style>

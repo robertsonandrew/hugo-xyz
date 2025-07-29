@@ -1,0 +1,144 @@
+<!-- Re-enable Quote Banner Icon -->
+<div id="reopen-quote-banner-wrapper" class="reopen-quote-banner-wrapper" style="display: none;">
+  <button id="reopen-quote-banner-button" aria-label="Re-open quote banner" title="Show quotes">
+    {{- partial "icon.html" "comment" -}}
+  </button>
+</div>
+
+<style>
+.reopen-quote-banner-wrapper {
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  z-index: 1000;
+}
+#reopen-quote-banner-button {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-600);
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  border: 1px solid var(--color-neutral-300);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+#reopen-quote-banner-button:hover {
+  background: var(--color-neutral-300);
+  transform: translateY(-2px);
+}
+.dark #reopen-quote-banner-button {
+    background: var(--color-neutral-700);
+    color: var(--color-neutral-300);
+    border-color: var(--color-neutral-600);
+}
+.dark #reopen-quote-banner-button:hover {
+    background: var(--color-neutral-600);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const banner = document.getElementById('quote-banner');
+  const textEl = document.getElementById('quote-text');
+  const authorEl = document.getElementById('quote-author');
+  const closeButton = document.getElementById('quote-close');
+  const quoteContent = banner.querySelector('.quote-banner-content');
+  const reopenButtonWrapper = document.getElementById('reopen-quote-banner-wrapper');
+  const reopenButton = document.getElementById('reopen-quote-banner-button');
+  const STORAGE_KEY = 'quote-banner-closed';
+
+  if (!banner || !textEl || !authorEl || !closeButton || !reopenButtonWrapper || !reopenButton) {
+    console.error('Quote banner or reopen element(s) not found. Aborting.');
+    return;
+  }
+
+  let quoteInterval;
+  let quotes = [];
+
+  {{ $apiURL := "https://zenquotes.io/api/quotes" }}
+  {{ $apiResource := resources.GetRemote $apiURL }}
+  {{ $apiQuotes := slice }}
+  {{ with $apiResource }}
+    {{ $apiQuotes = . | unmarshal }}
+  {{ end }}
+
+  {{ if $apiQuotes }}
+    quotes = [
+      {{ $len := len $apiQuotes }}
+      {{ range $i, $quote := $apiQuotes }}
+        {
+          text: {{ $quote.q | jsonify }},
+          author: {{ $quote.a | jsonify }}
+        }{{ if ne (add $i 1) $len }},{{ end }}
+      {{ end }}
+    ];
+    console.log("Successfully loaded quotes from ZenQuotes API.");
+  {{ else }}
+    {{ warnf "Failed to fetch or parse quotes from API: %s. Falling back to local quotes." $apiURL }}
+    quotes = [
+      {{ $localQuotes := .Site.Data.quotes.quotes }}
+      {{ $len := len $localQuotes }}
+      {{ range $i, $quote := $localQuotes }}
+        {
+          text: {{ $quote.text | jsonify }},
+          author: {{ $quote.author | jsonify }}
+        }{{ if ne (add $i 1) $len }},{{ end }}
+      {{ end }}
+    ];
+    console.log("Using local fallback quotes.");
+  {{ end }}
+
+  if (quotes.length === 0) {
+    quotes.push({ text: "No quotes available at this time.", author: "System" });
+  }
+
+  let currentQuoteIndex = -1;
+
+  function displayQuote() {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * quotes.length);
+    } while (newIndex === currentQuoteIndex && quotes.length > 1);
+    currentQuoteIndex = newIndex;
+    const quote = quotes[currentQuoteIndex];
+
+    quoteContent.classList.add('fade');
+    setTimeout(() => {
+      textEl.textContent = `"${quote.text}"`;
+      authorEl.textContent = `— ${quote.author}`;
+      quoteContent.classList.remove('fade');
+    }, 300);
+  }
+
+  function openBanner() {
+    banner.style.display = 'flex';
+    reopenButtonWrapper.style.display = 'none';
+    localStorage.removeItem(STORAGE_KEY);
+    displayQuote();
+    quoteInterval = setInterval(displayQuote, 30000);
+  }
+
+  function closeBanner() {
+    banner.style.display = 'none';
+    reopenButtonWrapper.style.display = 'block';
+    localStorage.setItem(STORAGE_KEY, 'true');
+    if (quoteInterval) {
+      clearInterval(quoteInterval);
+    }
+  }
+
+  // Initial state
+  if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    banner.style.display = 'none';
+    reopenButtonWrapper.style.display = 'block';
+  } else {
+    openBanner();
+  }
+
+  closeButton.addEventListener('click', closeBanner);
+  reopenButton.addEventListener('click', openBanner);
+});
+</script>
