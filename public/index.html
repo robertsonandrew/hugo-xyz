@@ -45,8 +45,8 @@
   <link
     type="text/css"
     rel="stylesheet"
-    href="/css/main.bundle.min.85d8de627fd5150dc7dde69ba9949e13cc48081a79ca2b196bfa03534c193f4e9644ccb01976d5a2c63ce8a2339d2ea15f872d41527bf448c46394eb8f78238c.css"
-    integrity="sha512-hdjeYn/VFQ3H3eabqZSeE8xICBp5yisZa/oDU0wZP06WRMywGXbVosY86KIznS6hX4ctQVJ79EjEY5Trj3gjjA==">
+    href="/css/main.bundle.min.83c1321b42f0e32fa23a1a18cf8c6a9af6202f8d050f8bbf256f03dfd9763eaaa3471280adad3b646beee9ff1ac3d9014c27498026a720e1cda6878af3133d0c.css"
+    integrity="sha512-g8EyG0Lw4y&#43;iOhoYz4xqmvYgL40FD4u/JW8D39l2PqqjRxKAra07ZGvu6f8aw9kBTCdJgCanIOHNpoeK8xM9DA==">
 
   
   
@@ -184,7 +184,80 @@
 </head>
 <body
     class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-800 dark:scrollbar-thumb-neutral-600">
-    <div id="the-top" class="absolute flex self-center">
+<div id="quote-banner" class="quote-banner-wrapper" style="display: none;">
+  <div class="quote-banner-content">
+    <span id="quote-text"></span>
+    <span id="quote-author"></span>
+  </div>
+  <button id="quote-close" aria-label="Close banner">&times;</button>
+</div>
+
+<style>
+.quote-banner-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;  
+}
+.dark .quote-banner-wrapper {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+}
+.quote-banner-content {
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+.quote-banner-content.fade {
+  opacity: 0;
+}
+#quote-text {
+  font-style: italic;
+}
+#quote-author {
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-left: 0.75em;
+}
+#quote-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  padding: 0 15px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+  margin-left: 20px;
+}
+#quote-close:hover {
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .quote-banner-wrapper {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+  #quote-author {
+    font-size: 11px;
+  }
+  #quote-close {
+    font-size: 20px;
+  }
+}
+</style><div id="the-top" class="absolute flex self-center">
       <a
         class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
         href="#main-content"
@@ -194,6 +267,82 @@
     
     
       
+<div id="quote-banner" class="quote-banner-wrapper" style="display: none;">
+  <div class="quote-banner-content">
+    <span id="quote-text"></span>
+    <span id="quote-author"></span>
+  </div>
+  <button id="quote-close" aria-label="Close banner">&times;</button>
+</div>
+
+<style>
+.quote-banner-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;  
+}
+.dark .quote-banner-wrapper {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+}
+.quote-banner-content {
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+.quote-banner-content.fade {
+  opacity: 0;
+}
+#quote-text {
+  font-style: italic;
+}
+#quote-author {
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-left: 0.75em;
+}
+#quote-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  padding: 0 15px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+  margin-left: 20px;
+}
+#quote-close:hover {
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .quote-banner-wrapper {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+  #quote-author {
+    font-size: 11px;
+  }
+  #quote-close {
+    font-size: 20px;
+  }
+}
+</style>
+
+
 
 
 
@@ -567,6 +716,31 @@
     src="/js/process.min.ee03488f19c93c2efb199e2e3014ea5f3cb2ce7d45154adb3399a158cac27ca52831db249ede5bb602700ef87eb02434139de0858af1818ab0fb4182472204a4.js"
     integrity="sha512-7gNIjxnJPC77GZ4uMBTqXzyyzn1FFUrbM5mhWMrCfKUoMdsknt5btgJwDvh&#43;sCQ0E53ghYrxgYqw&#43;0GCRyIEpA=="></script>
   
+  
+    
+<div id="reopen-quote-banner-wrapper" class="reopen-quote-banner-wrapper" style="display: none;">
+  <button id="reopen-quote-banner-button" aria-label="Re-open quote banner" title="Show quotes">
+
+  <span class="relative block icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 .0272 125.1 .0272 240c0 49.63 21.35 94.98 56.97 130.7c-12.5 50.37-54.27 95.27-54.77 95.77c-2.25 2.25-2.875 5.734-1.5 8.734C1.979 478.2 4.75 480 8 480c66.25 0 115.1-31.76 140.6-51.39C181.2 440.9 217.6 448 256 448c141.4 0 255.1-93.13 255.1-208S397.4 32 256 32z"/></svg>
+
+  </span>
+
+</button>
+</div>
+
+<script>
+  window.quoteBannerData = {
+    quotes: "[{\"author\":\"Andrew Robertson\",\"text\":\"Fix your quote banner.\"},{\"author\":\"John Lennon\",\"text\":\"Life is what happens to you while you're busy making other plans.\"},{\"author\":\"Eleanor Roosevelt\",\"text\":\"The future belongs to those who believe in the beauty of their dreams.\"},{\"author\":\"Aristotle\",\"text\":\"It is during our darkest moments that we must focus to see the light.\"},{\"author\":\"Michael Scott\",\"text\":\"I'm not superstitious, but I am a little stitious.\"},{\"author\":\"Thomas Edison\",\"text\":\"I haven't failed. I've just found 10,000 ways that won't work.\"},{\"author\":\"Terry Pratchett\",\"text\":\"The trouble with having an open mind is that people keep coming along and sticking things into it.\"},{\"author\":\"Groucho Marx\",\"text\":\"I find television very educational. Every time someone turns it on, I go in the other room and read a book.\"},{\"author\":\"Bill Murray\",\"text\":\"Common sense is like deodorant. The people who need it most never use it.\"}]",
+    refreshInterval:  30000 ,
+    showApiError:  false 
+  };
+</script>
+
+
+  
+  <script src="/js/quote-banner.min.c3d13c93f9c188b8348dace70b1a00108e8942eb58d94f5784155377a1187c3b.js" integrity="sha256-w9E8k/nBiLg0jaznCxoAEI6JQutY2U9XhBVTd6EYfDs=" defer></script>
+
   
 </footer>
 <div

@@ -145,3 +145,7 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
   # dataDomains = "yoursite.com,yoursite2.com"
   # scriptName = ""
   # enableTrackEvent = true
+
+[quoteBanner]
+  refreshInterval = 30000 # in milliseconds
+  showApiError = false
