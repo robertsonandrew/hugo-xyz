@@ -1,3 +1,18 @@
+{{/* Only show banner on homepage and about page */}}
+{{ $showBanner := false }}
+{{ if .IsHome }}
+  {{ $showBanner = true }}
+{{ else if eq .Section "about" }}
+  {{ $showBanner = true }}
+{{ else if and (eq .Type "page") (eq .Title "About") }}
+  {{ $showBanner = true }}
+{{ else if in .RelPermalink "/about/" }}
+  {{ $showBanner = true }}
+{{ else if in .RelPermalink "/about" }}
+  {{ $showBanner = true }}
+{{ end }}
+
+{{ if $showBanner }}
 <!-- Inspirational Quote Banner -->
 <div id="quote-banner" class="quote-banner-wrapper" style="display: none;">
   <div class="quote-banner-content">
@@ -8,6 +23,15 @@
 </div>
 
 <style>
+#quote-banner {
+  position: fixed;
+  z-index: 110; /* Higher than header's z-100 */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 42px; /* Minimum height */
+  transition: all 0.3s ease;
+}
 .quote-banner-wrapper {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -17,11 +41,11 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
-  box-sizing: border-box; /* Ensures padding is included in the width */
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 42px;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 8px; /* Space between wrapped elements */
 }
 .dark .quote-banner-wrapper {
   background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
@@ -60,16 +84,171 @@
 #quote-close:hover {
   opacity: 1;
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .quote-banner-wrapper {
-    padding: 10px 20px;
-    font-size: 12px;
+    padding: 8px 16px;
+    font-size: 13px;
+    flex-direction: column;
+    align-items: center;
+    min-height: 50px;
+  }
+  .quote-banner-content {
+    flex-direction: column;
+    gap: 4px;
   }
   #quote-author {
     font-size: 11px;
+    margin-left: 0;
   }
   #quote-close {
-    font-size: 20px;
+    font-size: 18px;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quote-banner-wrapper {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 60px;
+  }
+  #quote-text {
+    line-height: 1.3;
+  }
+  #quote-close {
+    font-size: 16px;
   }
 }
 </style>
+
+<script>
+// Dynamic header repositioning for banner open/close
+document.addEventListener('DOMContentLoaded', function() {
+  const quoteBanner = document.getElementById('quote-banner');
+  const closeButton = document.getElementById('quote-close');
+  
+  // Detect header layout type
+  function getHeaderLayout() {
+    const fixedHeaders = document.querySelectorAll('.fixed.inset-x-0');
+    const spacingDiv = document.querySelector('.min-h-\\[190px\\]');
+    
+    if (fixedHeaders.length > 0 && spacingDiv) {
+      return 'fixed-gradient';
+    } else {
+      return 'basic';
+    }
+  }
+  
+  // Function to position header below banner
+  function positionHeaderBelowBanner() {
+    const headerLayout = getHeaderLayout();
+    
+    if (headerLayout === 'fixed-gradient') {
+      // Handle fixed-gradient layout
+      const headerElements = document.querySelectorAll('.fixed.inset-x-0');
+      headerElements.forEach(function(element) {
+        if (element !== quoteBanner && element.classList.contains('fixed')) {
+          element.style.top = '42px';
+        }
+      });
+      
+      const spacingDiv = document.querySelector('.min-h-\\[190px\\]');
+      if (spacingDiv) {
+        spacingDiv.style.minHeight = '190px';
+      }
+    } else {
+      // Handle basic layout - add top margin to push content down
+      const mainMenus = document.querySelectorAll('.main-menu');
+      mainMenus.forEach(function(element) {
+        element.style.marginTop = '42px';
+      });
+    }
+  }
+  
+  // Function to position header at top
+  function positionHeaderAtTop() {
+    const headerLayout = getHeaderLayout();
+    
+    if (headerLayout === 'fixed-gradient') {
+      // Handle fixed-gradient layout
+      const headerElements = document.querySelectorAll('.fixed.inset-x-0');
+      headerElements.forEach(function(element) {
+        if (element !== quoteBanner && element.classList.contains('fixed')) {
+          element.style.top = '0px';
+        }
+      });
+      
+      const spacingDiv = document.querySelector('.min-h-\\[190px\\]');
+      if (spacingDiv) {
+        spacingDiv.style.minHeight = '148px';
+      }
+    } else {
+      // Handle basic layout - remove top margin
+      const mainMenus = document.querySelectorAll('.main-menu');
+      mainMenus.forEach(function(element) {
+        element.style.marginTop = '';
+      });
+    }
+  }
+  
+  // Function to show banner
+  function showBanner() {
+    if (quoteBanner) {
+      quoteBanner.style.display = 'block';
+      positionHeaderBelowBanner();
+      localStorage.removeItem('quoteBannerClosed');
+    }
+  }
+  
+  // Function to hide banner
+  function hideBanner() {
+    if (quoteBanner) {
+      quoteBanner.style.display = 'none';
+      positionHeaderAtTop();
+      localStorage.setItem('quoteBannerClosed', 'true');
+    }
+  }
+  
+  // Close button event
+  if (closeButton && quoteBanner) {
+    closeButton.addEventListener('click', function() {
+      hideBanner();
+    });
+  }
+  
+  // Check initial state and position accordingly
+  if (localStorage.getItem('quoteBannerClosed') === 'true') {
+    hideBanner();
+  } else {
+    // Banner should be visible, ensure header is positioned correctly
+    showBanner();
+  }
+  
+  // Global function to re-show banner (can be called from elsewhere)
+  window.showQuoteBanner = showBanner;
+  window.hideQuoteBanner = hideBanner;
+  
+  // Observer to watch for banner visibility changes
+  if (quoteBanner) {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          const isVisible = quoteBanner.style.display !== 'none';
+          if (isVisible) {
+            positionHeaderBelowBanner();
+          } else {
+            positionHeaderAtTop();
+          }
+        }
+      });
+    });
+    
+    observer.observe(quoteBanner, {
+      attributes: true,
+      attributeFilter: ['style']
+    });
+  }
+});
+</script>
+{{ end }}
