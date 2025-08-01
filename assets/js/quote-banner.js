@@ -1,103 +1,168 @@
-document.addEventListener('DOMContentLoaded', function() {
-  if (!window.quoteBannerData) {
-    console.error('Quote banner data not found. Aborting.');
-    return;
+/**
+ * Quote Banner Management System
+ * Handles quote display, API fetching, and header positioning
+ */
+class QuoteBanner {
+  constructor() {
+    // Configuration and state
+    this.STORAGE_KEY = 'quote-banner-closed';
+    this.config = window.quoteBannerData || {};
+    this.quotes = JSON.parse(this.config.quotes || '[]');
+    this.currentQuoteIndex = 0;
+    this.quoteInterval = null;
+
+    // DOM elements
+    this.elements = {};
+    this.initializeElements();
   }
 
-  const { quotes: localQuotes, refreshInterval, showApiError } = window.quoteBannerData;
-  console.log("Local quotes data from Hugo:", localQuotes);
-  const parsedQuotes = JSON.parse(localQuotes);
+  init() {
+    if (!this.validateDOMElements()) return;
+    this.setupEventListeners();
 
-  const banner = document.getElementById('quote-banner');
-  const textEl = document.getElementById('quote-text');
-  const authorEl = document.getElementById('quote-author');
-  const closeButton = document.getElementById('quote-close');
-  const quoteContent = banner.querySelector('.quote-banner-content');
-  const reopenButtonWrapper = document.getElementById('reopen-quote-banner-wrapper');
-  const reopenButton = document.getElementById('reopen-quote-banner-button');
-  const STORAGE_KEY = 'quote-banner-closed';
-
-  if (!banner || !textEl || !authorEl || !closeButton || !reopenButtonWrapper || !reopenButton) {
-    console.error('Quote banner element(s) not found. Aborting.');
-    return;
-  }
-
-  let quoteInterval;
-  let quotes = [];
-
-  async function fetchQuotes() {
-    try {
-      const response = await fetch('https://zenquotes.io/api/quotes');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      quotes = data.map(q => ({ text: q.q, author: q.a }));
-      console.log("Successfully loaded quotes from ZenQuotes API.");
-    } catch (error) {
-      console.error("Failed to fetch quotes from API, using local fallback.", error);
-      if (showApiError) {
-        const errorEl = document.createElement('div');
-        errorEl.className = 'quote-banner-error';
-        errorEl.textContent = 'Could not fetch new quotes. Using fallbacks.';
-        banner.appendChild(errorEl);
-        setTimeout(() => errorEl.remove(), 5000);
-      }
-      quotes = parsedQuotes;
-    } finally {
-      if (quotes.length === 0) {
-        quotes.push({ text: "No quotes available at this time.", author: "System" });
-      }
-      initializeBanner();
+    // Ensure we have quotes loaded
+    if (!this.quotes || this.quotes.length === 0) {
+      this.quotes = [{ text: "No quotes available at this time.", author: "System" }];
+      console.warn('No quotes found in quotes.json. Run "node scripts/update-quotes.js" to fetch fresh quotes.');
+    } else {
+      console.log(`Loaded ${this.quotes.length} quotes from static file`);
     }
+    
+    this.initializeBanner();
   }
 
-  let currentQuoteIndex = -1;
+  initializeElements() {
+    this.elements = {
+      banner: document.getElementById('quote-banner'),
+      textEl: document.getElementById('quote-text'),
+      authorEl: document.getElementById('quote-author'),
+      closeButton: document.getElementById('quote-close'),
+      quoteContent: document.querySelector('.quote-banner-content'),
+      reopenButtonWrapper: document.getElementById('reopen-quote-banner-wrapper'),
+      reopenButton: document.getElementById('reopen-quote-banner-button')
+    };
+  }
 
-  function displayQuote() {
-    let newIndex;
-    do {
-      newIndex = Math.floor(Math.random() * quotes.length);
-    } while (newIndex === currentQuoteIndex && quotes.length > 1);
-    currentQuoteIndex = newIndex;
-    const quote = quotes[currentQuoteIndex];
+  validateDOMElements() {
+    const requiredElements = ['banner', 'textEl', 'authorEl', 'closeButton', 'reopenButtonWrapper', 'reopenButton'];
+    const missingElements = requiredElements.filter(key => !this.elements[key]);
+    
+    if (missingElements.length > 0) {
+      console.error(`Quote banner element(s) not found: ${missingElements.join(', ')}. Aborting.`);
+      return false;
+    }
+    return true;
+  }
 
-    quoteContent.classList.add('fade');
+  setupEventListeners() {
+    this.elements.closeButton.addEventListener('click', () => this.closeBanner());
+    this.elements.reopenButton.addEventListener('click', () => this.openBanner());
+  }
+
+  rotateQuote() {
+    // Randomly select a quote instead of cycling sequentially
+    if (this.quotes.length > 1) {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * this.quotes.length);
+      } while (newIndex === this.currentQuoteIndex); // Avoid showing the same quote twice in a row
+      this.currentQuoteIndex = newIndex;
+    }
+    this.displayQuote();
+  }
+
+  displayQuote() {
+    if (!this.quotes || this.quotes.length === 0) return;
+
+    const quote = this.quotes[this.currentQuoteIndex];
+    
+    this.elements.quoteContent.classList.add('fade');
     setTimeout(() => {
-      textEl.textContent = `"${quote.text}"`;
-      authorEl.textContent = `— ${quote.author}`;
-      quoteContent.classList.remove('fade');
+      this.elements.textEl.textContent = `"${quote.text}"`;
+      this.elements.authorEl.textContent = quote.author ? `— ${quote.author}` : '';
+      this.elements.quoteContent.classList.remove('fade');
     }, 300);
   }
 
-  function openBanner() {
-    banner.style.display = 'flex';
-    reopenButtonWrapper.style.display = 'none';
-    localStorage.removeItem(STORAGE_KEY);
-    displayQuote();
-    quoteInterval = setInterval(displayQuote, refreshInterval);
+  openBanner() {
+    this.elements.banner.style.display = 'flex';
+    this.elements.reopenButtonWrapper.style.display = 'none';
+    localStorage.removeItem(this.STORAGE_KEY);
+    this.positionHeaderBelowBanner();
+    this.displayQuote();
+    if (this.quoteInterval) clearInterval(this.quoteInterval);
+    this.quoteInterval = setInterval(() => this.rotateQuote(), this.config.refreshInterval);
   }
 
-  function closeBanner() {
-    banner.style.display = 'none';
-    reopenButtonWrapper.style.display = 'block';
-    localStorage.setItem(STORAGE_KEY, 'true');
-    if (quoteInterval) {
-      clearInterval(quoteInterval);
+  closeBanner() {
+    this.elements.banner.style.display = 'none';
+    this.elements.reopenButtonWrapper.style.display = 'block';
+    localStorage.setItem(this.STORAGE_KEY, 'true');
+    this.positionHeaderAtTop();
+    if (this.quoteInterval) {
+      clearInterval(this.quoteInterval);
+      this.quoteInterval = null;
     }
   }
 
-  function initializeBanner() {
-    if (localStorage.getItem(STORAGE_KEY) === 'true') {
-      banner.style.display = 'none';
-      reopenButtonWrapper.style.display = 'block';
+  initializeBanner() {
+    if (localStorage.getItem(this.STORAGE_KEY) === 'true') {
+      this.elements.banner.style.display = 'none';
+      this.elements.reopenButtonWrapper.style.display = 'block';
+      this.positionHeaderAtTop();
     } else {
-      openBanner();
+      this.openBanner();
     }
   }
 
-  closeButton.addEventListener('click', closeBanner);
-  reopenButton.addEventListener('click', openBanner);
+  // Header positioning logic
+  getHeaderLayout() {
+    const fixedHeaders = document.querySelectorAll('.fixed.inset-x-0');
+    const spacingDiv = document.querySelector('.min-h-\\[190px\\]');
+    return (fixedHeaders.length > 0 && spacingDiv) ? 'fixed-gradient' : 'basic';
+  }
 
-  fetchQuotes();
+  positionHeaderBelowBanner() {
+    const headerLayout = this.getHeaderLayout();
+    const bannerHeight = this.elements.banner.offsetHeight || 42;
+    
+    if (headerLayout === 'fixed-gradient') {
+      const headerElements = document.querySelectorAll('.fixed.inset-x-0');
+      headerElements.forEach(element => {
+        if (element !== this.elements.banner && element.classList.contains('fixed')) {
+          element.style.top = `${bannerHeight}px`;
+        }
+      });
+    } else {
+      const mainMenus = document.querySelectorAll('.main-menu');
+      mainMenus.forEach(element => {
+        element.style.marginTop = `${bannerHeight}px`;
+      });
+    }
+  }
+
+  positionHeaderAtTop() {
+    const headerLayout = this.getHeaderLayout();
+    
+    if (headerLayout === 'fixed-gradient') {
+      const headerElements = document.querySelectorAll('.fixed.inset-x-0');
+      headerElements.forEach(element => {
+        if (element !== this.elements.banner && element.classList.contains('fixed')) {
+          element.style.top = '0px';
+        }
+      });
+    } else {
+      const mainMenus = document.querySelectorAll('.main-menu');
+      mainMenus.forEach(element => {
+        element.style.marginTop = '0px';
+      });
+    }
+  }
+}
+
+// Initialize the banner manager
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.quoteBannerData) {
+    new QuoteBanner().init();
+  }
 });

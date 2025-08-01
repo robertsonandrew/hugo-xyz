@@ -1,40 +1,211 @@
 {
   "quotes": [
     {
-      "text": "Fix your quote banner.",
-      "author": "Andrew Robertson"
+      "text": "Your gift is something that you can do innately better than anything else.",
+      "author": "Steve Harvey"
     },
     {
-      "text": "Life is what happens to you while you're busy making other plans.",
-      "author": "John Lennon"
+      "text": "Every time we liberate a woman, we liberate a man. ",
+      "author": "Margaret Mead"
     },
     {
-      "text": "The future belongs to those who believe in the beauty of their dreams.",
-      "author": "Eleanor Roosevelt"
+      "text": "It is ignorance that causes most mistakes.",
+      "author": "Harry S. Truman"
     },
     {
-      "text": "It is during our darkest moments that we must focus to see the light.",
-      "author": "Aristotle"
+      "text": "Not why the addiction but why the pain.",
+      "author": "Gabor Mate"
     },
     {
-      "text": "I'm not superstitious, but I am a little stitious.",
-      "author": "Michael Scott"
+      "text": "In the middle of chaos lies opportunity.  ",
+      "author": "Bruce Lee"
     },
     {
-      "text": "I haven't failed. I've just found 10,000 ways that won't work.",
+      "text": "Your very silence shows you agree.",
+      "author": "Euripides"
+    },
+    {
+      "text": "When the mind is calm, how quickly, how smoothly, how beautifully you will perceive everything.",
+      "author": "Paramahansa Yogananda"
+    },
+    {
+      "text": "Wherever you are is the entry point.",
+      "author": "Kabir"
+    },
+    {
+      "text": "The best way to understanding is a few good examples.",
+      "author": "Isaac Newton"
+    },
+    {
+      "text": "If you don't break your ropes while you're alive, do you think ghosts will do it after?",
+      "author": "Kabir"
+    },
+    {
+      "text": "A wise man makes his own decisions, but an ignorant man mindlessly follows the crowd.",
+      "author": "Chinese Proverb"
+    },
+    {
+      "text": "Work for something because it is good, not just because it stands a chance to succeed.",
+      "author": "Vaclav Havel"
+    },
+    {
+      "text": "I'm not afraid of death, but I'm in no hurry to die.",
+      "author": "Stephen Hawking"
+    },
+    {
+      "text": "Be approximately right rather than exactly wrong.",
+      "author": "John Tukey"
+    },
+    {
+      "text": "Don't wish it were easier, wish you were better.",
+      "author": "Jim Rohn"
+    },
+    {
+      "text": "How you think is as important as as what you think.",
+      "author": "Unknown"
+    },
+    {
+      "text": "Problems remain as problems because people are busy defending them rather than finding solutions.",
+      "author": "Celestine Chua"
+    },
+    {
+      "text": "There are as many opinions as there are experts.",
+      "author": "Franklin D. Roosevelt"
+    },
+    {
+      "text": "Maybe you are searching among the branches, for what only appears in the roots.",
+      "author": "Rumi"
+    },
+    {
+      "text": "Man should fear never beginning to live.",
+      "author": "Marcus Aurelius"
+    },
+    {
+      "text": "Remember we're all in this alone.",
+      "author": "Lily Tomlin"
+    },
+    {
+      "text": "The most efficient way of rendering the poor harmless is to teach them to want to imitate the rich.",
+      "author": "Carlos Ruiz Zafon"
+    },
+    {
+      "text": "Become the kind of leader that people would follow voluntarily, even if you had no title or position.",
+      "author": "Brian Tracy"
+    },
+    {
+      "text": "The ability to hold two competing thoughts in one's mind and still be able to function is the mark of a superior mind.",
+      "author": "F. Scott Fitzgerald"
+    },
+    {
+      "text": "It's the little things done consistently over time, straight from your heart, that have the greatest impact.",
+      "author": "Unknown"
+    },
+    {
+      "text": "He that can have patience can have what he will.",
+      "author": "Benjamin Franklin"
+    },
+    {
+      "text": "Be still when you have nothing to say; when genuine passion moves you, say what you've got to say, and say it hot.",
+      "author": "D. H. Lawrence"
+    },
+    {
+      "text": "Only when I fall do I get up again.",
+      "author": "Vincent van Gogh"
+    },
+    {
+      "text": "If you want to be sad, no one in the world can make you happy. But if you make up your mind to be happy, no one and nothing on earth can take that happiness from you.",
+      "author": "Paramahansa Yogananda"
+    },
+    {
+      "text": "Attitude is a little thing that makes a big difference.",
+      "author": "Winston Churchill"
+    },
+    {
+      "text": "Walk towards the sunshine, and the shadows will fall behind you.",
+      "author": "Mary Engelbreit"
+    },
+    {
+      "text": "The less you try to impress, the more peaceful you can be.",
+      "author": "Maxime Lagace"
+    },
+    {
+      "text": "Respect other people's feelings. It might mean nothing to you, but it could mean everything to them.",
+      "author": "Roy T. Bennett"
+    },
+    {
+      "text": "The biggest challenge after success is shutting up about it.",
+      "author": "Criss Jami"
+    },
+    {
+      "text": "The wise learn many things from their enemies.",
+      "author": "Aristophanes"
+    },
+    {
+      "text": "Everything is possible. The impossible just takes longer.",
+      "author": "Dan Brown"
+    },
+    {
+      "text": "When we allow negative messages to fester in our head, they take on a life of their own.",
+      "author": "Lolly Daskal"
+    },
+    {
+      "text": "Fear is your worst enemy. Risk is your best friend.",
+      "author": "Gurbaksh Chahal"
+    },
+    {
+      "text": "There is no value in anything until it is finished. ",
+      "author": "Genghis Khan"
+    },
+    {
+      "text": "Genius is one percent inspiration and ninety-nine percent perspiration.",
       "author": "Thomas Edison"
     },
     {
-      "text": "The trouble with having an open mind is that people keep coming along and sticking things into it.",
-      "author": "Terry Pratchett"
+      "text": "Darkness is the absence of light.",
+      "author": "Kamal Ravikant"
     },
     {
-      "text": "I find television very educational. Every time someone turns it on, I go in the other room and read a book.",
-      "author": "Groucho Marx"
+      "text": "Enthusiasm makes up for a host of deficiencies.",
+      "author": "Barack Obama"
     },
     {
-      "text": "Common sense is like deodorant. The people who need it most never use it.",
-      "author": "Bill Murray"
+      "text": "What you resist, persists.",
+      "author": "Carl Jung"
+    },
+    {
+      "text": "Work as though you would live forever, and live as though you would die today. Go another mile.",
+      "author": "Og Mandino"
+    },
+    {
+      "text": "Stay away from people who makes you feel like you are wasting their time.",
+      "author": "Paulo Coelho"
+    },
+    {
+      "text": "Even if you're sure you can win, be careful that you can live with what you lose.",
+      "author": "Gary Keller"
+    },
+    {
+      "text": "Sad thing is, you can still love someone and be wrong for them.",
+      "author": "Elvis Presley"
+    },
+    {
+      "text": "Never give up work. Work gives you meaning and purpose and life is empty without it.",
+      "author": "Stephen Hawking"
+    },
+    {
+      "text": "Confidence is the greatest friend.",
+      "author": "Lao Tzu"
+    },
+    {
+      "text": "Any fool can paint a picture, but it takes a wise man to be able to sell it.",
+      "author": "Samuel Butler"
+    },
+    {
+      "text": "Mastering others is strength, mastering yourself is true power.",
+      "author": "Lao Tzu"
     }
-  ]
+  ],
+  "lastUpdated": "2025-08-01T05:24:35.670Z",
+  "source": "zenquotes.io API",
+  "count": 60
 }

@@ -1,3 +1,10 @@
+<!-- Quote Banner Assets -->
+{{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
+{{ if $quoteBannerCSS }}
+  {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $quoteBannerCSS.RelPermalink }}" integrity="{{ $quoteBannerCSS.Data.Integrity }}">
+{{ end }}
+
 <!-- Re-enable Quote Banner Icon -->
 <div id="reopen-quote-banner-wrapper" class="reopen-quote-banner-wrapper" style="display: none;">
   <button id="reopen-quote-banner-button" aria-label="Re-open quote banner" title="Show quotes">
