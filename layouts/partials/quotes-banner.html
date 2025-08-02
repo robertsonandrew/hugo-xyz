@@ -1,14 +1,20 @@
-{{/* Simplified Quote Banner Partial - Clean HTML Structure Only */}}
-{{/* Determine where to show the banner */}}
-{{ $showBanner := or .IsHome (eq .Section "about") (and (eq .Type "page") (eq .Title "About")) (in .RelPermalink "/about") }}
+{{- if and .Site.Params.quoteBanner.enabled .Params.show_quote_banner -}}
+  {{- $quotesData := .Site.Data.quotes -}}
+  {{- $bannerConfig := dict
+    "quotes" $quotesData.quotes
+    "refreshInterval" (default 10000 .Site.Params.quoteBanner.refreshInterval)
+    "showDelay" (default 300 .Site.Params.quoteBanner.showDelay)
+    "height" (default "42px" .Site.Params.quoteBanner.height)
+  -}}
+  <script>
+    window.quoteBannerData = {{ $bannerConfig | jsonify | safeJS }};
+  </script>
 
-{{ if $showBanner }}
-<!-- Quote Banner HTML Structure -->
-<div id="quote-banner" class="quote-banner-wrapper" style="display: none;">
-  <div class="quote-banner-content">
-    <span id="quote-text"></span>
-    <span id="quote-author"></span>
+  <div id="quote-banner" class="quote-banner-wrapper" role="region" aria-label="Quote of the moment">
+    <div class="quote-banner-content" aria-live="polite" aria-atomic="true">
+      <span id="quote-text"></span>
+      <span id="quote-author"></span>
+    </div>
+    <button id="quote-close" class="quote-close" aria-label="Close quote banner" title="Close quote banner">&times;</button>
   </div>
-  <button id="quote-close" aria-label="Close banner">&times;</button>
-</div>
-{{ end }}
+{{- end -}}

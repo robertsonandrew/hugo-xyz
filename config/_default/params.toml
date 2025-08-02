@@ -23,16 +23,21 @@ disableTextInHeader = true
 # backgroundImageWidth = 1200
 
 # Custom parameters
-customLogo = "arobertson xyz"
+customLogo = "arobertsonxyz"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 
 # Quote Banner Configuration
 [quoteBanner]
-  enabled = true # *does not work currently*
-  refreshInterval = 30000  # milliseconds between quote changes
+  enabled = true
+  refreshInterval = 2000  # milliseconds between quote changes
+  showDelay = 300          # milliseconds before showing the banner on first page load
   showApiError = false    # show error message when API fails
-  height = "42px"          # banner height for CSS calculations
+  height = "42px"         # banner height for CSS calculations
+  
+  # Control which pages show the banner
+  # To show the banner on a page, add `show_quote_banner: true` to its front matter.
+
 
 [author]
   name = "Andrew Robertson"
@@ -52,7 +57,7 @@ giteaDefaultServer = "https://git.fsfe.org"
 forgejoDefaultServer = "https://v11.next.forgejo.org"
 
 [header]
-  layout = "basic" # valid options: basic, fixed, fixed-fill, fixed-gradient, fixed-fill-blur
+  layout = "fixed-gradient" # valid options: basic, fixed, fixed-fill, fixed-gradient, fixed-fill-blur
 
 [footer]
   showMenu = true

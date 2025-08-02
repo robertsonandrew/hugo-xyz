@@ -1,18 +1,24 @@
-<div class="min-h-[190px]"></div>
-<div
-  class="fixed inset-x-0 min-h-[130px] opacity-65 pl-[24px] pr-[24px] bg-gradient-to-b from-neutral from-60% dark:from-neutral-800 to-transparent mix-blend-normal z-80" style="top: 42px;"></div>
-<div class="fixed inset-x-0 pl-[24px] pr-[24px] z-100" style="top: 42px;">
-  <div
-    id="menu-blur"
-    class="absolute opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom backdrop-blur-2xl shadow-2xl"></div>
-  <div class="relative max-w-[64rem] ml-auto mr-auto">
+{{/* This container is positioned by quote-banner.js */}}
+<div id="fixed-header-container" class="fixed inset-x-0 z-100">
+  {{/* Gradient background */}}
+  <div class="absolute inset-x-0 min-h-[130px] opacity-65 bg-gradient-to-b from-neutral from-60% dark:from-neutral-800 to-transparent mix-blend-normal"></div>
+  
+  {{/* Blur effect */}}
+  <div id="menu-blur" class="absolute opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom backdrop-blur-2xl shadow-2xl"></div>
+
+  {{/* Header content */}}
+  <div class="relative max-w-[64rem] ml-auto mr-auto px-6">
     {{ partial "header/basic.html" . }}
   </div>
 </div>
+
+{{/* JS for blur effect */}}
 {{ $backgroundBlur := resources.Get "js/background-blur.js" }}
-{{ $backgroundBlur = $backgroundBlur | resources.Minify | resources.Fingerprint (.Site.Params.fingerprintAlgorithm | default "sha512") }}
-<script
-  type="text/javascript"
-  src="{{ $backgroundBlur.RelPermalink }}"
-  integrity="{{ $backgroundBlur.Data.Integrity }}"
-  data-target-id="menu-blur"></script>
+{{ if $backgroundBlur }}
+  {{ $backgroundBlur = $backgroundBlur | resources.Minify | resources.Fingerprint (.Site.Params.fingerprintAlgorithm | default "sha512") }}
+  <script
+    type="text/javascript"
+    src="{{ $backgroundBlur.RelPermalink }}"
+    integrity="{{ $backgroundBlur.Data.Integrity }}"
+    data-target-id="menu-blur"></script>
+{{ end }}

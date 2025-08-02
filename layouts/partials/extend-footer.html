@@ -12,13 +12,6 @@
   </button>
 </div>
 
-<script>
-  window.quoteBannerData = {
-    quotes: {{ .Site.Data.quotes.quotes | jsonify }},
-    refreshInterval: {{ .Site.Params.quoteBanner.refreshInterval | default 30000 }},
-    showApiError: {{ .Site.Params.quoteBanner.showApiError | default true }}
-  };
-</script>
 {{ $quoteBannerJS := resources.Get "js/quote-banner.js" }}
 {{ if $quoteBannerJS }}
   {{ $quoteBannerJS = $quoteBannerJS | js.Build | resources.Minify | resources.Fingerprint }}
