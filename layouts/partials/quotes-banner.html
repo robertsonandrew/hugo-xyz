@@ -10,10 +10,13 @@
     window.quoteBannerData = {{ $bannerConfig | jsonify | safeJS }};
   </script>
 
-  <div id="quote-banner" class="quote-banner-wrapper" role="region" aria-label="Quote of the moment">
-    <div class="quote-banner-content" aria-live="polite" aria-atomic="true">
-      <span id="quote-text"></span>
-      <span id="quote-author"></span>
+  <div id="quote-banner" class="quote-banner-wrapper" role="region" aria-label="Quote of the moment" aria-live="polite">
+    <div class="quote-banner-content" aria-atomic="true">
+      <div class="quote-text-wrapper">
+        <span id="quote-text" role="text"></span>
+        <span id="quote-author" role="text"></span>
+      </div>
+      <div class="quote-loading" aria-hidden="true">Loading...</div>
     </div>
     <button id="quote-close" class="quote-close" aria-label="Close quote banner" title="Close quote banner">&times;</button>
   </div>

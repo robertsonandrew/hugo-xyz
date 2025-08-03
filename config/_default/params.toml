@@ -24,6 +24,10 @@ disableTextInHeader = true
 
 # Custom parameters
 customLogo = "arobertsonxyz"
+[customLogoStyle]
+  fontSize = "1.25rem"
+  fontWeight = "600"
+  letterSpacing = "0.5px"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 
@@ -32,8 +36,11 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
   enabled = true
   refreshInterval = 2000  # milliseconds between quote changes
   showDelay = 300          # milliseconds before showing the banner on first page load
-  showApiError = false    # show error message when API fails
+  showApiError = true    # show error message when API fails
   height = "42px"         # banner height for CSS calculations
+  showLoadingState = true
+  fadeTransitionDuration = 400
+  mobileBreakpoint = 768
   
   # Control which pages show the banner
   # To show the banner on a page, add `show_quote_banner: true` to its front matter.
@@ -156,4 +163,5 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
   # domain = "llama.yoursite.com"
   # dataDomains = "yoursite.com,yoursite2.com"
   # scriptName = ""
+  # enableTrackEvent = true
   # enableTrackEvent = true

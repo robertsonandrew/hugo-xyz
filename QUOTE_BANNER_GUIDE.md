@@ -42,9 +42,13 @@ All functional settings for the banner (that aren't related to page visibility) 
 ```toml
 [quoteBanner]
   enabled = true
-  refreshInterval = 10000  # Milliseconds between quote changes (e.g., 10000 = 10 seconds)
-  showDelay = 300          # Milliseconds to wait before showing the banner on first load
-  height = "42px"         # The height of the banner, used by the CSS for layout calculations
+  refreshInterval = 2000  # milliseconds between quote changes
+  showDelay = 300        # milliseconds before showing banner on first load
+  showApiError = true    # show error message when API fails
+  height = "42px"        # banner height for CSS calculations
+  showLoadingState = true
+  fadeTransitionDuration = 400
+  mobileBreakpoint = 768
 ```
 
 ---
@@ -91,6 +95,36 @@ This feature is composed of several key files that work together:
 *   **Function**: This Hugo override file is used to:
     1.  Load the `quote-banner.css` and `quote-banner.js` assets on every page.
     2.  Render the HTML for the "reopen" button, ensuring it is available on all pages even if the main banner is not.
+
+---
+
+## 5. Features
+
+- **Smart Quote Rotation**: Ensures all quotes are shown before repeating
+- **Smooth Transitions**: Fade animations between quotes
+- **State Persistence**: Banner state (open/closed) persists across page loads
+- **Loading States**: Visual feedback during quote transitions
+- **Error Handling**: Graceful handling of loading failures
+- **Mobile Responsive**: Adjusts display for different screen sizes
+
+---
+
+## 6. Best Practices
+
+1. Keep quotes concise for better mobile display
+2. Ensure proper error messages are configured
+3. Test on both desktop and mobile devices
+4. Monitor performance impact with many quotes
+
+---
+
+## 7. Troubleshooting
+
+Common issues and solutions:
+- If banner doesn't appear, check front matter configuration
+- If quotes don't rotate, verify refresh interval setting
+- For layout issues, check banner height configuration
+- For mobile display problems, verify mobileBreakpoint setting
 
 ---
 

@@ -115,12 +115,48 @@ body.quote-banner-open:has(#fixed-header-container) main {
   padding-top: calc(var(--fixed-header-total-height) + var(--quote-banner-height));
 }
 
-/* Responsive */
+/* Loading state styles */
+.quote-text-wrapper {
+  opacity: 1;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.quote-loading {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.quote-banner-content.loading .quote-text-wrapper {
+  opacity: 0;
+}
+
+.quote-banner-content.loading .quote-loading {
+  opacity: 1;
+}
+
+/* Improve mobile responsiveness */
 @media (max-width: 768px) {
-  .quote-banner-wrapper { padding: 8px 16px; font-size: 13px; flex-direction: column; align-items: center; min-height: 50px; }
-  .quote-banner-content { flex-direction: column; gap: 4px; }
-  #quote-author { font-size: 11px; margin-left: 0; }
-  #quote-close { font-size: 18px; margin-left: 0; margin-top: 4px; }
+  :root {
+    --quote-banner-height: 60px;
+  }
+  
+  .quote-banner-wrapper {
+    padding: 10px 16px;
+  }
+
+  #quote-text {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* Center the close button on mobile */
+  #quote-close {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
 @media (max-width: 480px) {
   .quote-banner-wrapper { padding: 6px 12px; font-size: 12px; min-height: 60px; }

@@ -69,29 +69,47 @@ class QuoteBanner {
     this.quoteInterval = setInterval(() => this.rotateQuote(), interval);
   }
 
-  rotateQuote() {
-    if (this.quotes.length <= 1) {
-      this.currentQuoteIndex = this.quotes.length === 1 ? 0 : -1;
-    } else {
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * this.quotes.length);
-      } while (newIndex === this.currentQuoteIndex);
-      this.currentQuoteIndex = newIndex;
+  async rotateQuote() {
+    if (!this.quotes || this.quotes.length === 0) {
+      this.handleError("No quotes available");
+      return;
     }
-    this.displayQuote();
+
+    try {
+      this.elements.quoteContent.classList.add('loading');
+      
+      // Ensure we don't repeat quotes until all have been shown
+      if (!this.remainingQuotes || this.remainingQuotes.length === 0) {
+        this.remainingQuotes = [...this.quotes];
+      }
+
+      const randomIndex = Math.floor(Math.random() * this.remainingQuotes.length);
+      const quote = this.remainingQuotes.splice(randomIndex, 1)[0];
+
+      await this.displayQuoteWithAnimation(quote);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
-  displayQuote() {
-    if (this.currentQuoteIndex === -1 || !this.elements.quoteContent) return;
-    const quote = this.quotes[this.currentQuoteIndex];
-    
-    this.elements.quoteContent.classList.add('fade');
-    setTimeout(() => {
-      this.elements.textEl.textContent = `"${quote.text}"`;
-      this.elements.authorEl.textContent = quote.author ? `— ${quote.author}` : '';
-      this.elements.quoteContent.classList.remove('fade');
-    }, 300);
+  async displayQuoteWithAnimation(quote) {
+    await new Promise(resolve => {
+      this.elements.quoteContent.classList.add('fade');
+      setTimeout(() => {
+        this.elements.textEl.textContent = `"${quote.text}"`;
+        this.elements.authorEl.textContent = quote.author ? `— ${quote.author}` : '';
+        this.elements.quoteContent.classList.remove('loading', 'fade');
+        resolve();
+      }, 400);
+    });
+  }
+
+  handleError(error) {
+    console.error('Quote Banner Error:', error);
+    if (this.config.showApiError) {
+      this.elements.textEl.textContent = "Unable to load quote";
+      this.elements.authorEl.textContent = "";
+    }
   }
 
   openBanner() {
