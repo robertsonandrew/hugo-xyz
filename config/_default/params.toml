@@ -33,8 +33,7 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
   refreshInterval = 20000  # milliseconds between quote changes
   showDelay = 300          # milliseconds before showing the banner on first page load
   showApiError = true    # show error message when API fails
-  height = "42px"         # banner height for CSS calculations
-  showLoadingState = true
+  showLoadingState = false
   fadeTransitionDuration = 400
   mobileBreakpoint = 768
   
