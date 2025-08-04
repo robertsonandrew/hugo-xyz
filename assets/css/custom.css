@@ -9,7 +9,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
-  animation: gradientShift 3s ease-in-out infinite;
+  animation: gradientShift 6s ease-in-out infinite;
 }
 
 /* Dark mode gradient */
@@ -19,7 +19,8 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
-  animation: gradientShift 3s ease-in-out infinite;
+  animation: gradientShift 6s ease-in-out infinite;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* Gradient animation */
