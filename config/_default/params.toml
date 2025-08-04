@@ -24,10 +24,6 @@ disableTextInHeader = true
 
 # Custom parameters
 customLogo = "arobertsonxyz"
-[customLogoStyle]
-  fontSize = "1.25rem"
-  fontWeight = "600"
-  letterSpacing = "0.5px"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 
