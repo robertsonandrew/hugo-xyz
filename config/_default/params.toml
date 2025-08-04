@@ -30,7 +30,7 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
 # Quote Banner Configuration
 [quoteBanner]
   enabled = true
-  refreshInterval = 2000  # milliseconds between quote changes
+  refreshInterval = 20000  # milliseconds between quote changes
   showDelay = 300          # milliseconds before showing the banner on first page load
   showApiError = true    # show error message when API fails
   height = "42px"         # banner height for CSS calculations
@@ -39,8 +39,9 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
   mobileBreakpoint = 768
   
   # Control which pages show the banner
-  # To show the banner on a page, add `show_quote_banner: true` to its front matter.
-
+  #######################################################################################
+  # **To show the banner on a page, add `show_quote_banner: true` to its front matter** #
+  #######################################################################################
 
 [author]
   name = "Andrew Robertson"

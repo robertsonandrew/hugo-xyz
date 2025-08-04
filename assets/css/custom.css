@@ -1,6 +1,6 @@
 /* Custom Logo Styling */
 .logo.custom-logo-text {
-  font-size: 3rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
+  font-size: 2rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
   font-weight: 800; /* Extra bold */
   line-height: 1.2; /* Ensure proper line height */
   padding: 0.25rem 0; /* Add some vertical padding */
