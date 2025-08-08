@@ -1,25 +1,35 @@
-/* Custom Logo Styling */
+/* Custom Logo Styling: Gradient (default) */
+/* The default gradient class uses CSS variables (overridable inline) */
 .logo.custom-logo-text {
   font-size: 2rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
   font-weight: 800; /* Extra bold */
   line-height: 1.2; /* Ensure proper line height */
   padding: 0.25rem 0; /* Add some vertical padding */
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* Define defaults; inline style can override these variables */
+  --logo-gradient-angle: 135deg;
+  --logo-gradient-stops: #1d4ed8, #7c3aed, #0ea5e9;
+  --logo-gradient-speed: 6s;
+  background: linear-gradient(var(--logo-gradient-angle), var(--logo-gradient-stops));
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important; /* Firefox */
+  display: inline-block; /* Ensure gradient clips to text box */
   background-size: 200% 200%;
-  animation: gradientShift 6s ease-in-out infinite;
+  animation: gradientShift var(--logo-gradient-speed) ease-in-out infinite;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
 }
 
 /* Dark mode gradient */
 .dark .logo.custom-logo-text {
-  background: linear-gradient(135deg, #60a5fa, #a78bfa, #22d3ee);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(var(--logo-gradient-angle), var(--logo-gradient-stops));
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  display: inline-block;
   background-size: 200% 200%;
-  animation: gradientShift 6s ease-in-out infinite;
+  animation: gradientShift var(--logo-gradient-speed) ease-in-out infinite;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
 }
 
@@ -35,6 +45,8 @@
     background-position: 0% 50%;
   }
 }
+
+/* Removed old custom-logo-gradient1..4 variants in favor of dynamic CSS variables */
 
 /* Responsive sizing */
 @media (max-width: 768px) {

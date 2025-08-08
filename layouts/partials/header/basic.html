@@ -1,13 +1,13 @@
-{{ partial "quotes-banner.html" . }}
-
 {{/* Logo section */}}
 {{ define "HeaderLogo" }}
   {{/* Check if customLogo parameter is set */}}
   {{ if .Site.Params.customLogo }}
+    {{ $style := .Site.Params.logoStyle | default "gradient" }}
+    {{ $logoClass := "custom-logo-text" }}
     <div>
       <a href="{{ "" | relLangURL }}" class="flex">
         <span class="sr-only">{{ .Site.Title | markdownify }}</span>
-        <span class="logo custom-logo-text nozoom">
+        <span class="logo {{ $logoClass }} nozoom">
           {{ .Site.Params.customLogo }}
         </span>
       </a>

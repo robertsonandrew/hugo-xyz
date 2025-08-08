@@ -1,0 +1,11 @@
+{{/* Inject site-level CSS variables for the custom logo gradient */}}
+<style>
+:root{
+  --logo-gradient-angle: {{ default 135 .Params.logoGradientAngle }}deg;
+  --logo-gradient-speed: {{ default "6s" .Params.logoAnimationSpeed }};
+  {{- with .Params.logoGradientStops -}}
+  --logo-gradient-stops: {{ delimit . "," }};
+  {{- end -}}
+}
+</style>
+

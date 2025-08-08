@@ -1,4 +1,9 @@
 <!-- Quote Banner Assets -->
+<style>
+:root{
+  {{ with .Site.Params.quoteBanner.height }}--quote-banner-height: {{ . }};{{ end }}
+}
+</style>
 {{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
 {{ if $quoteBannerCSS }}
   {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}

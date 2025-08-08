@@ -10,13 +10,13 @@ defaultAppearance = "light" # valid options: light or dark
 autoSwitchAppearance = true
 
 enableSearch = true
-enableCodeCopy = false
+enableCodeCopy = true
 
 replyByEmail = false
 
 # mainSections = ["section1", "section2"]
 # robots = ""
-
+disableImageZoom = false
 disableImageOptimization = false
 disableImageOptimizationMD = false
 disableTextInHeader = true
@@ -24,6 +24,10 @@ disableTextInHeader = true
 
 # Custom parameters
 customLogo = "arobertsonxyz"
+logoStyle = "gradient"
+logoGradientStops = ["#fb7185", "#f472b6", "#a78bfa"] # ["#1d4ed8", "#7c3aed", "#0ea5e9"]
+logoGradientAngle = 120
+logoAnimationSpeed = "10s"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 

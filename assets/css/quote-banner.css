@@ -1,6 +1,6 @@
 /* Quote Banner Styles */
 :root {
-  --quote-banner-height: 42px;
+  --quote-banner-height: 42px; /* fallback */
   --quote-banner-z-index: 1000;
   --fixed-header-total-height: 130px; /* Height of the fixed-gradient header area */
 }
