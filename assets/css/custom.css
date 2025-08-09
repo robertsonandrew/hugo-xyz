@@ -197,3 +197,57 @@
   z-index: 1001;
   font-size: 14px;
 }
+
+/* Homepage Hero CTA Buttons */
+.cta-button {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.primary-cta {
+  background-color: #2563eb; /* Example: blue-600 */
+  color: white;
+}
+
+.primary-cta:hover {
+  background-color: #1d4ed8; /* Example: blue-700 */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.secondary-cta {
+  background-color: transparent;
+  color: #2563eb; /* Example: blue-600 */
+  border: 2px solid #2563eb;
+}
+
+.secondary-cta:hover {
+  background-color: #eff6ff; /* Example: blue-50 */
+  border-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dark .primary-cta {
+  background-color: #3b82f6; /* Example: blue-500 */
+}
+
+.dark .primary-cta:hover {
+  background-color: #2563eb; /* Example: blue-600 */
+}
+
+.dark .secondary-cta {
+  color: #60a5fa; /* Example: blue-400 */
+  border-color: #60a5fa;
+}
+
+.dark .secondary-cta:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* blue-500 with alpha */
+  border-color: #3b82f6;
+}

@@ -5,7 +5,8 @@
 class QuoteBanner {
   constructor() {
     this.STORAGE_KEY = 'quote-banner-closed';
-    this.config = window.quoteBannerData || {};
+    const configEl = document.getElementById('quote-banner-data');
+    this.config = configEl ? JSON.parse(configEl.textContent) : {};
     this.quotes = this.config.quotes || [];
     this.currentQuoteIndex = -1;
     this.quoteInterval = null;

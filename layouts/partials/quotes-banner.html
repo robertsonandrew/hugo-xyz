@@ -4,10 +4,9 @@
     "quotes" $quotesData.quotes
     "refreshInterval" (default 10000 .Site.Params.quoteBanner.refreshInterval)
     "showDelay" (default 300 .Site.Params.quoteBanner.showDelay)
-    "height" (default "42px" .Site.Params.quoteBanner.height)
   -}}
-  <script>
-    window.quoteBannerData = {{ $bannerConfig | jsonify | safeJS }};
+  <script id="quote-banner-data" type="application/json">
+    {{ $bannerConfig | jsonify | safeJS }}
   </script>
 
   <div id="quote-banner" class="quote-banner-wrapper" role="region" aria-label="Quote of the moment" aria-live="polite">

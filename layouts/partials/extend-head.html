@@ -6,6 +6,14 @@
   {{- with .Params.logoGradientStops -}}
   --logo-gradient-stops: {{ delimit . "," }};
   {{- end -}}
+
+  {{/* Inject quote banner gradient variables if they exist */}}
+  {{- with .Params.quoteBanner.lightModeGradient -}}
+  --quote-banner-light-gradient: linear-gradient(135deg, {{ delimit . ", " }});
+  {{- end -}}
+  {{- with .Params.quoteBanner.darkModeGradient -}}
+  --quote-banner-dark-gradient: linear-gradient(135deg, {{ delimit . ", " }});
+  {{- end -}}
 }
 </style>
 

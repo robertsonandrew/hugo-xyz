@@ -24,7 +24,7 @@ body.quote-banner-open #quote-banner {
 }
 
 .quote-banner-wrapper {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--quote-banner-light-gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
   color: white;
   padding: 12px 20px;
   font-size: 14px;
@@ -40,7 +40,7 @@ body.quote-banner-open #quote-banner {
 }
 
 .dark .quote-banner-wrapper {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+  background: var(--quote-banner-dark-gradient, linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%));
 }
 
 .quote-banner-content {

@@ -27,7 +27,7 @@ customLogo = "arobertsonxyz"
 logoStyle = "gradient"
 logoGradientStops = ["#fb7185", "#f472b6", "#a78bfa"] # ["#1d4ed8", "#7c3aed", "#0ea5e9"]
 logoGradientAngle = 120
-logoAnimationSpeed = "10s"
+logoAnimationSpeed = "6s"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 
@@ -40,11 +40,10 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
   showLoadingState = false
   fadeTransitionDuration = 400
   mobileBreakpoint = 768
-  
-  # Control which pages show the banner
-  #######################################################################################
-  # **To show the banner on a page, add `show_quote_banner: true` to its front matter** #
-  #######################################################################################
+  # Optional: Custom gradients for the quote banner
+  # Provide 2 or more color stops.
+  lightModeGradient = ["#667eea", "#764ba2"]
+  darkModeGradient = ["#db2777", "#9333ea"]
 
 [author]
   name = "Andrew Robertson"
