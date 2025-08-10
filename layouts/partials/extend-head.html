@@ -1,18 +1,12 @@
-{{/* Inject site-level CSS variables for the custom logo gradient */}}
+<!-- eslint-disable -->
+<!-- @format:off -->
+
 <style>
-:root{
+:root {
   --logo-gradient-angle: {{ default 135 .Params.logoGradientAngle }}deg;
   --logo-gradient-speed: {{ default "6s" .Params.logoAnimationSpeed }};
   {{- with .Params.logoGradientStops -}}
   --logo-gradient-stops: {{ delimit . "," }};
-  {{- end -}}
-
-  {{/* Inject quote banner gradient variables if they exist */}}
-  {{- with .Params.quoteBanner.lightModeGradient -}}
-  --quote-banner-light-gradient: linear-gradient(135deg, {{ delimit . ", " }});
-  {{- end -}}
-  {{- with .Params.quoteBanner.darkModeGradient -}}
-  --quote-banner-dark-gradient: linear-gradient(135deg, {{ delimit . ", " }});
   {{- end -}}
 
   {{- with .Params.defaultBackgroundImage -}}
@@ -21,14 +15,16 @@
   --bg-image: none;
   {{- end -}}
 
-  {{- with .Params.defaultBackgroundColorLight -}}
-  --bg-color-light: {{ . }};
-  {{- end -}}
-
-  {{- with .Params.defaultBackgroundColorDark -}}
-  --bg-color-dark: {{ . }};
-  {{- end -}}
-
+  --bg-color-light: {{ default "#CCCCCC" .Params.defaultBackgroundColorLight }};
+  --bg-color-dark: {{ default "#222222" .Params.defaultBackgroundColorDark }};
 }
 </style>
+
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+{{- /* Load custom CSS */ -}}
+{{ $customCSS := resources.Get "css/custom.css" }}
+{{ if $customCSS }}
+  <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
+{{ end }}
+

@@ -8,7 +8,7 @@
 <!-- Re-enable Quote Banner Icon -->
 <div id="reopen-quote-banner-wrapper" class="reopen-quote-banner-wrapper" style="display: none;">
   <button id="reopen-quote-banner-button" aria-label="Re-open quote banner" title="Show quotes">
-    {{- partial "icon.html" "comment" -}}
+    {{- partial "icon.html" "lightbulb" -}}
   </button>
 </div>
 
@@ -17,3 +17,25 @@
   {{ $quoteBannerJS = $quoteBannerJS | js.Build | resources.Minify | resources.Fingerprint }}
   <script src="{{ $quoteBannerJS.RelPermalink }}" integrity="{{ $quoteBannerJS.Data.Integrity }}" defer></script>
 {{ end }}
+
+<!-- Status Dot -->
+<a href="https://status.arobertson.xyz" target="_blank" rel="noopener noreferrer" title="Status Page" class="status-link" id="status-link" style="display: none;">
+  <span class="status-dot"></span>
+</a>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusLink = document.getElementById('status-link');
+    const copyrightP = document.querySelector('#site-footer p:first-child');
+    const reopenWrapper = document.getElementById('reopen-quote-banner-wrapper');
+    
+    if (copyrightP) {
+        if (statusLink) {
+            copyrightP.appendChild(statusLink);
+            statusLink.style.display = 'inline-block';
+        }
+        if (reopenWrapper) {
+            copyrightP.appendChild(reopenWrapper);
+        }
+    }
+  });
+</script>

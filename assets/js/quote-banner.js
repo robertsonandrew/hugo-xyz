@@ -55,7 +55,7 @@ class QuoteBanner {
   setInitialState() {
     if (localStorage.getItem(this.STORAGE_KEY) === 'true') {
       this.elements.body.classList.remove('quote-banner-open');
-      this.elements.reopenButtonWrapper.style.display = 'block';
+      this.elements.reopenButtonWrapper.style.display = 'inline-block';
     } else {
       this.elements.body.classList.add('quote-banner-open');
       this.elements.reopenButtonWrapper.style.display = 'none';

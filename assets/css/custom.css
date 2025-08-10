@@ -155,35 +155,35 @@
 
 /* Re-enable Quote Banner Icon */
 .reopen-quote-banner-wrapper {
-  position: fixed;
-  bottom: 10px;
-  right: 15px;
-  z-index: 1000;
+  display: none; /* Initially hidden, shown by JS */
+  vertical-align: middle;
+  margin-left: 8px;
+  line-height: 1;
 }
 #reopen-quote-banner-button {
-  background: var(--color-neutral-200);
-  color: var(--color-neutral-600);
-  border-radius: 50%;
-  padding: 8px;
+  background: transparent;
+  border: none;
+  padding: 2px; /* Add a little space for the hover effect */
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   cursor: pointer;
-  border: 1px solid var(--color-neutral-300);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: transform 0.2s ease;
+  color: var(--color-neutral-600);
 }
+
 #reopen-quote-banner-button:hover {
-  background: var(--color-neutral-300);
-  transform: translateY(-2px);
+  transform: scale(1.2);
 }
+
+/* Set icon size */
+#reopen-quote-banner-button .icon {
+  width: 12px;
+  height: 12px;
+}
+
 .dark #reopen-quote-banner-button {
-    background: var(--color-neutral-700);
-    color: var(--color-neutral-300);
-    border-color: var(--color-neutral-600);
-}
-.dark #reopen-quote-banner-button:hover {
-    background: var(--color-neutral-600);
+  color: var(--color-neutral-300);
 }
 
 .quote-banner-error {
@@ -267,4 +267,25 @@ body {
 
 .dark .bg-gradient-to-b.from-neutral-800 {
     background-image: var(--header-gradient);
+}
+
+/* Status Dot for Footer */
+.status-link {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  margin-left: 12px; /* Adjust spacing between name and dot */
+}
+
+.status-dot {
+  height: 10px;
+  width: 10px;
+  background-color: #28a745; /* A nice, healthy green */
+  border-radius: 50%;
+  display: inline-block;
+  transition: transform 0.2s ease-in-out;
+}
+
+.status-link:hover .status-dot {
+  transform: scale(1.2); /* Slightly enlarge the dot on hover */
 }

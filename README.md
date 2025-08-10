@@ -1,13 +1,31 @@
-# Custom Logo Overview 
+# Andrew's Hugo Theme
+
+This repository contains the source code for my personal website, built with the Hugo Blowfish theme. It includes a number of custom features designed to create a unique and performant user experience.
+
+<details>
+<summary style="border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; background-color: #113e6eff; font-weight: bold; display: block; cursor: pointer;">📚 Table of Contents</summary>
+
+- [Site Features and Customizations](#site-features-and-customizations)
+  - [1. Animated Gradient Logo](#1-animated-gradient-logo)
+  - [2. Homepage Customizations](#2-homepage-customizations)
+  - [3. Dynamic Quote Banner](#3-dynamic-quote-banner)
+
+</details>
+
+## Site Features and Customizations
+
+This section provides an overview of the custom features implemented in this theme.
+
+### 1. Animated Gradient Logo
 
 This site supports a text-based logo rendered with a configurable animated gradient. The logo text comes from the `customLogo` param and the gradient is controlled via simple settings in `config/_default/params.toml`.
 
-## How it works
+#### How it works
 - The header renders your `customLogo` string with class `custom-logo-text`.
 - Gradient colors, angle, and animation speed are passed as CSS variables on the logo element.
 - The CSS in `assets/css/custom.css` reads those variables and applies an animated gradient with background-clip text.
 
-## Configure in params.toml
+#### Configure in params.toml
 ```toml
 # Required
 customLogo = "arobertsonxyz"
@@ -19,42 +37,68 @@ logoGradientAngle = 135    # degrees
 logoAnimationSpeed = "6s" # CSS duration
 ```
 
-Notes
+**Notes**
 - After changing stops or angle, hard-refresh the browser (Cmd+Shift+R) to bypass cached CSS bundles.
 - If a stop list isn’t provided, sensible defaults are used.
-- The old preset classes (`custom-logo-gradient1..4`) were removed in favor of the controls above.
 
-## Ready‑made gradient presets
+<details>
+<summary style="border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; background-color: #1a5c47ff; font-weight: bold; display: block; cursor: pointer;">🎨 Ready-made gradient presets</summary>
+
 Copy any set into `logoGradientStops`.
 
-- Aurora: ["#a3e635", "#34d399", "#7dd3fc"]
-- Ocean: ["#0ea5e9", "#14b8a6", "#3b82f6"]
-- Sunrise: ["#f59e0b", "#f43f5e", "#8b5cf6"]
-- Blueberry: ["#1d4ed8", "#2563eb", "#7c3aed"]
-- Flamingo: ["#fb7185", "#f472b6", "#a78bfa"]
-- Mango Mint: ["#f59e0b", "#fbbf24", "#10b981"]
-- Royal: ["#3b82f6", "#8b5cf6", "#06b6d4"]
-- Sunset Drift: ["#f97316", "#ef4444", "#8b5cf6"]
-- Lime Sky: ["#84cc16", "#22c55e", "#38bdf8"]
-- Steel Candy: ["#06b6d4", "#60a5fa", "#a78bfa"]
+- **Aurora**: `["#a3e635", "#34d399", "#7dd3fc"]`
+- **Ocean**: `["#0ea5e9", "#14b8a6", "#3b82f6"]`
+- **Sunrise**: `["#f59e0b", "#f43f5e", "#8b5cf6"]`
+- **Blueberry**: `["#1d4ed8", "#2563eb", "#7c3aed"]`
+- **Flamingo**: `["#fb7185", "#f472b6", "#a78bfa"]`
+- **Mango Mint**: `["#f59e0b", "#fbbf24", "#10b981"]`
+- **Royal**: `["#3b82f6", "#8b5cf6", "#06b6d4"]`
+- **Sunset Drift**: `["#f97316", "#ef4444", "#8b5cf6"]`
+- **Lime Sky**: `["#84cc16", "#22c55e", "#38bdf8"]`
+- **Steel Candy**: `["#06b6d4", "#60a5fa", "#a78bfa"]`
 
-Suggested angles and speeds
-- Angle: 120–150 works well for most headers (try 135 first)
-- Speed: 4s (snappy), 6–8s (subtle), 10s+ (very calm)
+</details>
 
-## Troubleshooting
+**Suggested angles and speeds**
+- **Angle**: 120–150 works well for most headers (try 135 first)
+- **Speed**: 4s (snappy), 6–8s (subtle), 10s+ (very calm)
+
+#### Troubleshooting
 - If the logo looks solid or gray, ensure `logoStyle = "gradient"` and hard-refresh.
-- Some browsers require background-clip text; this repo enables it with the necessary vendor flags. If issues persist on Safari, consider an SVG text gradient fallback.
 
 ---
 
-# Guide: Quote Banner Implementation
+### 2. Homepage Customizations
+
+The homepage uses a custom layout that pulls its main content directly from `content/_index.md`. This allows you to easily edit the hero text without touching any HTML files.
+
+- **Content File**: `content/_index.md`
+- **Layout File**: `layouts/partials/home/custom.html`
+
+The social media icons displayed below the author's headline are configured in `config/_default/params.toml` under the `[author].links` section. The theme automatically renders these icons.
+
+```toml
+# In config/_default/params.toml
+[author]
+  name = "Andrew Robertson"
+  headline = "Full-Stack Developer | DevOps Engineer | Generative AI Enthusiast"
+  image = "images/homepage-image.png"
+  links = [
+    { github = "https://github.com/arobertson67" },
+    { linkedin = "https://linkedin.com/in/andrew-robertson-ab7a57103" },
+    # ... other links
+  ]
+```
+
+---
+
+### 3. Dynamic Quote Banner
 
 This document outlines the architecture and implementation of the dynamic quote banner feature for the Hugo Blowfish theme.
 
 ---
 
-## 1. High-Level Overview
+#### 1. High-Level Overview
 
 The quote banner system is designed to be modular and easy to manage. It displays a random quote from a predefined list on specific pages. The core logic is handled by a combination of a Hugo partial, page front matter, a simple JavaScript file for interactivity, and a CSS file for all styling and layout adjustments.
 
@@ -62,9 +106,9 @@ The key principle of this implementation is **explicitness over complexity**. Th
 
 ---
 
-## 2. How to Use
+#### 2. How to Use
 
-### Enabling the Banner on a Page
+##### Enabling the Banner on a Page
 
 To display the quote banner on any specific page (including the homepage), add the following line to the top of the page's markdown file (in the front matter section):
 
@@ -75,7 +119,7 @@ show_quote_banner: true
 ---
 ```
 
-### Disabling the Banner Globally
+##### Disabling the Banner Globally
 
 If you want to turn off the quote banner feature entirely across the whole site, you can do so by changing one line in your configuration file.
 
@@ -85,7 +129,7 @@ If you want to turn off the quote banner feature entirely across the whole site,
 
 ---
 
-## 3. Configuration
+#### 3. Configuration
 
 All functional settings for the banner are located in `config/_default/params.toml` under the `[quoteBanner]` section.
 
@@ -107,17 +151,17 @@ All functional settings for the banner are located in `config/_default/params.to
 
 ---
 
-## 4. File Breakdown
+#### 4. File Breakdown
 
 This feature is composed of several key files that work together:
 
-### `layouts/partials/quotes-banner.html`
+##### `layouts/partials/quotes-banner.html`
 
 *   **Role**: The central controller.
 *   **Logic**: It contains a single conditional check: `{{- if and .Site.Params.quoteBanner.enabled .Params.show_quote_banner -}}`. This line checks if the feature is enabled globally (`enabled = true`) AND if the current page has opted-in (`show_quote_banner: true`).
 *   **Function**: If both conditions are met, it renders the banner's HTML structure and passes the configuration data (quotes, refresh interval, etc.) to the JavaScript via a JSON object embedded in a `<script>` tag.
 
-### `assets/js/quote-banner.js`
+##### `assets/js/quote-banner.js`
 
 *   **Role**: Interactivity and State Management.
 *   **Logic**: This script is the client-side brain of the operation.
@@ -130,7 +174,7 @@ This feature is composed of several key files that work together:
         *   Listen for clicks on the close and reopen buttons.
         *   Use `localStorage` to remember the user's choice to keep the banner closed across page loads.
 
-### `assets/css/quote-banner.css`
+##### `assets/css/quote-banner.css`
 
 *   **Role**: All Styling and Layout Logic.
 *   **Logic**: This is the most critical piece for layout stability. It uses a modern, CSS-only approach to handle the complex header interactions.
@@ -138,19 +182,19 @@ This feature is composed of several key files that work together:
     *   **Dynamic Padding**: It uses the CSS `:has()` selector to intelligently apply padding to the `<main>` content area *only when* the `fixed-gradient` header (`#fixed-header-container`) is present on the page. This prevents the header from overlapping the content.
     *   **Calculations**: It uses CSS variables and `calc()` to dynamically adjust the layout when the banner is open or closed, ensuring a smooth and accurate transition without any JavaScript-based measurement.
 
-### `data/quotes.json`
+##### `data/quotes.json`
 
 *   **Role**: Content Storage.
 *   **Function**: This file holds the list of quotes that are displayed in the banner. You can add, remove, or edit quotes here.
 
-### `layouts/partials/extend-head.html`
+##### `layouts/partials/extend-head.html`
 
 *   **Role**: Global Head Injections and CSS Variable Definitions.
 *   **Function**: This Hugo override file is used to:
     1.  Inject site-level CSS variables for features like the custom logo gradient, quote banner gradients, and default background images/colors.
     2.  Import external resources, such as Google Fonts.
 
-### `layouts/partials/extend-footer.html`
+##### `layouts/partials/extend-footer.html`
 
 *   **Role**: Asset Loading and Reopen Button.
 *   **Function**: This Hugo override file is used to:
@@ -159,7 +203,7 @@ This feature is composed of several key files that work together:
 
 ---
 
-## 5. Features
+#### 5. Features
 
 - **Smart Quote Rotation**: Ensures all quotes are shown before repeating
 - **Smooth Transitions**: Fade animations between quotes
@@ -170,7 +214,7 @@ This feature is composed of several key files that work together:
 
 ---
 
-## 6. Best Practices
+#### 6. Best Practices
 
 1. Keep quotes concise for better mobile display
 2. Ensure proper error messages are configured
@@ -179,7 +223,7 @@ This feature is composed of several key files that work together:
 
 ---
 
-## 7. Troubleshooting
+#### 7. Troubleshooting
 
 Common issues and solutions:
 - If banner doesn't appear, check front matter configuration
@@ -190,19 +234,3 @@ Common issues and solutions:
 ---
 
 This robust, front-matter-driven approach ensures that the quote banner is easy to manage, highly performant, and free of the complex logic that can lead to build errors.
-
----
-
-## Homepage Customizations
-
-### Homepage Hero Call to Action (CTA)
-
-The homepage features a customizable hero section with a call-to-action. This section is defined in `layouts/partials/home/custom.html` and includes:
-
-*   A main heading: "Building for the Web"
-*   A descriptive paragraph: "I design and build robust, user-friendly web applications. Explore my work or get in touch!"
-*   Two call-to-action buttons:
-    *   "View Projects" linking to `/docs/getting-started/`
-    *   "Read the Blog" linking to `/blog/`
-
-The styling for this section is managed in `assets/css/custom.css`.
