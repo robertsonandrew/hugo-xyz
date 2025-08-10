@@ -143,6 +143,13 @@ This feature is composed of several key files that work together:
 *   **Role**: Content Storage.
 *   **Function**: This file holds the list of quotes that are displayed in the banner. You can add, remove, or edit quotes here.
 
+### `layouts/partials/extend-head.html`
+
+*   **Role**: Global Head Injections and CSS Variable Definitions.
+*   **Function**: This Hugo override file is used to:
+    1.  Inject site-level CSS variables for features like the custom logo gradient, quote banner gradients, and default background images/colors.
+    2.  Import external resources, such as Google Fonts.
+
 ### `layouts/partials/extend-footer.html`
 
 *   **Role**: Asset Loading and Reopen Button.
@@ -183,3 +190,19 @@ Common issues and solutions:
 ---
 
 This robust, front-matter-driven approach ensures that the quote banner is easy to manage, highly performant, and free of the complex logic that can lead to build errors.
+
+---
+
+## Homepage Customizations
+
+### Homepage Hero Call to Action (CTA)
+
+The homepage features a customizable hero section with a call-to-action. This section is defined in `layouts/partials/home/custom.html` and includes:
+
+*   A main heading: "Building for the Web"
+*   A descriptive paragraph: "I design and build robust, user-friendly web applications. Explore my work or get in touch!"
+*   Two call-to-action buttons:
+    *   "View Projects" linking to `/docs/getting-started/`
+    *   "Read the Blog" linking to `/blog/`
+
+The styling for this section is managed in `assets/css/custom.css`.

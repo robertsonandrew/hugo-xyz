@@ -25,17 +25,20 @@ disableTextInHeader = true
 # Custom parameters
 customLogo = "arobertsonxyz"
 logoStyle = "gradient"
-logoGradientStops = ["#fb7185", "#f472b6", "#a78bfa"] # ["#1d4ed8", "#7c3aed", "#0ea5e9"]
+logoGradientStops = ["#295d60ff", "#3f784cff", "#011307ff"]
 logoGradientAngle = 120
-logoAnimationSpeed = "6s"
+logoAnimationSpeed = "30s"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
+# defaultBackgroundImage = "images/bg.png" # used as default for background images
+defaultBackgroundColorLight = "#CCCCCC" # used as default for background color in light mode
+defaultBackgroundColorDark = "#222222" # used as default for background color in dark mode
 
 # Quote Banner Configuration
 [quoteBanner]
   enabled = true
   refreshInterval = 20000  # milliseconds between quote changes
-  showDelay = 300          # milliseconds before showing the banner on first page load
+  showDelay = 1000          # milliseconds before showing the banner on first page load
   showApiError = true    # show error message when API fails
   showLoadingState = false
   fadeTransitionDuration = 400
@@ -43,13 +46,11 @@ customHomepageImageSwitch = "images/homepage-image-switch.png"
   # Optional: Custom gradients for the quote banner
   # Provide 2 or more color stops.
   lightModeGradient = ["#667eea", "#764ba2"]
-  darkModeGradient = ["#db2777", "#9333ea"]
+  darkModeGradient = ["#1c2e2eff", "#18645aff"]
 
 [author]
   name = "Andrew Robertson"
   headline = "Developer, Creator, Problem Solver"
-
-defaultBackgroundImage = "images/bg.png" # used as default for background images
 # defaultFeaturedImage = "IMAGE.jpg" # used as default for featured images in all articles
 # defaultSocialImage = "/android-chrome-512x512.png" # used as default for social media sharing (Open Graph and Twitter)
 

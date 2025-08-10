@@ -14,6 +14,21 @@
   {{- with .Params.quoteBanner.darkModeGradient -}}
   --quote-banner-dark-gradient: linear-gradient(135deg, {{ delimit . ", " }});
   {{- end -}}
+
+  {{- with .Params.defaultBackgroundImage -}}
+  --bg-image: url('{{ . | relURL }}');
+  {{- else -}}
+  --bg-image: none;
+  {{- end -}}
+
+  {{- with .Params.defaultBackgroundColorLight -}}
+  --bg-color-light: {{ . }};
+  {{- end -}}
+
+  {{- with .Params.defaultBackgroundColorDark -}}
+  --bg-color-dark: {{ . }};
+  {{- end -}}
+
 }
 </style>
-
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">

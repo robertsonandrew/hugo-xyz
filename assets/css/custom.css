@@ -1,14 +1,15 @@
 /* Custom Logo Styling: Gradient (default) */
 /* The default gradient class uses CSS variables (overridable inline) */
 .logo.custom-logo-text {
+  font-family: 'Roboto', sans-serif; /* Apply Roboto font */
   font-size: 2rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
   font-weight: 800; /* Extra bold */
   line-height: 1.2; /* Ensure proper line height */
   padding: 0.25rem 0; /* Add some vertical padding */
   /* Define defaults; inline style can override these variables */
-  --logo-gradient-angle: 135deg;
-  --logo-gradient-stops: #1d4ed8, #7c3aed, #0ea5e9;
-  --logo-gradient-speed: 6s;
+  
+  
+  
   background: linear-gradient(var(--logo-gradient-angle), var(--logo-gradient-stops));
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -250,4 +251,20 @@
 .dark .secondary-cta:hover {
   background-color: rgba(59, 130, 246, 0.1); /* blue-500 with alpha */
   border-color: #3b82f6;
+}
+
+body {
+    background-image: var(--bg-image);
+    background-color: var(--bg-color-light);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.dark body {
+    background-color: var(--bg-color-dark);
+}
+
+.dark .bg-gradient-to-b.from-neutral-800 {
+    background-image: var(--header-gradient);
 }
