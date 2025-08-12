@@ -1,43 +1,4 @@
-# 🚀 Hugo Site Management
-
-> **Modern static site management with dynamic features**  
-> Interactive screensaver, reliable quote system, and performance-optimized components for Hugo Blowfish theme.
-
-[![Hugo](https://img.shields.io/badge/Hugo-Extended-FF4088?logo=hugo)](https://gohugo.io/)
-[![Blowfish](https://img.shields.io/badge/Theme-Blowfish-00D4AA)](https://blowfish.page/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-## ✨ Features at a Glance
-
-| Feature | Status | Description |
-|---------|--------|-------------|
-| 🎯 **Quote Banner** | ✅ Production Ready | Static quotes system - no CORS issues |
-| ✨ **Interactive Screensaver** | ✅ Production Ready | Starfield animation with transparency controls |
-| 🚀 **Performance Optimized** | ✅ Active | Offline-capable, reliable, fast loading |
-| 📱 **Responsive Design** | ✅ Active | Works beautifully on all devices |
-
-## 🎯 Quick Start
-
-### Prerequisites
-- Hugo Extended (latest version)
-- Node.js (for quote updates)
-- Blowfish theme
-
-### Installation
-1. **Clone/download** this configuration to your Hugo site
-2. **Configure** features in `config/_default/params.toml`
-3. **Update quotes** (optional): `node scripts/update-quotes.js`
-4. **Build site**: `hugo server`
-
-### 🎮 Try It Now
-- **Screensaver**: Leave your site idle for 10 seconds
-- **Quotes**: Check your homepage banner
-- **Controls**: Hover top-right corner during screensaver
-
----
-
-## 📚 Documentation
+# 🚀 update-quote.js implementation **add to main readme.md**
 
 <details>
 <summary>🎯 <strong>Quote Banner System</strong></summary>
@@ -108,6 +69,11 @@ const CONFIG = {
 ```
 
 </details>
+
+
+
+
+# screen saver section with more updated + detailed information **add to main readme.md**
 
 <details>
 <summary>✨ <strong>Interactive Screensaver</strong></summary>
@@ -296,35 +262,3 @@ console.log(window.__screensaver_perf);
 
 ---
 
-## 📊 Project Stats
-
-| Metric | Value |
-|--------|-------|
-| **Total Features** | 2 major systems |
-| **Files Modified** | 6 core files |
-| **Zero Dependencies** | Pure JavaScript |
-| **Performance Score** | 95+ Lighthouse |
-| **Browser Support** | 95%+ global coverage |
-
-## 🤝 Support & Community
-
-- 🐛 **Found a bug?** [Open an issue](../../issues)
-- 💡 **Have an idea?** [Start a discussion](../../discussions)
-- ⭐ **Like this project?** Give it a star!
-- 📖 **Need help?** Check the troubleshooting sections above
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-**Made with ❤️ for the Hugo community**
-
-[⬆ Back to Top](#-hugo-site-management)
-
-</div>
