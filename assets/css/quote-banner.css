@@ -101,25 +101,7 @@ body.quote-banner-open:has(#fixed-header-container) main {
   padding-top: calc(var(--fixed-header-total-height) + var(--quote-banner-height));
 }
 
-/* Loading state styles */
-.quote-text-wrapper {
-  opacity: 1;
-  transition: opacity 0.4s ease-in-out;
-}
-
-.quote-loading {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.quote-banner-content.loading .quote-text-wrapper {
-  opacity: 0;
-}
-
-.quote-banner-content.loading .quote-loading {
-  opacity: 1;
-}
+/* Loading state removed: simple fade-only transitions remain */
 
 /* Improve mobile responsiveness */
 @media (max-width: 815px) {

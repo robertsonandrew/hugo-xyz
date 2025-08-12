@@ -38,20 +38,20 @@
     {{/* Fallback to standard author image if custom images not available */}}
     {{ else if .Site.Params.author.image }}
       {{ $authorImage := "" }}
-      {{ if or (strings.HasPrefix .Site.Params.Author.image "http:") (strings.HasPrefix .Site.Params.Author.image "https:") }}
-        {{ $authorImage = resources.GetRemote .Site.Params.Author.image }}
+      {{ if or (strings.HasPrefix .Site.Params.author.image "http:") (strings.HasPrefix .Site.Params.author.image "https:") }}
+        {{ $authorImage = resources.GetRemote .Site.Params.author.image }}
       {{ else }}
-        {{ $authorImage = resources.Get .Site.Params.Author.image }}
+        {{ $authorImage = resources.Get .Site.Params.author.image }}
       {{ end }}
       {{ if $authorImage }}
         {{ if not $disableImageOptimization }}
-          {{ $authorImage = $authorImage.Fill (print "288x288 q" ( $.Site.Params.Author.imagequality | default "96" )) }}
+          {{ $authorImage = $authorImage.Fill (print "288x288 q" ( $.Site.Params.author.imagequality | default "96" )) }}
         {{ end }}
         <img
           class="mb-2 rounded-full h-36 w-36"
           width="144"
           height="144"
-          alt="{{ $.Site.Params.Author.name | default " Author" }}"
+          alt="{{ $.Site.Params.author.name | default " Author" }}"
           src="{{ $authorImage.RelPermalink }}">
       {{ end }}
     {{ end }}

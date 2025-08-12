@@ -28,3 +28,10 @@
   <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
 {{ end }}
 
+{{- /* Load quote banner CSS early to avoid unstyled flashes */ -}}
+{{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
+{{ if $quoteBannerCSS }}
+  {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $quoteBannerCSS.RelPermalink }}" integrity="{{ $quoteBannerCSS.Data.Integrity }}">
+{{ end }}
+

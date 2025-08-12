@@ -9,6 +9,7 @@ This repository contains the source code for my personal website, built with the
   - [1. Animated Gradient Logo](#1-animated-gradient-logo)
   - [2. Homepage Customizations](#2-homepage-customizations)
   - [3. Dynamic Quote Banner](#3-dynamic-quote-banner)
+  - [4. Satellite Screensaver](#4-satellite-screensaver)
 
 </details>
 
@@ -75,6 +76,22 @@ The homepage uses a custom layout that pulls its main content directly from `con
 - **Content File**: `content/_index.md`
 - **Layout File**: `layouts/partials/home/custom.html`
 
+#### Custom Homepage Image Hover Effect
+
+The homepage features a custom image hover effect where hovering over the main image switches to an alternate image, creating an engaging interactive element.
+
+**Configuration in params.toml:**
+```toml
+customHomepageImage = "images/homepage-image.png"          # Primary image
+customHomepageImageSwitch = "images/homepage-image-switch.png"  # Hover/switch image
+```
+
+**Key Features:**
+- Smooth opacity transition between images
+- Responsive sizing and positioning
+- Fallback to author.image if custom images aren't available
+- Hugo resources pipeline integration for optimization
+
 The social media icons displayed below the author's headline are configured in `config/_default/params.toml` under the `[author].links` section. The theme automatically renders these icons.
 
 ```toml
@@ -95,6 +112,18 @@ The social media icons displayed below the author's headline are configured in `
 ### 3. Dynamic Quote Banner
 
 This document outlines the architecture and implementation of the dynamic quote banner feature for the Hugo Blowfish theme.
+
+---
+
+#### Data sources and author rules
+
+Quotes are generated at build time from API Ninjas and written to `data/quotes.json`:
+- Sources: `advice`, `dadjokes`, and `quotes` endpoints
+- Normalization:
+  - advice -> category: `advice`, author: empty
+  - dadjokes -> category: `dadjokes`, author: empty
+  - quotes -> category: `quotes`, author: meaningful from API
+- Display rule: the banner only shows an author for items with category `quotes`.
 
 ---
 
@@ -137,9 +166,9 @@ All functional settings for the banner are located in `config/_default/params.to
 [quoteBanner]
   enabled = true
   refreshInterval = 2000  # milliseconds between quote changes
-  showDelay = 300        # milliseconds before showing banner on first load
+  showDelay = 300        # milliseconds before showing banner on first load (banner slides in after this delay)
   showApiError = true    # show error message when API fails
-  showLoadingState = true
+  showLoadingState = true  # (ignored) banner now uses simple fade-only transitions without a loading placeholder
   fadeTransitionDuration = 400
   mobileBreakpoint = 768
 
@@ -147,6 +176,14 @@ All functional settings for the banner are located in `config/_default/params.to
   # Provide 2 or more color stops.
   lightModeGradient = ["#667eea", "#764ba2"]
   darkModeGradient = ["#db2777", "#9333ea"]
+
+  # Optional: Category weighting for rotation (omit for simple random cycle)
+  # weights = { quotes = 3, advice = 2, dadjokes = 1 }
+
+  # Optional: Selection mode
+  # "random" = pure random each time (repeats allowed)
+  # omit for cycle-based rotation (no repeats until pool exhausts; can combine with weights)
+  # selectionMode = "random"
 ```
 
 ---
@@ -169,7 +206,11 @@ This feature is composed of several key files that work together:
     *   **Conditional Logic**: If the banner's HTML is **not** present, the script ensures the "reopen" button is hidden and does nothing else. 
     *   **Full Functionality**: If the banner HTML **is** present, the script proceeds to:
         *   Read the configuration by parsing the JSON from the `<script id="quote-banner-data">` tag.
-        *   Handle the random selection and display of quotes.
+    *   Handle the random selection and display of quotes (no loading placeholder; fade-only).
+    *   Supports selection modes:
+      - random: pure random each rotation
+      - cycle (default): no repeats within a cycle; optional category weights
+  *   Honor an optional showDelay (ms) before sliding the banner into view on first load.
         *   Manage the banner's state (open/closed) by toggling the `quote-banner-open` class on the `<body>` tag.
         *   Listen for clicks on the close and reopen buttons.
         *   Use `localStorage` to remember the user's choice to keep the banner closed across page loads.
@@ -180,12 +221,26 @@ This feature is composed of several key files that work together:
 *   **Logic**: This is the most critical piece for layout stability. It uses a modern, CSS-only approach to handle the complex header interactions.
     *   **Visibility**: The banner is hidden by default (`display: none`). It only becomes visible when the `body.quote-banner-open` class is present.
     *   **Dynamic Padding**: It uses the CSS `:has()` selector to intelligently apply padding to the `<main>` content area *only when* the `fixed-gradient` header (`#fixed-header-container`) is present on the page. This prevents the header from overlapping the content.
-    *   **Calculations**: It uses CSS variables and `calc()` to dynamically adjust the layout when the banner is open or closed, ensuring a smooth and accurate transition without any JavaScript-based measurement.
+  *   **Calculations**: It uses CSS variables and `calc()` to dynamically adjust the layout when the banner is open or closed, ensuring a smooth and accurate transition without any JavaScript-based measurement. There is no separate "Loading…" placeholder anymore; only smooth fades.
 
 ##### `data/quotes.json`
 
 *   **Role**: Content Storage.
 *   **Function**: This file holds the list of quotes that are displayed in the banner. You can add, remove, or edit quotes here.
+
+##### `scripts/update-quotes.js`
+
+*   **Role**: Build-time content fetcher.
+*   **Function**: Fetches from API Ninjas (`/v1/advice`, `/v1/dadjokes`, `/v1/quotes`), normalizes to a unified shape, de-duplicates, and writes to `data/quotes.json`.
+*   **Env Vars**:
+  - `API_NINJAS_KEY` (required)
+  - `ADVICE_LIMIT`, `DADJOKES_LIMIT`, `QUOTES_LIMIT` (optional; small repeated requests are used to respect non-premium limits)
+*   **Author rule**: Only the `quotes` category includes an author; advice/dadjokes do not.
+*   **Run**:
+
+```bash
+API_NINJAS_KEY=xxxx ADVICE_LIMIT=20 DADJOKES_LIMIT=20 QUOTES_LIMIT=20 node scripts/update-quotes.js
+```
 
 ##### `layouts/partials/extend-head.html`
 
@@ -211,6 +266,9 @@ This feature is composed of several key files that work together:
 - **Loading States**: Visual feedback during quote transitions
 - **Error Handling**: Graceful handling of loading failures
 - **Mobile Responsive**: Adjusts display for different screen sizes
+- **Author Display Rule**: Author is only shown for items from the `quotes` API category
+- **Optional Category Weighting**: Bias rotation across `quotes`, `advice`, and `dadjokes` via `[quoteBanner].weights`
+- **Delayed Appearance**: `showDelay` cleanly slides the banner in after page load
 
 ---
 
@@ -234,3 +292,56 @@ Common issues and solutions:
 ---
 
 This robust, front-matter-driven approach ensures that the quote banner is easy to manage, highly performant, and free of the complex logic that can lead to build errors.
+
+---
+
+### 4. Satellite Screensaver
+
+A serene, ambient screensaver that activates after a period of inactivity, featuring slowly moving satellites across a dark sky - perfect for creating that "stargazing in the countryside" atmosphere.
+
+#### Features
+
+- **Realistic Movement**: 80% of satellites enter from screen edges, 20% from center for natural motion
+- **Variable Appearance**: Configurable satellite sizes and opacity levels for depth perception
+- **Smooth Fade-In**: Cinematic 10-second fade-in with easing curves for gentle activation
+- **Exact Count Control**: Maintains precisely the configured number of satellites
+- **Full Screen Coverage**: High z-index ensures screensaver appears above all page content
+- **Enhanced Visibility**: 95% background opacity for optimal satellite visibility against dark overlay
+
+#### Configuration
+
+All screensaver settings are configurable in `config/_default/params.toml`:
+
+```toml
+[screensaver]
+  idleTimeout = 10000     # ms of inactivity before screensaver shows
+  starCount = 100         # exact number of satellites (any value works)
+  starMinSize = 2         # minimum satellite size (px)
+  starMaxSize = 7         # maximum satellite size (px)
+  starSpeed = 0.4         # movement speed (lower = slower, more peaceful)
+```
+
+#### Implementation Files
+
+- **`assets/js/screensaver.js`**: Core screensaver logic with Hugo config parsing
+- **`assets/css/custom.css`**: Styling for screensaver overlay and smooth transitions
+- **`layouts/_default/baseof.html`**: HTML structure and JSON config injection
+
+#### Technical Details
+
+- **Hugo Integration**: Automatically parses configuration from Hugo params via JSON
+- **Idle Detection**: Monitors mouse movement, keyboard, and touch events
+- **Smooth Animation**: 10-second fade-in with ease-in-out curves for cinematic effect
+- **Precise Control**: Maintains exact satellite count specified in configuration
+- **Performance Optimized**: Efficient canvas rendering with minimal DOM manipulation
+- **Mixed Movement Patterns**: 
+  - Edge satellites: Enter from screen borders, move in straight lines
+  - Center satellites: Begin near center with radial movement
+
+#### Activation
+
+The screensaver automatically activates after the configured idle timeout with a beautiful 10-second fade-in. Click anywhere on the screensaver to dismiss it instantly and return to normal browsing.
+
+**Perfect for**: Creating a calming, contemplative atmosphere during breaks while maintaining the site's peaceful aesthetic. The slow satellite movement mimics real satellite passes visible from dark sky locations.
+
+---

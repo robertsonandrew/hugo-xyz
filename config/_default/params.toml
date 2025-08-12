@@ -25,28 +25,51 @@ disableTextInHeader = true
 # Custom parameters
 customLogo = "arobertsonxyz"
 logoStyle = "gradient"
-logoGradientStops = ["#295d60ff", "#3f784cff", "#011307ff"]
+logoGradientStops = ["#ffffff8c", "#343333ff", "#142a68ff"]
 logoGradientAngle = 120
 logoAnimationSpeed = "30s"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 # defaultBackgroundImage = "images/bg.png" # used as default for background images
 defaultBackgroundColorLight = "#CCCCCC" # used as default for background color in light mode
-defaultBackgroundColorDark = "#222222" # used as default for background color in dark mode
+defaultBackgroundColorDark = "#222c36ff" # used as default for background color in dark mode
+logoAnimate = true        # Toggle gradient animation on/off
+
+[screensaver]
+  idleTimeout = 5000     # ms of inactivity before screensaver shows
+  starCount = 75          # Number of satellites
+  starMinSize = 1       # Minimum satellite size (px)
+  starMaxSize = 5         # Maximum satellite size (px)
+  starSpeed = 0.2         # Base speed scalar
+  fadeDuration = 10000    # Fade-in duration (ms)
+  backgroundOpacity = 0.95 # Max overlay darkness (0-1)
+  pauseOnBlur = false      # Pause animation when tab not visible
+  showHint = true         # Show exit hint text
 
 # Quote Banner Configuration
 [quoteBanner]
   enabled = true
   refreshInterval = 20000  # milliseconds between quote changes
-  showDelay = 1000          # milliseconds before showing the banner on first page load
-  showApiError = true    # show error message when API fails
-  showLoadingState = false
-  fadeTransitionDuration = 400
+  # showDelay (ms): if > 0, the banner waits this long before sliding into view on first load.
+  # Reopen via the floating button is immediate (no delay). Set to 0 for no delay.
+  showDelay = 200          
+  # showApiError: show a simple error message in the banner if a JS error occurs.
+  # (No browser API calls are made; content is loaded from data/quotes.json.)
+  showApiError = true    
+  fadeTransitionDuration = 2000
   mobileBreakpoint = 768
+  # selectionMode: "random" | "cycle"
+  # - random: each rotation picks any quote uniformly (repeats allowed)
+  # - cycle (default): no repeats until the pool is exhausted; can combine with weights
+  selectionMode = "random"
   # Optional: Custom gradients for the quote banner
   # Provide 2 or more color stops.
   lightModeGradient = ["#667eea", "#764ba2"]
   darkModeGradient = ["#1c2e2eff", "#18645aff"]
+  # Optional: Category weighting (used when selectionMode is not "random")
+  # weights = { quotes = 3, advice = 2, dadjokes = 1 }
+  # Optional: Maximum length of quote text before truncation with an ellipsis (0 = no limit)
+  # maxLength = 140
 
 [author]
   name = "Andrew Robertson"
@@ -82,11 +105,11 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
 [homepage]
   layout = "custom" # valid options: page, profile, hero, card, background, custom
   #homepageImage = "IMAGE.jpg" # used in: hero, and card
-  showRecent = false
+  showRecent = true
   showRecentItems = 5
   showMoreLink = false
   showMoreLinkDest = "/posts/"
-  cardView = false
+  cardView = true
   cardViewScreenWidth = false
   layoutBackgroundBlur = false # only used when layout equals background
   disableHeroImageFilter = false # only used when layout equals hero

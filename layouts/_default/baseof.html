@@ -12,9 +12,14 @@
   {{- partial "head.html" . -}}
 
   <body
-    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-800 dark:scrollbar-thumb-neutral-600{{ if and .Site.Params.quoteBanner.enabled .Params.show_quote_banner }} quote-banner-open{{ end }}">
+    data-logo-animate="{{ if .Site.Params.logoAnimate }}true{{ else }}false{{ end }}"
+    class="flex flex-col h-screen px-6 m-auto text-lg leading-7 max-w-7xl bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral sm:px-14 md:px-24 lg:px-32 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-800 dark:scrollbar-thumb-neutral-600">
     
     {{- partial "quotes-banner.html" . -}}
+    <!-- Screensaver overlay (global) -->
+    <div id="screensaver" class="screensaver-overlay" aria-hidden="true">
+      <canvas id="screensaver-canvas" class="screensaver-canvas"></canvas>
+    </div>
     <div id="the-top" class="absolute flex self-center">
       <a
         class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600"
@@ -33,7 +38,7 @@
     <div class="relative flex flex-col grow">
       <main id="main-content" class="grow">
         {{ block "main" . }}{{ end }}
-        {{ if and (.Site.Params.footer.showScrollToTop | default true) (gt .WordCount 1) }}
+  {{ if and (not .IsHome) (.Site.Params.footer.showScrollToTop | default true) (gt .WordCount 1) }}
           {{- partial "scroll-to-top.html" . -}}
         {{ end }}
       </main>
@@ -56,4 +61,12 @@
       data-x_margin="18"
       data-y_margin="18"></script>
   {{ end }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      if (document.body.dataset.logoAnimate === 'false') {
+        var el = document.querySelector('.logo.custom-logo-text');
+        if (el) el.classList.add('no-animate');
+      }
+    });
+  </script>
 </html>

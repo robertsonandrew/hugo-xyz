@@ -1,9 +1,28 @@
-<!-- Quote Banner Assets -->
-{{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
-{{ if $quoteBannerCSS }}
-  {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $quoteBannerCSS.RelPermalink }}" integrity="{{ $quoteBannerCSS.Data.Integrity }}">
-{{ end }}
+<!-- Status Dot -->
+<a href="https://status.arobertson.xyz" target="_blank" rel="noopener noreferrer" title="Status Page" class="status-link" id="status-link" style="display: none;">
+  <span class="status-dot"></span>
+</a>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusLink = document.getElementById('status-link');
+    const copyrightP = document.querySelector('#site-footer p:first-child');
+  const reopenWrapper = document.getElementById('reopen-quote-banner-wrapper');
+    
+    if (copyrightP) {
+    // Place status dot first (appears immediately after the name)
+    if (statusLink) {
+      copyrightP.appendChild(statusLink);
+      statusLink.style.display = 'inline-block';
+    }
+    // Place lightbulb after the status dot
+    if (reopenWrapper) {
+      copyrightP.appendChild(reopenWrapper);
+    }
+    }
+  });
+</script>
+
+<!-- Quote Banner Assets: CSS loaded in head to avoid FOUC -->
 
 <!-- Re-enable Quote Banner Icon -->
 <div id="reopen-quote-banner-wrapper" class="reopen-quote-banner-wrapper" style="display: none;">
@@ -18,24 +37,98 @@
   <script src="{{ $quoteBannerJS.RelPermalink }}" integrity="{{ $quoteBannerJS.Data.Integrity }}" defer></script>
 {{ end }}
 
-<!-- Status Dot -->
-<a href="https://status.arobertson.xyz" target="_blank" rel="noopener noreferrer" title="Status Page" class="status-link" id="status-link" style="display: none;">
-  <span class="status-dot"></span>
-</a>
+<!-- Screensaver config and script -->
+{{- $ss := .Site.Params.screensaver -}}
+{{- $ssCfg := dict
+  "idleTimeout" (default 15000 $ss.idleTimeout)
+  "starCount"   (default 25    $ss.starCount)
+  "starMinSize" (default 1     $ss.starMinSize)
+  "starMaxSize" (default 5     $ss.starMaxSize)
+  "starSpeed"   (default 0.1   $ss.starSpeed)
+  "fadeDuration" (default 10000 $ss.fadeDuration)
+  "backgroundOpacity" (default 0.95 $ss.backgroundOpacity)
+  "pauseOnBlur" (default true $ss.pauseOnBlur)
+  "showHint" (default true $ss.showHint)
+ -}}
+<script id="screensaver-config" type="application/json">{{ $ssCfg | jsonify | safeJS }}</script>
+{{/* Local tsParticles loader (bundled via Hugo Pipes) */}}
+{{ $loader := resources.Get "js/vendor/tsparticles-loader.js" }}
+{{ if $loader }}
+  {{ $loader = $loader | js.Build | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $loader.RelPermalink }}" integrity="{{ $loader.Data.Integrity }}" defer></script>
+{{ end }}
+{{ $ssJS := resources.Get "js/screensaver.js" }}
+{{ if $ssJS }}
+  {{ $ssJS = $ssJS | js.Build | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $ssJS.RelPermalink }}" integrity="{{ $ssJS.Data.Integrity }}" defer></script>
+{{ end }}
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const statusLink = document.getElementById('status-link');
-    const copyrightP = document.querySelector('#site-footer p:first-child');
-    const reopenWrapper = document.getElementById('reopen-quote-banner-wrapper');
-    
-    if (copyrightP) {
-        if (statusLink) {
-            copyrightP.appendChild(statusLink);
-            statusLink.style.display = 'inline-block';
-        }
-        if (reopenWrapper) {
-            copyrightP.appendChild(reopenWrapper);
-        }
+// Inject minimal opacity slider once screensaver overlay exists
+document.addEventListener('DOMContentLoaded', function(){
+  const overlay = document.getElementById('screensaver');
+  if (!overlay) return;
+
+  // Wrapper containing icon + slider (slider reveals on hover)
+  const wrap = document.createElement('div');
+  wrap.id = 'screensaver-opacity-wrap';
+  wrap.style.display = 'none'; // Force hidden initially
+  wrap.innerHTML = `
+    <div id="screensaver-opacity-icon" aria-label="Adjust background darkness" role="button" tabindex="0"></div>
+    <div id="screensaver-opacity-slider-wrap">
+      <input id="screensaver-opacity-slider" type="range" min="0" max="100" value="5" aria-label="Screensaver background darkness" />
+    </div>`;
+  document.body.appendChild(wrap);
+
+  const slider = wrap.querySelector('#screensaver-opacity-slider');
+  slider.addEventListener('input', () => {
+    // Inverted mapping: slider top (value 100) -> minimum darkness (opacity 0), bottom (0) -> max darkness (1)
+    const raw = parseInt(slider.value,10)/100;
+    const v = 1 - raw;
+    overlay.dataset.userOpacity = v.toString();
+  });
+
+  // Styles are now in custom.css (screensaver opacity slider styles)
+
+  // Show wrapper only when screensaver active AND fade truly complete
+  // Disable MutationObserver - rely only on event-based timing
+  /*
+  const obs = new MutationObserver(()=> {
+    const active = overlay.classList.contains('active');
+    const fadeDone = overlay.dataset.fadeComplete === '1';
+    if (active && fadeDone) {
+      // Double-check elapsed time before showing
+      const started = parseInt(overlay.dataset.fadeStartedAt||'0',10);
+      const elapsed = Date.now() - started;
+      let cfgDur = 0;
+      try {
+        const cfgTag = document.getElementById('screensaver-config');
+        if (cfgTag) { const cfg = JSON.parse(cfgTag.textContent.trim()); cfgDur = cfg.fadeDuration || cfg.fadeduration || 10000; }
+      } catch(e) { cfgDur = 10000; }
+      wrap.style.display = (elapsed >= cfgDur) ? 'flex' : 'none';
+    } else {
+      wrap.style.display = 'none';
     }
   });
+  */
+  // Show controls when screensaver fade completes
+  overlay.addEventListener('screensaverfadecomplete', ()=> {
+    if (overlay.classList.contains('active') && overlay.dataset.fadeComplete === '1') {
+      wrap.style.display = 'flex';
+    }
+  });
+  // When screensaver first activates, force-hide wrapper until fade completes
+  const hideOnActivate = () => {
+    wrap.style.display = 'none';
+  };
+  // Hide immediately when screensaver starts
+  overlay.addEventListener('transitionstart', hideOnActivate);
+  // Also hide when active class is added (backup)
+  const hideOnClassChange = new MutationObserver(()=> {
+    if (overlay.classList.contains('active') && overlay.dataset.fadeComplete !== '1') {
+      wrap.style.display = 'none';
+    }
+  });
+  hideOnClassChange.observe(overlay, { attributes:true, attributeFilter:['class'] });
+});
 </script>

@@ -3,14 +3,4 @@ languageCode = 'en-us'
 title = 'Andrew Robertson'
 theme = 'blowfish'
 
-[params.author]
-  name = "Andrew Robertson"
-  headline = "Full-Stack Developer | DevOps Engineer | Generative AI Enthusiast"
-  image = "images/homepage-image.png"
-  links = [
-    { github = "https://github.com/arobertson67" },
-    { linkedin = "https://linkedin.com/in/andrew-robertson-ab7a57103" },
-    { instagram = "https://instagram.com/andrew_robertson_runs" },
-  ]
-
 [params.features]

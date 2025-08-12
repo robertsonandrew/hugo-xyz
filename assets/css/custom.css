@@ -2,14 +2,10 @@
 /* The default gradient class uses CSS variables (overridable inline) */
 .logo.custom-logo-text {
   font-family: 'Roboto', sans-serif; /* Apply Roboto font */
-  font-size: 2rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
+  font-size: 1.5rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
   font-weight: 800; /* Extra bold */
   line-height: 1.2; /* Ensure proper line height */
   padding: 0.25rem 0; /* Add some vertical padding */
-  /* Define defaults; inline style can override these variables */
-  
-  
-  
   background: linear-gradient(var(--logo-gradient-angle), var(--logo-gradient-stops));
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -47,8 +43,6 @@
   }
 }
 
-/* Removed old custom-logo-gradient1..4 variants in favor of dynamic CSS variables */
-
 /* Responsive sizing */
 @media (max-width: 768px) {
   .logo.custom-logo-text {
@@ -69,26 +63,31 @@
 /* Custom Homepage Image Hover Effect */
 .custom-homepage-image-container {
   position: relative;
-  display: inline-block;
   width: 144px;
   height: 144px;
+  display: inline-block;
+  border-radius: 50%;
+  overflow: hidden;
   margin-bottom: 2rem;
   cursor: default;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.16));
+  transition: filter 0.25s ease-in-out;
+}
+
+.custom-homepage-image-container:hover {
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.22));
 }
 
 .custom-homepage-image {
-  width: 144px;
-  height: 144px;
-  border-radius: 50%;
-  object-fit: cover;
-  transition: opacity 0.3s ease-in-out;
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: opacity 0.5s ease;
+  display: block;
   cursor: default;
-  border: 3px solid transparent;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4) padding-box,
-              linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4) border-box;
 }
 
 /* Simple cursor override for nozoom images */
@@ -112,31 +111,9 @@
   opacity: 1;
 }
 
-/* Add a subtle shadow to the image container */
-.custom-homepage-image-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease-in-out;
-  pointer-events: none;
-}
-
-.custom-homepage-image-container:hover::after {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
 /* Responsive sizing for homepage image */
 @media (max-width: 768px) {
   .custom-homepage-image-container {
-    width: 120px;
-    height: 120px;
-  }
-  .custom-homepage-image {
     width: 120px;
     height: 120px;
   }
@@ -147,11 +124,59 @@
     width: 100px;
     height: 100px;
   }
-  .custom-homepage-image {
-    width: 100px;
-    height: 100px;
-  }
 }
+/* Screensaver overlay */
+.screensaver-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999; /* Above everything including quote banner */
+  background: transparent; /* keep transparent when hidden */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* No CSS transitions - JS handles all fade timing */
+}
+.screensaver-overlay.active {
+  visibility: visible;
+  pointer-events: auto;
+  /* No CSS transitions - JS handles all fade timing */
+  /* opacity and background will be controlled by JS for gradual fade */
+  background: transparent;
+}
+.screensaver-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+.screensaver-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .screensaver-overlay { transition: none; }
+}
+/* end screensaver */
+
+/* Screensaver hint */
+.screensaver-hint {
+  font-family: system-ui, sans-serif;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  animation: hintFade 4s ease-in-out infinite;
+}
+@keyframes hintFade {
+  0%,100% { opacity: 0.15; }
+  50% { opacity: 0.6; }
+}
+
+/* Disable logo animation when logoAnimate=false */
+.logo.custom-logo-text.no-animate { animation: none !important; background-position: 50% 50%; }
 
 /* Re-enable Quote Banner Icon */
 .reopen-quote-banner-wrapper {
@@ -199,76 +224,6 @@
   font-size: 14px;
 }
 
-/* Homepage Hero CTA Buttons */
-.cta-button {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.primary-cta {
-  background-color: #2563eb; /* Example: blue-600 */
-  color: white;
-}
-
-.primary-cta:hover {
-  background-color: #1d4ed8; /* Example: blue-700 */
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.secondary-cta {
-  background-color: transparent;
-  color: #2563eb; /* Example: blue-600 */
-  border: 2px solid #2563eb;
-}
-
-.secondary-cta:hover {
-  background-color: #eff6ff; /* Example: blue-50 */
-  border-color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.dark .primary-cta {
-  background-color: #3b82f6; /* Example: blue-500 */
-}
-
-.dark .primary-cta:hover {
-  background-color: #2563eb; /* Example: blue-600 */
-}
-
-.dark .secondary-cta {
-  color: #60a5fa; /* Example: blue-400 */
-  border-color: #60a5fa;
-}
-
-.dark .secondary-cta:hover {
-  background-color: rgba(59, 130, 246, 0.1); /* blue-500 with alpha */
-  border-color: #3b82f6;
-}
-
-body {
-    background-image: var(--bg-image);
-    background-color: var(--bg-color-light);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-.dark body {
-    background-color: var(--bg-color-dark);
-}
-
-.dark .bg-gradient-to-b.from-neutral-800 {
-    background-image: var(--header-gradient);
-}
-
 /* Status Dot for Footer */
 .status-link {
   display: inline-block;
@@ -288,4 +243,220 @@ body {
 
 .status-link:hover .status-dot {
   transform: scale(1.2); /* Slightly enlarge the dot on hover */
+}
+
+/* Screensaver Opacity Slider Styles */
+#screensaver-opacity-wrap {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2147483647;
+  font-family: system-ui, sans-serif;
+}
+
+#screensaver-opacity-icon {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 50%;
+  background: transparent;
+  opacity: 0.09;
+  transition: all 0.3s cubic-bezier(0.4, 0.12, 0.2, 1);
+}
+
+#screensaver-opacity-wrap:hover #screensaver-opacity-icon {
+  opacity: 0.4;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#screensaver-opacity-slider-wrap {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: height 0.45s cubic-bezier(0.4, 0.12, 0.2, 1), 
+              opacity 0.45s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  padding: 0;
+}
+
+#screensaver-opacity-wrap:hover #screensaver-opacity-slider-wrap {
+  height: 150px;
+  opacity: 1;
+}
+
+#screensaver-opacity-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 150px;
+  height: 12px;
+  transform: rotate(90deg);
+  transform-origin: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  border: none; /* Remove border to reduce clickable appearance */
+  border-radius: 8px;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset, /* Very subtle inner border */
+    0 1px 3px rgba(0, 0, 0, 0.1); /* Minimal shadow */
+  backdrop-filter: blur(2px); /* Reduced blur */
+  transition: all 0.3s cubic-bezier(0.4, 0.12, 0.2, 1);
+}
+
+#screensaver-opacity-slider:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  /* Removed border-color and reduced hover effects */
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle hover shadow */
+}
+
+#screensaver-opacity-slider:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.4);
+  outline-offset: 3px;
+}
+
+/* WebKit Slider Thumb */
+#screensaver-opacity-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px; /* Increased from 18px to 22px */
+  height: 22px; /* Increased from 18px to 22px */
+  margin-top: -5px; /* Adjusted for larger thumb */
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  backdrop-filter: blur(2px);
+  transition: all 0.25s cubic-bezier(0.4, 0.12, 0.2, 1);
+  cursor: grab;
+}
+
+#screensaver-opacity-slider:hover::-webkit-slider-thumb {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  transform: scale(1.05);
+  box-shadow: 
+    0 3px 12px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+#screensaver-opacity-slider:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+  cursor: grabbing;
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+}
+
+/* Firefox Slider */
+#screensaver-opacity-slider::-moz-range-track {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  height: 12px;
+  border: none; /* Remove border */
+  border-radius: 8px;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset, /* Very subtle inner border */
+    0 1px 3px rgba(0, 0, 0, 0.1); /* Minimal shadow */
+}
+
+#screensaver-opacity-slider::-moz-range-thumb {
+  width: 22px; /* Increased from 18px to 22px */
+  height: 22px; /* Increased from 18px to 22px */
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.25s cubic-bezier(0.4, 0.12, 0.2, 1);
+  cursor: grab;
+}
+
+#screensaver-opacity-slider:hover::-moz-range-thumb {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  transform: scale(1.05);
+  box-shadow: 
+    0 3px 12px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+#screensaver-opacity-slider:active::-moz-range-thumb {
+  transform: scale(1.1);
+  cursor: grabbing;
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+}
+
+/* Screensaver Hint Text */
+.screensaver-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  display: none;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  font-family: system-ui, sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.screensaver-hint.visible {
+  display: block;
+  opacity: 0.6;
 }
