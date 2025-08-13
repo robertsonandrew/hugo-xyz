@@ -4,9 +4,15 @@
  * Quote Updater Script (API Ninjas)
  * Fetches advice, dad jokes, and quotes from API Ninjas, normalizes them, and writes
  * to data/quotes.json for the quote banner to consume.
+ * 
+ * Features:
+ * - Filters quotes by maximum length during processing (not in browser)
+ * - Deduplicates and shuffles results
+ * - Graceful fallback to existing quotes on API failure
+ * - Configurable limits and timeout
  *
  * Usage:
- *   API_NINJAS_KEY=xxxx ADVICE_LIMIT=20 DADJOKES_LIMIT=20 QUOTES_LIMIT=20 node scripts/update-quotes.js
+ *   API_NINJAS_KEY=xxxx ADVICE_LIMIT=20 DADJOKES_LIMIT=20 QUOTES_LIMIT=20 MAX_LENGTH=140 node scripts/update-quotes.js
  */
 
 const fs = require('fs');
@@ -15,10 +21,11 @@ const https = require('https');
 
 // Configuration
 const QUOTES_FILE = path.join(__dirname, '..', 'data', 'quotes.json');
-const API_KEY = process.env.API_NINJAS_KEY || '';
+const API_KEY = process.env.API_NINJAS_KEY || 'lD0ZnWbn5+h9fBVTsfpnog==wz6e6diLupIYn9o6'; // TEMPORARY: Replace with your actual key
 const ADVICE_LIMIT = Number(process.env.ADVICE_LIMIT || 10);
 const DADJOKES_LIMIT = Number(process.env.DADJOKES_LIMIT || 10);
 const QUOTES_LIMIT = Number(process.env.QUOTES_LIMIT || 10);
+const MAX_LENGTH = Number(process.env.MAX_LENGTH || 140); // Filter quotes by length during processing
 const REQUEST_TIMEOUT_MS = 10000;
 
 function fetchJSON(url) {
@@ -53,30 +60,39 @@ function fetchJSON(url) {
 function normalize(advice = [], jokes = [], quotes = []) {
   const out = [];
 
+  // Helper to process and filter quotes by length
+  const processQuote = (text, author, category) => {
+    const cleanText = String(text).trim();
+    const cleanAuthor = String(author || '').trim();
+    
+    // Filter by length at processing time
+    if (cleanText && cleanText.length <= MAX_LENGTH) {
+      return { text: cleanText, author: cleanAuthor, category };
+    }
+    return null;
+  };
+
   // Advice: [{ advice: "..." }]
   if (Array.isArray(advice)) {
     for (const item of advice) {
-      const text = (item && item.advice && String(item.advice).trim()) || '';
-      // For advice, do not provide an author so it won't render in the banner
-      if (text) out.push({ text, author: '', category: 'advice' });
+      const processed = processQuote(item?.advice, '', 'advice');
+      if (processed) out.push(processed);
     }
   }
 
   // Dad jokes: [{ joke: "..." }]
   if (Array.isArray(jokes)) {
     for (const item of jokes) {
-      const text = (item && item.joke && String(item.joke).trim()) || '';
-      // For dad jokes, do not provide an author so it won't render in the banner
-      if (text) out.push({ text, author: '', category: 'dadjokes' });
+      const processed = processQuote(item?.joke, '', 'dadjokes');
+      if (processed) out.push(processed);
     }
   }
 
   // Quotes: [{ quote: "...", author: "..." }]
   if (Array.isArray(quotes)) {
     for (const item of quotes) {
-      const text = (item && item.quote && String(item.quote).trim()) || '';
-      const author = (item && item.author && String(item.author).trim()) || '';
-      if (text) out.push({ text, author, category: 'quotes' });
+      const processed = processQuote(item?.quote, item?.author, 'quotes');
+      if (processed) out.push(processed);
     }
   }
 
@@ -116,7 +132,15 @@ function writeQuotes(quotes, sourceLabel) {
     quotes,
     lastUpdated: new Date().toISOString(),
     source: sourceLabel,
-    count: quotes.length
+    count: quotes.length,
+    config: {
+      maxLength: MAX_LENGTH,
+      limits: {
+        advice: ADVICE_LIMIT,
+        dadjokes: DADJOKES_LIMIT,
+        quotes: QUOTES_LIMIT
+      }
+    }
   };
 
   const dir = path.dirname(QUOTES_FILE);
@@ -129,10 +153,13 @@ function sleep(ms) {
 }
 
 // Fetch multiple items by calling endpoint repeatedly (non-premium: no limit param)
-async function fetchMany(baseUrl, desiredCount) {
+async function fetchMany(baseUrl, desiredCount, category = 'items') {
   const results = [];
   const maxAttempts = Math.max(desiredCount * 3, 10);
   let attempts = 0;
+  
+  console.log(`📡 Fetching ${desiredCount} ${category}...`);
+  
   while (results.length < desiredCount && attempts < maxAttempts) {
     attempts += 1;
     try {
@@ -142,21 +169,33 @@ async function fetchMany(baseUrl, desiredCount) {
         results.push(item);
         if (results.length >= desiredCount) break;
       }
+      
+      // Progress indicator
+      if (attempts % 5 === 0) {
+        console.log(`   ${category}: ${results.length}/${desiredCount} (attempt ${attempts})`);
+      }
     } catch (e) {
       // Ignore individual request errors; continue trying
+      if (attempts % 10 === 0) {
+        console.log(`   ${category}: retrying after ${attempts} attempts...`);
+      }
     }
     await sleep(250);
   }
+  
+  console.log(`✓ ${category}: collected ${results.length}/${desiredCount}`);
   return results.slice(0, desiredCount);
 }
 
 async function main() {
   if (!API_KEY) {
     console.error('❌ Missing API_NINJAS_KEY environment variable.');
+    console.log('💡 Get your API key from: https://api.api-ninjas.com/');
     process.exit(1);
   }
 
-  console.log('🔄 Fetching advice and dad jokes from API Ninjas...');
+  console.log('🔄 Quote Updater Starting...');
+  console.log(`📋 Config: MAX_LENGTH=${MAX_LENGTH}, ADVICE=${ADVICE_LIMIT}, DADJOKES=${DADJOKES_LIMIT}, QUOTES=${QUOTES_LIMIT}`);
 
   const adviceUrl = `https://api.api-ninjas.com/v1/advice`;
   const jokesUrl = `https://api.api-ninjas.com/v1/dadjokes`;
@@ -164,18 +203,21 @@ async function main() {
 
   try {
     const [advice, jokes, quotesApi] = await Promise.all([
-      fetchMany(adviceUrl, ADVICE_LIMIT),
-      fetchMany(jokesUrl, DADJOKES_LIMIT),
-      fetchMany(quotesUrl, QUOTES_LIMIT)
+      fetchMany(adviceUrl, ADVICE_LIMIT, 'advice'),
+      fetchMany(jokesUrl, DADJOKES_LIMIT, 'dad jokes'),
+      fetchMany(quotesUrl, QUOTES_LIMIT, 'quotes')
     ]);
 
+    console.log('🔄 Processing and filtering quotes...');
     const quotes = normalize(advice, jokes, quotesApi);
+    console.log(`📏 After length filtering (≤${MAX_LENGTH} chars): ${quotes.length} quotes`);
 
     // Merge a small sample of existing quotes (optional)
     const current = readCurrentQuotes();
-    const keep = current.slice(0, Math.min(10, current.length));
+    const keep = current.filter(q => q.text.length <= MAX_LENGTH).slice(0, Math.min(10, current.length));
     const merged = [...keep, ...quotes];
-    // Final de-dup
+    
+    // Final de-dup and limit
     const seen = new Set();
     const finalQuotes = merged.filter(q => {
       const key = (q.text || '').toLowerCase();
@@ -184,23 +226,35 @@ async function main() {
       return Boolean(q.text);
     }).slice(0, 150);
 
-  writeQuotes(finalQuotes, 'api-ninjas advice+dadjokes+quotes');
-    console.log(`✅ Wrote ${finalQuotes.length} quotes to ${QUOTES_FILE}`);
+    writeQuotes(finalQuotes, 'api-ninjas advice+dadjokes+quotes');
+    console.log(`✅ Successfully wrote ${finalQuotes.length} quotes to ${QUOTES_FILE}`);
+    
+    // Summary by category
+    const categories = finalQuotes.reduce((acc, q) => {
+      acc[q.category] = (acc[q.category] || 0) + 1;
+      return acc;
+    }, {});
+    console.log('📊 Categories:', categories);
+    
   } catch (err) {
     console.error('❌ Failed to fetch from API Ninjas:', err.message);
     console.log('💡 Falling back to existing quotes if available...');
+    
     const current = readCurrentQuotes();
     if (current.length) {
-      writeQuotes(current, 'fallback-existing');
-      console.log(`📋 Kept existing ${current.length} quotes`);
+      // Apply length filter to existing quotes too
+      const filtered = current.filter(q => q.text.length <= MAX_LENGTH);
+      writeQuotes(filtered, 'fallback-existing');
+      console.log(`📋 Kept ${filtered.length} existing quotes (filtered by length)`);
     } else {
       const defaults = [
         { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs', category: 'inspiration' },
-        { text: 'Life is what happens to you while you\'re busy making other plans.', author: 'John Lennon', category: 'life' },
-        { text: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt', category: 'inspiration' }
-      ];
-  writeQuotes(defaults, 'defaults');
-  console.log('📝 Wrote default quotes');
+        { text: 'Life is what happens while you\'re busy making plans.', author: 'John Lennon', category: 'life' },
+        { text: 'Believe in the beauty of your dreams.', author: 'Eleanor Roosevelt', category: 'inspiration' }
+      ].filter(q => q.text.length <= MAX_LENGTH); // Apply length filter to defaults too
+      
+      writeQuotes(defaults, 'defaults');
+      console.log('📝 Wrote filtered default quotes');
     }
   }
 }

@@ -25,22 +25,22 @@ disableTextInHeader = true
 # Custom parameters
 customLogo = "arobertsonxyz"
 logoStyle = "gradient"
-logoGradientStops = ["#ffffff8c", "#343333ff", "#142a68ff"]
+logoGradientStops = ["#496affff", "#a76ee0ff", "#764ba2"]   # ["#ffffff8c", "#343333ff", "#142a68ff"]
 logoGradientAngle = 120
-logoAnimationSpeed = "30s"
+logoAnimationSpeed = "20s"
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 # defaultBackgroundImage = "images/bg.png" # used as default for background images
 defaultBackgroundColorLight = "#CCCCCC" # used as default for background color in light mode
-defaultBackgroundColorDark = "#222c36ff" # used as default for background color in dark mode
+defaultBackgroundColorDark = "#1f1f1fff" # used as default for background color in dark mode
 logoAnimate = true        # Toggle gradient animation on/off
 
 [screensaver]
   idleTimeout = 5000     # ms of inactivity before screensaver shows
-  starCount = 75          # Number of satellites
+  starCount = 36          # Number of satellites
   starMinSize = 1       # Minimum satellite size (px)
-  starMaxSize = 5         # Maximum satellite size (px)
-  starSpeed = 0.2         # Base speed scalar
+  starMaxSize = 6         # Maximum satellite size (px)
+  starSpeed = 0.1         # Base speed scalar
   fadeDuration = 10000    # Fade-in duration (ms)
   backgroundOpacity = 0.95 # Max overlay darkness (0-1)
   pauseOnBlur = false      # Pause animation when tab not visible
@@ -61,15 +61,15 @@ logoAnimate = true        # Toggle gradient animation on/off
   # selectionMode: "random" | "cycle"
   # - random: each rotation picks any quote uniformly (repeats allowed)
   # - cycle (default): no repeats until the pool is exhausted; can combine with weights
-  selectionMode = "random"
+  selectionMode = "weight"
   # Optional: Custom gradients for the quote banner
   # Provide 2 or more color stops.
   lightModeGradient = ["#667eea", "#764ba2"]
-  darkModeGradient = ["#1c2e2eff", "#18645aff"]
+  darkModeGradient = ["#5ccdcdff", "#228fd2ff", "#1a6ecdff"]
   # Optional: Category weighting (used when selectionMode is not "random")
-  # weights = { quotes = 3, advice = 2, dadjokes = 1 }
-  # Optional: Maximum length of quote text before truncation with an ellipsis (0 = no limit)
-  # maxLength = 140
+  weights = { quotes = 2, advice = 3, dadjokes = 1 }
+  # NOTE: maxLength is now handled at build time by update-quotes.js script
+  # All quotes in data/quotes.json are pre-filtered to the desired length
 
 [author]
   name = "Andrew Robertson"

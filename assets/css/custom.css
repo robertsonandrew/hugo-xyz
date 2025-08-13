@@ -261,10 +261,10 @@
 #screensaver-opacity-icon {
   width: 10px;
   height: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(255, 0, 0, 0.5);
   border-radius: 50%;
   background: transparent;
-  opacity: 0.09;
+  opacity: 0.2;
   transition: all 0.3s cubic-bezier(0.4, 0.12, 0.2, 1);
 }
 

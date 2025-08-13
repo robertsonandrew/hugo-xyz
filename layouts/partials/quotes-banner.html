@@ -4,10 +4,9 @@
     "quotes" $quotesData.quotes
     "refreshInterval" (default 10000 .Site.Params.quoteBanner.refreshInterval)
     "showDelay" (default 300 .Site.Params.quoteBanner.showDelay)
-  "maxLength" (default 140 .Site.Params.quoteBanner.maxLength)
-  "categoryWeights" .Site.Params.quoteBanner.weights
-  "selectionMode" .Site.Params.quoteBanner.selectionMode
-  "showApiError" (default false .Site.Params.quoteBanner.showApiError)
+    "categoryWeights" .Site.Params.quoteBanner.weights
+    "selectionMode" .Site.Params.quoteBanner.selectionMode
+    "showApiError" (default false .Site.Params.quoteBanner.showApiError)
   -}}
   <script id="quote-banner-data" type="application/json">
     {{ $bannerConfig | jsonify | safeJS }}
