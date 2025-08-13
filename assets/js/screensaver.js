@@ -73,29 +73,39 @@ function randomBetween(a, b) {
 }
 
 function createStar(centerX, centerY) {
-	// Pure spawn: uniformly anywhere in viewport with random drift direction
+	// Uniform spawn in viewport
 	const screenWidth = centerX * 2;
 	const screenHeight = centerY * 2;
 	const x = Math.random() * screenWidth;
 	const y = Math.random() * screenHeight;
 	const angle = randomBetween(0, 2 * Math.PI);
-	const baseSize = randomBetween(STAR_MIN_SIZE, STAR_MAX_SIZE);
-	const baseOpacity = randomBetween(0.3, 1.0);
+
+	// Depth: 1 (far) to 8 (close)
+	const depth = Math.round(randomBetween(1, 8));
+	const depthFactor = depth / 8;
+
+	// Bias toward smaller/fainter stars for realism
+	const size = randomBetween(STAR_MIN_SIZE, STAR_MAX_SIZE) * (0.5 + depthFactor * 0.8);
+	const opacity = randomBetween(0.2, 1.0) * (0.4 + depthFactor * 0.7);
+
+	// Speed and direction
 	const speed = STAR_SPEED * randomBetween(0.7, 1.3);
 	const vx = Math.cos(angle) * speed;
 	const vy = Math.sin(angle) * speed;
-	
-	// Add depth for parallax effect (1 = far, 5 = close)
-	const depth = randomBetween(1, 5);
-	const parallaxStrength = depth * 0.02; // Closer stars move more
-	
-	return { 
-		x, y, angle, speed, vx, vy, 
-		size: baseSize, baseSize, 
-		opacity: baseOpacity, baseOpacity,
-		depth, parallaxStrength,
-		// Store original position for parallax calculations
-		originalX: x, originalY: y
+
+	// Parallax strength scales with depth
+	const parallaxStrength = 0.01 + depthFactor * 0.02;
+
+	return {
+		x, y, angle, speed, vx, vy,
+		size,
+		baseSize: size,
+		opacity,
+		baseOpacity: opacity,
+		depth,
+		parallaxStrength,
+		originalX: x,
+		originalY: y
 	};
 }
 
@@ -155,37 +165,40 @@ function drawStarfield(ctx, width, height, centerX, centerY) {
 		if (star.y < -STAR_MAX_SIZE) star.y = height + STAR_MAX_SIZE;
 		else if (star.y > height + STAR_MAX_SIZE) star.y = -STAR_MAX_SIZE;
 
-		// Depth-based visual effects
-		const depthAlpha = star.opacity * (0.3 + (star.depth / 5) * 0.7); // Far stars dimmer
-		const depthSize = star.size * (0.5 + (star.depth / 5) * 0.5); // Far stars smaller
+	// Enhanced depth-based visual effects
+	// More levels: far stars (depth 1) are smallest/dimmest, close (depth 8) are largest/brightest
+	const depthAlpha = star.opacity * (0.25 + (star.depth / 8) * 0.75);
+	const depthSize = star.size * (0.4 + (star.depth / 8) * 0.6);
 
-		ctx.save();
-		ctx.globalAlpha = depthAlpha;
-		const gradient = ctx.createRadialGradient(renderX, renderY, 0, renderX, renderY, depthSize);
-		gradient.addColorStop(0, '#FFF');
-		gradient.addColorStop(0.7, '#CCC');
-		gradient.addColorStop(1, 'rgba(200, 200, 200, 0.2)');
-		ctx.beginPath();
-		ctx.arc(renderX, renderY, depthSize / 2, 0, 2 * Math.PI);
-		ctx.fillStyle = gradient;
-		ctx.shadowColor = '#FFF';
-		ctx.shadowBlur = depthSize * 1.5;
-		ctx.fill();
-		ctx.restore();
+	ctx.save();
+	ctx.globalAlpha = depthAlpha;
+	const gradient = ctx.createRadialGradient(renderX, renderY, 0, renderX, renderY, depthSize);
+	gradient.addColorStop(0, '#FFF');
+	gradient.addColorStop(0.6, '#EEE');
+	gradient.addColorStop(0.9, 'rgba(200, 200, 200, 0.18)');
+	ctx.beginPath();
+	ctx.arc(renderX, renderY, depthSize / 2, 0, 2 * Math.PI);
+	ctx.fillStyle = gradient;
+	ctx.shadowColor = '#FFF';
+	ctx.shadowBlur = depthSize * 1.5;
+	ctx.fill();
+	ctx.restore();
 	}
 	ctx.restore();
 }
 
 function animateScreensaver(timestamp) {
+
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	const canvas = document.getElementById(CANVAS_ID);
 	if (!overlay || !canvas) return;
 	const ctx = canvas.getContext('2d');
 
-	// Handle high-DPI (retina) to avoid subtle brightness shimmer from scaling
+	// Only redraw if animation is active or canvas size changes
 	const dpr = window.devicePixelRatio || 1;
 	const cssWidth = overlay.offsetWidth;
 	const cssHeight = overlay.offsetHeight;
+	let needsRedraw = false;
 	if (canvas.__cssWidth !== cssWidth || canvas.__cssHeight !== cssHeight || canvas.__dpr !== dpr) {
 		canvas.__cssWidth = cssWidth;
 		canvas.__cssHeight = cssHeight;
@@ -194,46 +207,45 @@ function animateScreensaver(timestamp) {
 		canvas.height = Math.round(cssHeight * dpr);
 		canvas.style.width = cssWidth + 'px';
 		canvas.style.height = cssHeight + 'px';
-		ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale once per resize / DPR change
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		needsRedraw = true;
 	}
 	const width = cssWidth;
 	const height = cssHeight;
 	const centerX = width / 2;
 	const centerY = height / 2;
 
-	// Live reconcile star count
-	reconcileStarCount(centerX, centerY);
+	// Only update stars if animation is running
+	if (screensaverActive) {
+		reconcileStarCount(centerX, centerY);
+		needsRedraw = true;
+	}
 
 	// Smooth fade in overlay with easing
 	if (fadeStart === null) {
 		fadeStart = performance.now();
-		// Set the external timing reference when animation actually begins
 		overlay.dataset.fadeStartedAt = Date.now().toString();
 	}
 	const elapsed = performance.now() - fadeStart;
 	const progress = Math.min(elapsed / FADE_DURATION, 1);
-	
-	// Use ease-in-out curve for smoother transition
 	const easeInOut = progress < 0.5 
 		? 2 * progress * progress 
 		: 1 - Math.pow(-2 * progress + 2, 2) / 2;
-	
 	fadeAlpha = easeInOut;
 
-	// Allow runtime adjustment via slider (overlay.dataset.userOpacity if present)
 	const dynamicOpacity = overlay.dataset.userOpacity ? parseFloat(overlay.dataset.userOpacity) : BACKGROUND_OPACITY;
 	overlay.style.background = `rgba(0,0,0,${fadeAlpha * dynamicOpacity})`;
 	overlay.style.opacity = fadeAlpha;
 
-	// Mark fade completion once
 	if (progress >= 1 && !overlay.dataset.fadeComplete) {
 		overlay.dataset.fadeComplete = '1';
-		// Optional: dispatch a custom event for listeners
 		const evt = new CustomEvent('screensaverfadecomplete');
 		overlay.dispatchEvent(evt);
 	}
 
-	drawStarfield(ctx, width, height, centerX, centerY);
+	if (needsRedraw) {
+		drawStarfield(ctx, width, height, centerX, centerY);
+	}
 	animationFrame = requestAnimationFrame(animateScreensaver);
 }
 
@@ -241,35 +253,30 @@ function showScreensaver() {
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	const canvas = document.getElementById(CANVAS_ID);
 	if (!overlay || !canvas) return;
-	
+
+
 	// Initialize overlay state for smooth fade
 	overlay.style.opacity = '0';
 	overlay.style.background = 'transparent';
 	overlay.classList.add('active');
-	// Ensure fadeComplete flag is reset so controls/hint wait full duration
 	if (overlay.dataset.fadeComplete) delete overlay.dataset.fadeComplete;
-	// Record fade start wall-clock time for external gating logic - but do it when animation actually starts
-	// (moved below to when fadeStart is set)
-	// Reset any existing hint to hidden
 	const existingHint = overlay.querySelector('.screensaver-hint');
 	if (existingHint) {
 		existingHint.classList.remove('visible');
 	}
 	canvas.style.display = 'block';
-	
+
 	// Reset parallax mouse position
 	mouseX = 0;
 	mouseY = 0;
 	targetMouseX = 0;
 	targetMouseY = 0;
-	
+
 	screensaverActive = true;
 	fadeStart = null;
 	fadeAlpha = 0;
 	resetStars(overlay.offsetWidth / 2, overlay.offsetHeight / 2);
-	// (maxFPS removed)
 	if (effectiveStarCount === 0) {
-		// Still perform fade but no animation loop
 		animationFrame = requestAnimationFrame(animateScreensaver);
 	} else {
 		animationFrame = requestAnimationFrame(animateScreensaver);
@@ -349,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			hint.className = 'screensaver-hint';
 			hint.textContent = 'Click to exit';
 			overlay.appendChild(hint);
-			// Reveal only after fade complete
 			const reveal = () => {
 				if (overlay.dataset.fadeComplete === '1') {
 					hint.classList.add('visible');
@@ -364,6 +370,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 		overlay.addEventListener('click', () => {
 			if (screensaverActive) hideScreensaver();
+		});
+
+		// Accessibility: Keyboard exit (Escape key)
+		window.addEventListener('keydown', function escHandler(e) {
+			if (screensaverActive && e.key === 'Escape') {
+				hideScreensaver();
+			}
 		});
 	}
 });

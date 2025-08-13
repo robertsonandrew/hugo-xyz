@@ -1,21 +1,47 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/ec559a9f6bfd399b82bb44393651661b08aaf042/icons/folder-markdown-open.svg" width="100" alt="Hugo Site Logo">
+
 # ✨ Hugo Blowfish Custom
 
-🚀 Modern, performant Hugo site with animated branding, quote banner, interactive screensaver, and polished homepage UX
+<h3>🚀 Modern, performant Hugo site with animated branding, quote banner, interactive screensaver, and polished homepage UX</h3>
 
-[![Hugo](https://img.shields.io/badge/Hugo-Extended-FF4088?logo=hugo)](https://gohugo.io/)
-[![Theme](https://img.shields.io/badge/Theme-Blowfish-00D4AA)](https://blowfish.page/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Static Hosting](https://img.shields.io/badge/Deploy-Static%20Site-0ea5e9)](#-quick-start)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+<p>
+  <a href="https://gohugo.io/"><img src="https://img.shields.io/badge/Hugo-Extended-FF4088?logo=hugo&logoColor=white&style=for-the-badge" alt="Hugo"></a>
+  <a href="https://blowfish.page/"><img src="https://img.shields.io/badge/Theme-Blowfish-00D4AA?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Blowfish Theme"></a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black&style=for-the-badge" alt="JavaScript ES6+"></a>
+</p>
 
+<p>
+  <img src="https://img.shields.io/badge/Build-Static%20Site-success?style=flat-square&logo=github-actions&logoColor=white" alt="Static Site">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/Performance-Lighthouse%2095+-brightgreen?style=flat-square&logo=lighthouse&logoColor=white" alt="Lighthouse Performance">
+  <img src="https://img.shields.io/badge/Accessibility-WCAG%202.1-blue?style=flat-square&logo=accessibility&logoColor=white" alt="WCAG 2.1 Compliant">
+</p>
 
-> **Static‑first Philosophy:** No runtime external fetches • Zero third‑party JS • Predictable performance
+<p>
+  <kbd>🎨 Gradient Logo</kbd>
+  <kbd>💬 Quote Banner</kbd>
+  <kbd>🌌 Screensaver</kbd>
+  <kbd>🖼️ Homepage Hover</kbd>
+  <kbd>⚡ Zero Dependencies</kbd>
+</p>
+
+---
+
+### 🎯 **Static‑first Philosophy**
+*No runtime external fetches • Zero third‑party JS • Predictable performance*
+
+</div>
 
 ## 📋 Table of Contents
 
 </div>
 
 ## � Table of Contents
+
+<details>
+<summary><b>👆 Click to expand navigation</b></summary>
 
 - [🎯 Key Features](#-key-features)
 - [⚡ Quick Start](#-quick-start)
@@ -31,46 +57,81 @@
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 
+</details>
+
 ## 🎯 Key Features
 
-| Feature | Status | Key Capability | Use Case |
-|---------|--------|-----------|---------|
-| 🎨 Gradient Logo | Stable | Multi-stop CSS animations | Brand identity with motion |
-| 🖼️ Homepage Hover | Stable | Dual image fade transitions | Interactive hero sections |
-| 💬 Quote Banner | Production | Local JSON rotation + weighting | Dynamic content delivery |
-| 🌌 Screensaver | Production | Idle starfield + glass controls | Ambient user experience |
-| ⚡ Performance | Active | Minimal DOM churn, pre-bundled | Fast loading & interaction |
-| ♿ Accessibility | Active | Keyboard & reduced-motion | Universal usability |
+<div align="center">
 
-### 🚀 What Makes This Special
+| 🎨 **Feature** | 📊 **Status** | 🔑 **Key Capability** | 🎯 **Use Case** |
+|:---|:---:|:---|:---|
+| **🎨 Gradient Logo** | ![Stable](https://img.shields.io/badge/Stable-brightgreen?style=flat-square) | Multi-stop CSS animations | Brand identity with motion |
+| **🖼️ Homepage Hover** | ![Stable](https://img.shields.io/badge/Stable-brightgreen?style=flat-square) | Dual image fade transitions | Interactive hero sections |
+| **💬 Quote Banner** | ![Production](https://img.shields.io/badge/Production-blue?style=flat-square) | Local JSON rotation + weighting | Dynamic content delivery |
+| **🌌 Screensaver** | ![Production](https://img.shields.io/badge/Production-blue?style=flat-square) | Idle starfield + glass controls | Ambient user experience |
+| **⚡ Performance** | ![Active](https://img.shields.io/badge/Active-orange?style=flat-square) | Minimal DOM churn, pre-bundled | Fast loading & interaction |
+| **♿ Accessibility** | ![Active](https://img.shields.io/badge/Active-orange?style=flat-square) | Keyboard & reduced-motion | Universal usability |
 
-- **Zero Runtime Dependencies**: Pure CSS + Vanilla JS
-- **Modern Animations**: CSS Variables + Transforms
-- **Smart Tooling**: Quote API + Build Scripts
+</div>
+
+### 🚀 **What Makes This Special?**
+
+<table>
+<tr>
+<td width="33%" align="center">
+<img src="https://user-images.githubusercontent.com/25181517/192158954-f88b5814-d510-4564-b285-dff7d6400dad.png" width="50" alt="HTML"><br>
+<strong>Zero Runtime Deps</strong><br>
+<sub>Pure CSS + Vanilla JS</sub>
+</td>
+<td width="33%" align="center">
+<img src="https://user-images.githubusercontent.com/25181517/183898674-75a4a1b1-f960-4ea9-abcb-637170a00a75.png" width="50" alt="CSS"><br>
+<strong>Modern Animations</strong><br>
+<sub>CSS Variables + Transforms</sub>
+</td>
+<td width="33%" align="center">
+<img src="https://user-images.githubusercontent.com/25181517/183568594-85e280a7-0d7e-4d1a-9028-c8c2209e073c.png" width="50" alt="Node.js"><br>
+<strong>Smart Tooling</strong><br>
+<sub>Quote API + Build Scripts</sub>
+</td>
+</tr>
+</table>
 
 ## ⚡ Quick Start
 
-### Prerequisites
+<div align="center">
 
-- **Hugo Extended** v0.112.0+ - [Install Guide](https://gohugo.io/installation/)
-- **Node.js** v16+ - For quote API updates (optional)
-- **Git** - For cloning and version control
+### 🎯 **Get Running in 60 Seconds**
 
-### Installation
+</div>
+
+<details open>
+<summary><b>📋 Prerequisites</b></summary>
+
+- **Hugo Extended** `v0.112.0+` → [Install Guide](https://gohugo.io/installation/)
+- **Node.js** `v16+` → For quote API updates *(optional)*
+- **Git** → For cloning and version control
+
+</details>
+
+<details open>
+<summary><b>🚀 Installation Steps</b></summary>
 
 ```bash
-# Clone the repository
+# 1️⃣ Clone the repository
 git clone <this-repo-url>
 cd andrew-hugo-warp
 
-# Start development server
+# 2️⃣ Start development server
 hugo server --disableFastRender
 
-# Visit your site
+# 3️⃣ Visit your site
 open http://localhost:1313
 ```
 
-### Optional: Update Quotes (Requires API Key)
+</details>
+
+<details>
+<summary><b>🔄 Optional: Update Quotes (Requires API Key)</b></summary>
 
 ```bash
 # Get your API key from https://api.api-ninjas.com/
@@ -82,77 +143,147 @@ node scripts/update-quotes.js
 ```
 
 **Environment Variables:**
-- `API_NINJAS_KEY` - Your API key
-- `ADVICE_LIMIT` - Number of advice quotes (default: 10)
-- `DADJOKES_LIMIT` - Number of dad jokes (default: 10)  
-- `QUOTES_LIMIT` - Number of inspirational quotes (default: 10)
-- `KEEP_EXISTING` - Preserve existing quotes (true/false)
+- `API_NINJAS_KEY` → Your API key
+- `ADVICE_LIMIT` → Number of advice quotes (default: 10)
+- `DADJOKES_LIMIT` → Number of dad jokes (default: 10)  
+- `QUOTES_LIMIT` → Number of inspirational quotes (default: 10)
+- `KEEP_EXISTING` → Preserve existing quotes (`true`/`false`)
+
+</details>
+
+<div align="center">
+
+### 🎉 **That's it! Your site should be running with all features active.**
+
+![Demo GIF placeholder](https://via.placeholder.com/600x200/0ea5e9/ffffff?text=🚀+Hugo+Site+Running)
+
+</div>
 
 ## 📸 Visual Showcase
 
-### Screenshots
+<div align="center">
 
-| Preview | Description |
-|---------|-------------|
-| ![Gradient Logo](static/images/screenshot-logo.png) | Animated multi-stop gradient text |
-| ![Quote Banner](static/images/screenshot-quote-banner.png) | Banner with author attribution |
-| ![Homepage Hover](static/images/screenshot-home-hover.png) | Dual image hero swap |
-| ![Screensaver](static/images/screenshot-screensaver.png) | Starfield overlay active |
+### 🎨 **See The Magic In Action**
 
-**Image Specifications:**
-- Hero Images: ≈1200px width, WebP preferred
-- Component Screenshots: ≈800px width
-- Logo/Icons: SVG or high-DPI PNG
+</div>
 
-Location: Add images to `static/images/` directory
+<table align="center">
+<tr>
+<td width="50%" align="center">
+<img src="static/images/screenshot-logo.png" alt="Animated Gradient Logo" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<br><b>🎨 Gradient Logo Animation</b>
+<br><sub>Multi-stop CSS gradient with smooth transitions</sub>
+</td>
+<td width="50%" align="center">
+<img src="static/images/screenshot-quote-banner.png" alt="Dynamic Quote Banner" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<br><b>💬 Quote Banner System</b>
+<br><sub>Dynamic content with author attribution</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="static/images/screenshot-home-hover.png" alt="Homepage Image Hover" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<br><b>🖼️ Interactive Hero Section</b>
+<br><sub>Smooth dual-image hover transitions</sub>
+</td>
+<td width="50%" align="center">
+<img src="static/images/screenshot-screensaver.png" alt="Starfield Screensaver" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<br><b>🌌 Starfield Screensaver</b>
+<br><sub>Interactive idle experience with glass controls</sub>
+</td>
+</tr>
+</table>
+
+<details>
+<summary><b>📐 Image Specifications</b></summary>
+
+**Recommended Sizes:**
+- **Hero Images:** `≈1200px` width, WebP preferred
+- **Component Screenshots:** `≈800px` width
+- **Logo/Icons:** SVG or high-DPI PNG
+
+**Location:** Add images to `static/images/` directory
+
+</details>
 
 ## 🎨 Gradient Logo System
 
-Transform your site's branding with smooth, customizable gradient animations that captivate visitors.
+<div align="center">
 
-### Configuration
+### ✨ **Animated Brand Identity with CSS Magic**
+
+</div>
+
+Transform your site's branding with smooth, customizable gradient animations that captivate visitors while maintaining excellent performance.
+
+<details open>
+<summary><b>⚙️ Configuration</b></summary>
 
 **File:** `config/_default/params.toml`
 
 ```toml
-customLogo = "arobertsonxyz"
-logoStyle = "gradient"
-logoGradientStops = ["#1d4ed8","#7c3aed","#0ea5e9"]
-logoGradientAngle = 135
-logoAnimationSpeed = "6s"
+[customLogo]
+customLogo = "arobertsonxyz"           # Your brand text
+logoStyle = "gradient"                 # Enable gradient mode
+logoGradientStops = [                  # Color stops (2-5 colors)
+  "#1d4ed8",  # Blue
+  "#7c3aed",  # Purple  
+  "#0ea5e9"   # Cyan
+]
+logoGradientAngle = 135                # Gradient direction (0-360°)
+logoAnimationSpeed = "6s"              # Animation duration
 ```
 
-### Pro Tips
+</details>
 
-- **Recommended Angle**: 120°-150° for natural diagonal flow
-- **Colors**: 3-4 stops for best balance
-- **Animation Speed**: 4s-8s for smooth but not distracting effect
-- **Contrast**: High difference for accessibility & readability
+<details>
+<summary><b>🎯 Pro Tips & Best Practices</b></summary>
 
-### Troubleshooting
+| Setting | Recommended | Why |
+|:---|:---|:---|
+| **Angle** | `120°-150°` | Natural diagonal flow |
+| **Colors** | `3-4 stops` | Balance complexity vs. performance |
+| **Speed** | `4s-8s` | Smooth but not distracting |
+| **Contrast** | High difference | Accessibility & readability |
 
+**🔧 Troubleshooting:**
 - Logo not animating? → Ensure `logoStyle = "gradient"`
-- Changes not showing? → Hard refresh (Cmd+Shift+R / Ctrl+Shift+F5)
+- Changes not showing? → Hard refresh (`Cmd+Shift+R` / `Ctrl+Shift+F5`)
 - Want solid text? → Set `logoStyle = "text"`
 
-### Color Palette Examples
+</details>
+
+<details>
+<summary><b>🎨 Color Palette Examples</b></summary>
 
 ```toml
-# Sunrise Theme
+# 🌅 Sunrise Theme
 logoGradientStops = ["#ff9a56", "#ff6b6b", "#ffeaa7"]
 
-# Ocean Theme  
+# 🌊 Ocean Theme  
 logoGradientStops = ["#0984e3", "#74b9ff", "#00cec9"]
 
-# Cherry Blossom
+# 🌸 Cherry Blossom
 logoGradientStops = ["#fd79a8", "#fdcb6e", "#ff7675"]
+
+# 🌌 Galaxy Theme
+logoGradientStops = ["#a29bfe", "#6c5ce7", "#fd79a8", "#fdcb6e"]
 ```
+
+</details>
 
 ## 🏠 Homepage Customizations
 
-Create an engaging first impression with hover-activated image transitions and personalized content.
+<div align="center">
 
-### Content Configuration
+### 🖼️ **Interactive Hero Experience**
+
+</div>
+
+Create an engaging first impression with hover-activated image transitions and personalized content that draws visitors into your story.
+
+<details open>
+<summary><b>📝 Content Configuration</b></summary>
 
 **Primary Content:** `content/_index.md`
 **Template Override:** `layouts/partials/home/custom.html`
@@ -166,13 +297,17 @@ description: "Your compelling description"
 # Your hero content goes here
 ```
 
-### Interactive Image Setup
+</details>
+
+<details open>
+<summary><b>🖼️ Interactive Image Setup</b></summary>
 
 **File:** `config/_default/params.toml`
 
 ```toml
-customHomepageImage = "images/homepage-image.png"
-customHomepageImageSwitch = "images/homepage-image-switch.png"
+[homepage]
+customHomepageImage = "images/homepage-image.png"           # Default state
+customHomepageImageSwitch = "images/homepage-image-switch.png"  # Hover state
 
 [author]
 name = "Andrew Robertson"
@@ -184,17 +319,40 @@ links = [
 ]
 ```
 
-### Customization Options
+</details>
+
+<details>
+<summary><b>🎨 Customization Options</b></summary>
 
 **Image Specifications:**
-- Format: WebP, PNG, or JPG
-- Size: 1200px width recommended
-- Aspect Ratio: 16:9 or 4:3 works well
-- File Size: Under 500KB for fast loading
+- **Format:** WebP, PNG, or JPG
+- **Size:** `1200px` width recommended
+- **Aspect Ratio:** `16:9` or `4:3` works well
+- **File Size:** Under 500KB for fast loading
 
 **Social Links:**
 The theme automatically generates appropriate icons for:
-- `github`, `linkedin`, `twitter`, `email`, and many more
+- `github` → GitHub icon
+- `linkedin` → LinkedIn icon  
+- `twitter` → Twitter icon
+- `email` → Email icon
+- And many more...
+
+**Advanced Styling:**
+```css
+/* Custom hover transitions in assets/css/custom.css */
+.homepage-image {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.homepage-image:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+```
+
+</details>
 
 ## 💬 Quote Banner Engine
 

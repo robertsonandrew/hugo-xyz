@@ -37,9 +37,9 @@ logoAnimate = true        # Toggle gradient animation on/off
 
 [screensaver]
   idleTimeout = 5000     # ms of inactivity before screensaver shows
-  starCount = 36          # Number of satellites
+  starCount = 75          # Number of satellites
   starMinSize = 1       # Minimum satellite size (px)
-  starMaxSize = 6         # Maximum satellite size (px)
+  starMaxSize = 5         # Maximum satellite size (px)
   starSpeed = 0.1         # Base speed scalar
   fadeDuration = 10000    # Fade-in duration (ms)
   backgroundOpacity = 0.95 # Max overlay darkness (0-1)

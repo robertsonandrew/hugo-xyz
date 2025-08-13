@@ -1,13 +1,102 @@
-# 🚀 update-quote.js implementation **add to main readme.md**
+# Quote Management Scripts
 
-<details>
-<summary>🎯 <strong>Quote Banner System</strong></summary>
+This folder contains scripts for managing quotes used by the quote banner feature.
 
-### Overview
-Static quotes system that eliminates CORS issues and API failures. Quotes are pre-fetched and stored locally for reliability.
+## update-quotes.js
 
-### Quick Setup
+Fetches and processes quotes from API Ninjas, with built-in length filtering and deduplication.
+
+### Features
+
+- **Length Filtering**: Quotes are filtered by maximum character length during processing, not in the browser
+- **Multi-source**: Fetches from advice, dad jokes, and quotes API endpoints
+- **Deduplication**: Removes duplicate quotes based on text content
+- **Graceful Fallback**: Falls back to existing quotes or defaults if API fails
+- **Progress Logging**: Shows detailed progress during fetching and processing
+- **Config Metadata**: Saves processing configuration in the output file
+
+### Usage
+
 ```bash
+# Basic usage with API key
+API_NINJAS_KEY=your_api_key node scripts/update-quotes.js
+
+# Customized limits and length
+API_NINJAS_KEY=your_key \
+  ADVICE_LIMIT=20 \
+  DADJOKES_LIMIT=15 \
+  QUOTES_LIMIT=25 \
+  MAX_LENGTH=140 \
+  node scripts/update-quotes.js
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `API_NINJAS_KEY` | _(required)_ | Your API Ninjas API key |
+| `ADVICE_LIMIT` | `10` | Number of advice quotes to fetch |
+| `DADJOKES_LIMIT` | `10` | Number of dad jokes to fetch |
+| `QUOTES_LIMIT` | `10` | Number of inspirational quotes to fetch |
+| `MAX_LENGTH` | `140` | Maximum character length for quotes |
+
+### Output
+
+Creates/updates `data/quotes.json` with the following structure:
+
+```json
+{
+  "quotes": [
+    {
+      "text": "Quote text here",
+      "author": "Author Name",
+      "category": "advice|dadjokes|quotes"
+    }
+  ],
+  "lastUpdated": "2025-08-13T03:04:37.317Z",
+  "source": "api-ninjas advice+dadjokes+quotes",
+  "count": 42,
+  "config": {
+    "maxLength": 140,
+    "limits": {
+      "advice": 10,
+      "dadjokes": 10,
+      "quotes": 10
+    }
+  }
+}
+```
+
+### Integration with Hugo
+
+The quote banner partial (`layouts/partials/quotes-banner.html`) automatically loads quotes from `data/quotes.json`. Since quotes are pre-filtered by length, the frontend JavaScript no longer needs to handle length restrictions.
+
+### API Key Setup
+
+1. Sign up at [API Ninjas](https://api.api-ninjas.com/)
+2. Get your API key from the dashboard
+3. Use it with the `API_NINJAS_KEY` environment variable
+
+### Automation
+
+Consider running this script:
+- As a pre-build step in your CI/CD pipeline
+- As a scheduled job (e.g., weekly) to refresh content
+- Manually when you want fresh quotes
+
+Example GitHub Actions workflow:
+
+```yaml
+- name: Update Quotes
+  run: |
+    API_NINJAS_KEY=${{ secrets.API_NINJAS_KEY }} \
+    MAX_LENGTH=140 \
+    node scripts/update-quotes.js
+  env:
+    API_NINJAS_KEY: ${{ secrets.API_NINJAS_KEY }}
+```
+
+---
 # Set your API key and run the updater
 API_NINJAS_KEY=your_key_here ADVICE_LIMIT=20 node scripts/update-quotes.js
 ```
