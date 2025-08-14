@@ -46,10 +46,11 @@ const STAR_MIN_SIZE = config.starminsize !== undefined ? config.starminsize : 2;
 const STAR_MAX_SIZE = config.starmaxsize !== undefined ? config.starmaxsize : 5;
 const STAR_SPEED = config.starspeed !== undefined ? config.starspeed : 0.1;
 const PAUSE_ON_BLUR = config.pauseonblur !== undefined ? !!config.pauseonblur : true;
-// Gravity removed in simplified version; legacy param ignored if present
-const GRAVITY_STRENGTH = 0;
 const SHOW_HINT = config.showhint !== undefined ? !!config.showhint : true;
 const ENABLED = config.enabled !== undefined ? !!config.enabled : true;
+const PARALLAX_INTENSITY = config.parallaxintensity !== undefined ? Math.max(0.1, Math.min(2.0, config.parallaxintensity)) : 1.0;
+// Gravity removed in simplified version; legacy param ignored if present
+const GRAVITY_STRENGTH = 0;
 // spawn fade removed for simplicity
 
 let effectiveStarCount = ENABLED ? STAR_COUNT : 0;
@@ -84,8 +85,12 @@ function createStar(centerX, centerY) {
 	const depth = Math.round(randomBetween(1, 8));
 	const depthFactor = depth / 8;
 
-	// Bias toward smaller/fainter stars for realism
-	const size = randomBetween(STAR_MIN_SIZE, STAR_MAX_SIZE) * (0.5 + depthFactor * 0.8);
+	// Bias toward smaller/fainter stars for realism - but respect size limits
+	// Base size strictly within [STAR_MIN_SIZE, STAR_MAX_SIZE]
+	const size = Math.min(
+		STAR_MAX_SIZE,
+		Math.max(STAR_MIN_SIZE, randomBetween(STAR_MIN_SIZE, STAR_MAX_SIZE))
+	);
 	const opacity = randomBetween(0.2, 1.0) * (0.4 + depthFactor * 0.7);
 
 	// Speed and direction
@@ -93,8 +98,10 @@ function createStar(centerX, centerY) {
 	const vx = Math.cos(angle) * speed;
 	const vy = Math.sin(angle) * speed;
 
-	// Parallax strength scales with depth
-	const parallaxStrength = 0.01 + depthFactor * 0.02;
+	// Enhanced parallax strength with more variation based on depth
+	const parallaxStrength = 0.005 + depthFactor * 0.025;
+	// Add subtle rotation for more dynamic movement
+	const rotationSpeed = randomBetween(-0.001, 0.001) * depthFactor;
 
 	return {
 		x, y, angle, speed, vx, vy,
@@ -104,8 +111,14 @@ function createStar(centerX, centerY) {
 		baseOpacity: opacity,
 		depth,
 		parallaxStrength,
+		rotationSpeed,
+		currentRotation: 0,
 		originalX: x,
-		originalY: y
+		originalY: y,
+		// Add drift for more organic movement
+		driftX: randomBetween(-0.02, 0.02) * depthFactor * 0.5,
+		driftY: randomBetween(-0.02, 0.02) * depthFactor * 0.5,
+		driftPhase: randomBetween(0, Math.PI * 2)
 	};
 }
 
@@ -134,16 +147,26 @@ function drawStarfield(ctx, width, height, centerX, centerY) {
 	ctx.save();
 	ctx.globalAlpha = 1;
 	
-	// Smooth mouse interpolation for fluid parallax
-	mouseX += (targetMouseX - mouseX) * 0.05;
-	mouseY += (targetMouseY - mouseY) * 0.05;
+	// Enhanced smooth mouse interpolation with easing
+	const ease = 0.08; // Slightly more responsive
+	mouseX += (targetMouseX - mouseX) * ease;
+	mouseY += (targetMouseY - mouseY) * ease;
+	
+	// Add time-based element for subtle drift animation
+	const time = performance.now() * 0.001;
 	
 	for (const star of stars) {
-		// Simple straight-line drift
-		star.x += star.vx;
-		star.y += star.vy;
+		// Enhanced movement with subtle drift
+		const driftOffsetX = Math.sin(time * 0.3 + star.driftPhase) * star.driftX;
+		const driftOffsetY = Math.cos(time * 0.2 + star.driftPhase) * star.driftY;
+		
+		star.x += star.vx + driftOffsetX;
+		star.y += star.vy + driftOffsetY;
+		
+		// Update rotation for depth variety
+		star.currentRotation += star.rotationSpeed;
 
-		// Static appearance (twinkle removed)
+		// Static base appearance (twinkle removed)
 		star.size = star.baseSize;
 		star.opacity = star.baseOpacity;
 
@@ -151,43 +174,80 @@ function drawStarfield(ctx, width, height, centerX, centerY) {
 		star.originalX += star.vx;
 		star.originalY += star.vy;
 
-		// Apply parallax offset based on mouse position and star depth
-		const parallaxX = mouseX * star.parallaxStrength * width * 0.1;
-		const parallaxY = mouseY * star.parallaxStrength * height * 0.1;
+		// Enhanced parallax with depth-aware scaling and user-configurable intensity
+		const depthParallaxScale = 0.5 + (star.depth / 8) * 1.5; // Far stars move less, close stars move more
+		const parallaxX = mouseX * star.parallaxStrength * width * depthParallaxScale * PARALLAX_INTENSITY;
+		const parallaxY = mouseY * star.parallaxStrength * height * depthParallaxScale * PARALLAX_INTENSITY;
+		
+		// Add subtle perspective warping for closer stars - but keep within size limits
+		const perspectiveWarp = 1; // Removed perspective scaling to respect size limits
 		
 		// Calculate final render position
 		const renderX = star.x + parallaxX;
 		const renderY = star.y + parallaxY;
 
-		// If out of bounds, wrap around (torus) for continuous flow
-		if (star.x < -STAR_MAX_SIZE) star.x = width + STAR_MAX_SIZE;
-		else if (star.x > width + STAR_MAX_SIZE) star.x = -STAR_MAX_SIZE;
-		if (star.y < -STAR_MAX_SIZE) star.y = height + STAR_MAX_SIZE;
-		else if (star.y > height + STAR_MAX_SIZE) star.y = -STAR_MAX_SIZE;
+		// Fixed wrapping logic - handle all boundaries properly
+		if (star.x < -STAR_MAX_SIZE) {
+			star.x = width + STAR_MAX_SIZE;
+		} else if (star.x > width + STAR_MAX_SIZE) {
+			star.x = -STAR_MAX_SIZE;
+		}
+		if (star.y < -STAR_MAX_SIZE) {
+			star.y = height + STAR_MAX_SIZE;
+		} else if (star.y > height + STAR_MAX_SIZE) {
+			star.y = -STAR_MAX_SIZE;
+		}
 
-	// Enhanced depth-based visual effects
-	// More levels: far stars (depth 1) are smallest/dimmest, close (depth 8) are largest/brightest
-	const depthAlpha = star.opacity * (0.25 + (star.depth / 8) * 0.75);
-	const depthSize = star.size * (0.4 + (star.depth / 8) * 0.6);
+		// Respect user's size limits - use actual star size without additional scaling
+	const depthAlpha = star.opacity * (0.2 + (star.depth / 8) * 0.8);
+	const depthSize = star.size; // Use actual star size, respecting min/max limits
+	// Render radius strictly capped by STAR_MAX_SIZE
+	const renderRadius = Math.min(depthSize * 0.5, STAR_MAX_SIZE * 0.5);
 
-	ctx.save();
-	ctx.globalAlpha = depthAlpha;
-	const gradient = ctx.createRadialGradient(renderX, renderY, 0, renderX, renderY, depthSize);
-	gradient.addColorStop(0, '#FFF');
-	gradient.addColorStop(0.6, '#EEE');
-	gradient.addColorStop(0.9, 'rgba(200, 200, 200, 0.18)');
-	ctx.beginPath();
-	ctx.arc(renderX, renderY, depthSize / 2, 0, 2 * Math.PI);
-	ctx.fillStyle = gradient;
-	ctx.shadowColor = '#FFF';
-	ctx.shadowBlur = depthSize * 1.5;
-	ctx.fill();
-	ctx.restore();
+		// Skip rendering if star would be off-screen (performance optimization)
+	const margin = depthSize * 2;
+		if (renderX < -margin || renderX > width + margin || renderY < -margin || renderY > height + margin) {
+			continue;
+		}
+
+		ctx.save();
+		ctx.globalAlpha = depthAlpha;
+		
+		// Enhanced gradient with better color variation based on depth
+	// Keep gradient radius within the visual star radius to avoid oversized glow
+	const gradient = ctx.createRadialGradient(renderX, renderY, 0, renderX, renderY, renderRadius);
+		
+		// Closer stars are brighter and more colorful
+		if (star.depth > 6) {
+			gradient.addColorStop(0, '#FFFFFF');
+			gradient.addColorStop(0.3, '#F8F9FA');
+			gradient.addColorStop(0.7, '#E9ECEF');
+			gradient.addColorStop(1, 'rgba(220, 225, 235, 0.1)');
+		} else if (star.depth > 3) {
+			gradient.addColorStop(0, '#F8F9FA');
+			gradient.addColorStop(0.4, '#E9ECEF');
+			gradient.addColorStop(0.8, '#DEE2E6');
+			gradient.addColorStop(1, 'rgba(200, 210, 220, 0.05)');
+		} else {
+			gradient.addColorStop(0, '#E9ECEF');
+			gradient.addColorStop(0.5, '#DEE2E6');
+			gradient.addColorStop(0.9, 'rgba(180, 190, 200, 0.02)');
+		}
+		
+		ctx.beginPath();
+	ctx.arc(renderX, renderY, renderRadius, 0, 2 * Math.PI);
+		ctx.fillStyle = gradient;
+		
+		// Enhanced shadow with depth-based blur
+		ctx.shadowColor = star.depth > 5 ? '#FFFFFF' : '#F0F0F0';
+	// Cap shadow blur so perceived size doesn't exceed max
+	ctx.shadowBlur = Math.min(renderRadius, STAR_MAX_SIZE * 0.5);
+		
+		ctx.fill();
+		ctx.restore();
 	}
 	ctx.restore();
-}
-
-function animateScreensaver(timestamp) {
+}function animateScreensaver(timestamp) {
 
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	const canvas = document.getElementById(CANVAS_ID);
@@ -254,7 +314,6 @@ function showScreensaver() {
 	const canvas = document.getElementById(CANVAS_ID);
 	if (!overlay || !canvas) return;
 
-
 	// Initialize overlay state for smooth fade
 	overlay.style.opacity = '0';
 	overlay.style.background = 'transparent';
@@ -266,7 +325,7 @@ function showScreensaver() {
 	}
 	canvas.style.display = 'block';
 
-	// Reset parallax mouse position
+	// Reset and initialize parallax mouse position smoothly
 	mouseX = 0;
 	mouseY = 0;
 	targetMouseX = 0;
@@ -275,12 +334,12 @@ function showScreensaver() {
 	screensaverActive = true;
 	fadeStart = null;
 	fadeAlpha = 0;
+	
+	// Initialize stars with better distribution
 	resetStars(overlay.offsetWidth / 2, overlay.offsetHeight / 2);
-	if (effectiveStarCount === 0) {
-		animationFrame = requestAnimationFrame(animateScreensaver);
-	} else {
-		animationFrame = requestAnimationFrame(animateScreensaver);
-	}
+	
+	// Start animation loop
+	animationFrame = requestAnimationFrame(animateScreensaver);
 }
 
 function hideScreensaver() {
@@ -288,6 +347,12 @@ function hideScreensaver() {
 	const canvas = document.getElementById(CANVAS_ID);
 	if (!overlay || !canvas) return;
 	overlay.classList.remove('active');
+	// Reset overlay styles and state to ensure nothing lingers
+	overlay.style.opacity = '0';
+	overlay.style.background = 'transparent';
+	if (overlay.dataset.fadeComplete) delete overlay.dataset.fadeComplete;
+	const hint = overlay.querySelector('.screensaver-hint');
+	if (hint) hint.classList.remove('visible');
 	canvas.style.display = 'none';
 	screensaverActive = false;
 	fadeStart = null;
@@ -303,19 +368,41 @@ function resetIdleTimer() {
 
 window.addEventListener('mousemove', (e) => {
 	resetIdleTimer();
-	// Update mouse position for parallax effect
+	// Enhanced mouse position tracking for parallax effect
 	if (screensaverActive) {
 		const rect = document.getElementById(SCREENSAVER_ID)?.getBoundingClientRect();
 		if (rect) {
-			// Normalize mouse position to -1 to 1 range
-			targetMouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-			targetMouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+			// Normalize mouse position to -1 to 1 range with enhanced sensitivity
+			const rawX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+			const rawY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+			
+			// Apply subtle dampening to prevent excessive movement, adjusted by intensity
+			const damping = 0.7 * PARALLAX_INTENSITY;
+			targetMouseX = rawX * damping;
+			targetMouseY = rawY * damping;
 		}
 	}
 });
 window.addEventListener('keydown', resetIdleTimer);
 window.addEventListener('mousedown', resetIdleTimer);
 window.addEventListener('touchstart', resetIdleTimer);
+
+// Enhanced touch support for mobile parallax
+window.addEventListener('touchmove', (e) => {
+	if (screensaverActive && e.touches.length === 1) {
+		e.preventDefault(); // Prevent scrolling during touch
+		const touch = e.touches[0];
+		const rect = document.getElementById(SCREENSAVER_ID)?.getBoundingClientRect();
+		if (rect) {
+			const rawX = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+			const rawY = ((touch.clientY - rect.top) / rect.height) * 2 - 1;
+			
+			const damping = 0.6 * PARALLAX_INTENSITY; // Slightly more dampening for touch, adjusted by intensity
+			targetMouseX = rawX * damping;
+			targetMouseY = rawY * damping;
+		}
+	}
+}, { passive: false });
 
 // Mouse tracking for gravity removed
 

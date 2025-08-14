@@ -1,0 +1,25 @@
+{{/* 
+  Screensaver Partial - Renders screensaver HTML elements and configuration
+  Include this in baseof.html directly
+*/}}
+
+{{/* Screensaver overlay and canvas */}}
+<div id="screensaver" class="screensaver-overlay" aria-hidden="true">
+  <canvas id="screensaver-canvas" class="screensaver-canvas"></canvas>
+</div>
+
+{{/* Configuration from params.toml */}}
+{{- $ss := .Site.Params.screensaver -}}
+{{- $ssCfg := dict
+  "idleTimeout" (default 15000 $ss.idleTimeout)
+  "starCount"   (default 25    $ss.starCount)
+  "starMinSize" (default 1     $ss.starMinSize)
+  "starMaxSize" (default 5     $ss.starMaxSize)
+  "starSpeed"   (default 0.1   $ss.starSpeed)
+  "fadeDuration" (default 10000 $ss.fadeDuration)
+  "backgroundOpacity" (default 0.95 $ss.backgroundOpacity)
+  "pauseOnBlur" (default true $ss.pauseOnBlur)
+  "showHint" (default true $ss.showHint)
+  "parallaxIntensity" (default 1.0 $ss.parallaxIntensity)
+ -}}
+<script id="screensaver-config" type="application/json">{{ $ssCfg | jsonify | safeJS }}</script>

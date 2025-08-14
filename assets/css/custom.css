@@ -135,6 +135,7 @@
   visibility: hidden;
   pointer-events: none;
   /* No CSS transitions - JS handles all fade timing */
+  will-change: opacity, background; /* Hint to browser for optimization */
 }
 .screensaver-overlay.active {
   visibility: visible;
@@ -150,6 +151,11 @@
   height: 100%;
   display: block;
   z-index: 1;
+  /* Optimize rendering for animation */
+  will-change: transform;
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
 }
 .screensaver-particles {
   position: absolute;
@@ -160,6 +166,7 @@
 /* Accessibility: respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .screensaver-overlay { transition: none; }
+  .screensaver-canvas { will-change: auto; }
 }
 /* end screensaver */
 

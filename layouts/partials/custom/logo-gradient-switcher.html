@@ -1,0 +1,7 @@
+{{/* Read presets from params.toml: [[logo.presets]] */}}
+{{ $presets := .Site.Params.logo.presets }}
+{{ if and $presets (ge (len $presets) 2) }}
+<script id="andrew-logo-gradient-presets" type="application/json" data-author-name="{{ .Site.Params.author.name }}">
+    {{- $presets | jsonify -}}
+</script>
+{{ end }}

@@ -17,6 +17,14 @@
 
   --bg-color-light: {{ default "#CCCCCC" .Params.defaultBackgroundColorLight }};
   --bg-color-dark: {{ default "#222222" .Params.defaultBackgroundColorDark }};
+
+  {{- /* Quote Banner Gradient Variables */ -}}
+  {{- with .Params.quoteBanner.lightModeGradient -}}
+  --quote-banner-light-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
+  {{- end -}}
+  {{- with .Params.quoteBanner.darkModeGradient -}}
+  --quote-banner-dark-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
+  {{- end -}}
 }
 </style>
 
@@ -33,5 +41,19 @@
 {{ if $quoteBannerCSS }}
   {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}
   <link rel="stylesheet" href="{{ $quoteBannerCSS.RelPermalink }}" integrity="{{ $quoteBannerCSS.Data.Integrity }}">
+{{ end }}
+
+{{/* Inject Logo Gradient Switcher CSS */}}
+{{ $switcherCSS := resources.Get "css/logo-gradient-switcher.css" }}
+{{ if $switcherCSS }}
+  {{ $switcherCSS = $switcherCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $switcherCSS.RelPermalink }}" integrity="{{ $switcherCSS.Data.Integrity }}">
+{{ end }}
+
+{{/* Load screensaver CSS early to avoid FOUC */}}
+{{ $screensaverCSS := resources.Get "css/screensaver.css" }}
+{{ if $screensaverCSS }}
+  {{ $screensaverCSS = $screensaverCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $screensaverCSS.RelPermalink }}" integrity="{{ $screensaverCSS.Data.Integrity }}">
 {{ end }}
 

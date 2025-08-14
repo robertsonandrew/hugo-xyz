@@ -1,0 +1,107 @@
+/* Logo Gradient Switcher */
+.logo-gradient-switcher-wrapper {
+  display: none; /* Hidden by default, shown by JS when positioned in footer */
+  vertical-align: middle;
+  margin-left: 8px;
+  line-height: 1;
+}
+
+#logo-gradient-switcher-button {
+  background: transparent;
+  border: none;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: var(--color-neutral-600);
+  border-radius: 4px;
+}
+
+#logo-gradient-switcher-button:hover {
+  transform: scale(1.2);
+  color: var(--color-primary-500);
+  background-color: var(--color-neutral-100);
+}
+
+#logo-gradient-switcher-button:active {
+  transform: scale(0.95);
+}
+
+#logo-gradient-switcher-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Dark mode styles */
+.dark #logo-gradient-switcher-button {
+  color: var(--color-neutral-300);
+}
+
+.dark #logo-gradient-switcher-button:hover {
+  color: var(--color-primary-400);
+  background-color: var(--color-neutral-800);
+}
+
+/* Minimal tooltip (hover/focus), gated until JS sets data-ready */
+#logo-gradient-switcher-button[data-tooltip],
+#footer-author-trigger[data-tooltip] {
+  position: relative;
+}
+
+#logo-gradient-switcher-button[data-tooltip][data-ready="1"]::after,
+#footer-author-trigger[data-tooltip][data-ready="1"]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: 135%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--color-neutral-900);
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark #logo-gradient-switcher-button[data-tooltip][data-ready="1"]::after,
+.dark #footer-author-trigger[data-tooltip][data-ready="1"]::after {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+}
+
+#logo-gradient-switcher-button[data-tooltip][data-ready="1"]:hover::after,
+#logo-gradient-switcher-button[data-tooltip][data-ready="1"]:focus-visible::after,
+#footer-author-trigger[data-tooltip][data-ready="1"]:hover::after,
+#footer-author-trigger[data-tooltip][data-ready="1"]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Dynamic gradient classes for switcher - highest specificity */
+.logo.custom-logo-text.gradient-override,
+.dark .logo.custom-logo-text.gradient-override {
+  background: var(--dynamic-gradient) !important;
+  background-size: 200% 200% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  animation: gradientShift var(--logo-gradient-speed) ease-in-out infinite !important;
+}
+
+/* (debug border removed) */
+
+/* Prevent selecting the author-name easter-egg trigger */
+#footer-author-trigger {
+  -webkit-user-select: none;
+  user-select: none;
+}

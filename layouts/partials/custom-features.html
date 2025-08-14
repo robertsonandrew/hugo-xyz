@@ -1,0 +1,15 @@
+{{/* 
+  Custom Features Partial - consolidates all custom functionality
+  This is the main entry point for all custom site features
+*/}}
+
+{{/* Logo Gradient Switcher - Site-wide logo color switching */}}
+{{- partial "custom/logo-gradient-switcher.html" . -}}
+
+{{/* Quote Banner Controls - Re-enable button for dismissed quote banner */}}
+{{- partial "custom/quote-banner-controls.html" . -}}
+
+{{/* Status Dot - Link to status page */}}
+{{- partial "custom/status-dot.html" . -}}
+
+{{/* Note: Screensaver HTML is included directly in baseof.html and JS/CSS is loaded via extend-head.html and extend-footer.html */}}

@@ -35,21 +35,36 @@ defaultBackgroundColorLight = "#CCCCCC" # used as default for background color i
 defaultBackgroundColorDark = "#1f1f1fff" # used as default for background color in dark mode
 logoAnimate = true        # Toggle gradient animation on/off
 
+# Gradient presets for the logo switcher
+[[logo.presets]]
+  name = "Default"
+  stops = ["#496affff", "#a76ee0ff", "#764ba2"]
+[[logo.presets]]
+  name = "Sunrise"
+  stops = ["#ff9a56", "#ff6b6b", "#ffeaa7"]
+[[logo.presets]]
+  name = "Ocean"
+  stops = ["#0984e3", "#74b9ff", "#00cec9"]
+[[logo.presets]]
+  name = "Cherry Blossom"
+  stops = ["#fd79a8", "#fdcb6e", "#ff7675"]
+
 [screensaver]
-  idleTimeout = 5000     # ms of inactivity before screensaver shows
+  idleTimeout = 12000     # ms of inactivity before screensaver shows
   starCount = 75          # Number of satellites
-  starMinSize = 1       # Minimum satellite size (px)
-  starMaxSize = 5         # Maximum satellite size (px)
+  starMinSize = 0.5       # Minimum satellite size (px)
+  starMaxSize = 4         # Maximum satellite size (px)
   starSpeed = 0.1         # Base speed scalar
   fadeDuration = 10000    # Fade-in duration (ms)
   backgroundOpacity = 0.95 # Max overlay darkness (0-1)
   pauseOnBlur = false      # Pause animation when tab not visible
   showHint = true         # Show exit hint text
+  parallaxIntensity = 0.7 # Parallax effect strength (0.1 - 2.0, 1.0 is default)
 
 # Quote Banner Configuration
 [quoteBanner]
   enabled = true
-  refreshInterval = 20000  # milliseconds between quote changes
+  refreshInterval = 30000  # milliseconds between quote changes
   # showDelay (ms): if > 0, the banner waits this long before sliding into view on first load.
   # Reopen via the floating button is immediate (no delay). Set to 0 for no delay.
   showDelay = 200          
@@ -61,11 +76,11 @@ logoAnimate = true        # Toggle gradient animation on/off
   # selectionMode: "random" | "cycle"
   # - random: each rotation picks any quote uniformly (repeats allowed)
   # - cycle (default): no repeats until the pool is exhausted; can combine with weights
-  selectionMode = "weight"
+  selectionMode = "random"
   # Optional: Custom gradients for the quote banner
   # Provide 2 or more color stops.
-  lightModeGradient = ["#667eea", "#764ba2"]
-  darkModeGradient = ["#5ccdcdff", "#228fd2ff", "#1a6ecdff"]
+  lightModeGradient = ["#000000ff", "#764ba2"]
+  darkModeGradient = ["#7a550aff", "#0d5d29ff", "#0b1c7dff"]
   # Optional: Category weighting (used when selectionMode is not "random")
   weights = { quotes = 2, advice = 3, dadjokes = 1 }
   # NOTE: maxLength is now handled at build time by update-quotes.js script
