@@ -1,0 +1,13 @@
+baseURL = "https://arobertson.xyz"
+languageCode = "en-us"
+title = "arobertsonxyz"
+theme = "blowfish"
+
+enableRobotsTXT = true
+enableEmoji = true
+
+[pagination]
+  pagerSize = 100
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

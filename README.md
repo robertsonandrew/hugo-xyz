@@ -1128,6 +1128,26 @@ Screensaver doesn't activate after idle time
 
 </details>
 
+## ✍️ Typography & Fonts
+
+We removed external Google Fonts and adopted a faster, privacy‑friendly approach.
+
+- What changed
+  - Removed Google Fonts stylesheet from `layouts/partials/extend-head.html` (the `<link href="https://fonts.googleapis.com/...">` tag).
+  - Switched the logo text to a robust system font stack in `assets/css/custom.css`:
+    - `.logo.custom-logo-text { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; }`
+
+- Why
+  - Improves performance and avoids render‑blocking external requests
+  - Reduces CLS and removes third‑party calls (better privacy/compliance)
+
+- Optional: self-host a brand font
+  - Add WOFF2 files to `assets/fonts/` (only needed weights/subsets)
+  - Create `assets/css/fonts.css` with `@font-face` rules (`font-display: swap` and `unicode-range` recommended)
+  - Include that stylesheet via Hugo Pipes in `extend-head.html`, then set `font-family: "YourFont", system-ui, ...` as needed
+
+No other build steps are required; changes apply on the next Hugo build.
+
 ## 📜 License
 
 <div align="center">

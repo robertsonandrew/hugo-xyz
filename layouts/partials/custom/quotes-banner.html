@@ -1,4 +1,4 @@
-{{- if and .Site.Params.quoteBanner.enabled .Params.show_quote_banner -}}
+{{- if .Site.Params.quoteBanner.enabled -}}
   {{- $quotesData := .Site.Data.quotes -}}
   {{- $bannerConfig := dict
     "quotes" $quotesData.quotes

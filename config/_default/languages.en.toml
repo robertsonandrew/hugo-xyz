@@ -1,0 +1,17 @@
+languageCode = "en"
+languageName = "English"
+weight = 1
+
+title = "Andrew Robertson"
+
+[params.author]
+  name = "Andrew Robertson"
+  headline = "Homelabber | Tinkerer"
+  image = "images/me.png"
+  links = [
+    { github = "https://github.com/arobertson67" },
+    { email = "hi@arobertson.xyz" },
+    { instagram = "https://instagram.com/andrew_robertson_runs" },
+    { linkedin = "" },
+    { bluesky = "https://bsky.app/profile/arobertson88.bsky.social" },
+  ]

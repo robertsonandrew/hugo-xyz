@@ -1,41 +1,39 @@
-# -- Theme Options --
-# These options control how the theme functions and allow you to
-# customise the display of your website.
-#
-# Refer to the theme docs for more details about each of these parameters.
-# https://blowfish.page/docs/configuration/#theme-parameters
+# ================================================
+# BLOWFISH THEME CONFIGURATION
+# ================================================
+# Documentation: https://blowfish.page/docs/configuration/
 
+# -- Core Theme Settings --
 colorScheme = "blowfish"
-defaultAppearance = "light" # valid options: light or dark
+defaultAppearance = "dark"
 autoSwitchAppearance = true
-
 enableSearch = true
 enableCodeCopy = true
-
 replyByEmail = false
 
-# mainSections = ["section1", "section2"]
-# robots = ""
+# -- Display Options --
 disableImageZoom = false
 disableImageOptimization = false
 disableImageOptimizationMD = false
 disableTextInHeader = true
-# backgroundImageWidth = 1200
 
-# Custom parameters
+# -- Custom Logo --
 customLogo = "arobertsonxyz"
 logoStyle = "gradient"
-logoGradientStops = ["#496affff", "#a76ee0ff", "#764ba2"]   # ["#ffffff8c", "#343333ff", "#142a68ff"]
+logoGradientStops = ["#496affff", "#a76ee0ff", "#764ba2"]
 logoGradientAngle = 120
-logoAnimationSpeed = "20s"
+logoAnimationSpeed = "2s"
+logoAnimate = true
+
+# -- Homepage Images --
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
-# defaultBackgroundImage = "images/bg.png" # used as default for background images
-defaultBackgroundColorLight = "#CCCCCC" # used as default for background color in light mode
-defaultBackgroundColorDark = "#1f1f1fff" # used as default for background color in dark mode
-logoAnimate = true        # Toggle gradient animation on/off
 
-# Gradient presets for the logo switcher
+# -- Background Colors --
+defaultBackgroundColorLight = "#CCCCCC"
+defaultBackgroundColorDark = "#1f1f1fff"
+
+# -- Logo Gradient Presets --
 [[logo.presets]]
   name = "Default"
   stops = ["#496affff", "#a76ee0ff", "#764ba2"]
@@ -49,66 +47,42 @@ logoAnimate = true        # Toggle gradient animation on/off
   name = "Cherry Blossom"
   stops = ["#fd79a8", "#fdcb6e", "#ff7675"]
 
+# -- Screensaver --
 [screensaver]
-  idleTimeout = 12000     # ms of inactivity before screensaver shows
-  starCount = 75          # Number of satellites
-  starMinSize = 0.5       # Minimum satellite size (px)
-  starMaxSize = 4         # Maximum satellite size (px)
-  starSpeed = 0.1         # Base speed scalar
-  fadeDuration = 10000    # Fade-in duration (ms)
-  backgroundOpacity = 0.95 # Max overlay darkness (0-1)
-  pauseOnBlur = false      # Pause animation when tab not visible
-  showHint = true         # Show exit hint text
-  parallaxIntensity = 0.7 # Parallax effect strength (0.1 - 2.0, 1.0 is default)
+  idleTimeout = 30000
+  starCount = 111
+  starMinSize = 1
+  starMaxSize = 4
+  starSpeed = 0.1
+  fadeDuration = 10000
+  backgroundOpacity = 0.95
+  pauseOnBlur = true #set false to keep screensaver "always alive" regardless of tab visibilty
+  showHint = true
+  parallaxIntensity = 0.2
 
-# Quote Banner Configuration
+# -- Quote Banner ---
 [quoteBanner]
   enabled = true
-  refreshInterval = 30000  # milliseconds between quote changes
-  # showDelay (ms): if > 0, the banner waits this long before sliding into view on first load.
-  # Reopen via the floating button is immediate (no delay). Set to 0 for no delay.
-  showDelay = 200          
-  # showApiError: show a simple error message in the banner if a JS error occurs.
-  # (No browser API calls are made; content is loaded from data/quotes.json.)
-  showApiError = true    
+  refreshInterval = 30000
+  showDelay = 200
+  showApiError = true
   fadeTransitionDuration = 2000
   mobileBreakpoint = 768
-  # selectionMode: "random" | "cycle"
-  # - random: each rotation picks any quote uniformly (repeats allowed)
-  # - cycle (default): no repeats until the pool is exhausted; can combine with weights
   selectionMode = "random"
-  # Optional: Custom gradients for the quote banner
-  # Provide 2 or more color stops.
-  lightModeGradient = ["#000000ff", "#764ba2"]
-  darkModeGradient = ["#7a550aff", "#0d5d29ff", "#0b1c7dff"]
-  # Optional: Category weighting (used when selectionMode is not "random")
+  lightModeGradient = ["#496affff", "#a76ee0ff", "#764ba2"]
+  darkModeGradient = ["#496affff", "#a76ee0ff", "#764ba2"]
   weights = { quotes = 2, advice = 3, dadjokes = 1 }
-  # NOTE: maxLength is now handled at build time by update-quotes.js script
-  # All quotes in data/quotes.json are pre-filtered to the desired length
 
-[author]
-  name = "Andrew Robertson"
-  headline = "Homelabber | Tinkerer"
-  image = "images/me.png"
-  links = [
-    { github = "https://github.com/arobertson67" },
-    { email = "hi@arobertson.xyz" },
-    { instagram = "https://instagram.com/andrew_robertson_runs" },
-  ]
-# defaultFeaturedImage = "IMAGE.jpg" # used as default for featured images in all articles
-# defaultSocialImage = "/android-chrome-512x512.png" # used as default for social media sharing (Open Graph and Twitter)
-
-# highlightCurrentMenuArea = true
+# -- Site Configuration --
 smartTOC = true
-# smartTOCHideUnfocusedChildren = true
-
-fingerprintAlgorithm = "sha512" # Valid values are "sha512" (default), "sha384", "sha256"
-
+fingerprintAlgorithm = "sha512"
 giteaDefaultServer = "https://git.fsfe.org"
 forgejoDefaultServer = "https://v11.next.forgejo.org"
 
+# -- Layout Sections --
+
 [header]
-  layout = "fixed-gradient" # valid options: basic, fixed, fixed-fill, fixed-gradient, fixed-fill-blur
+  layout = "fixed-gradient" #layouts/partials/header/fixed-gradient.html
 
 [footer]
   showMenu = true
@@ -118,16 +92,15 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
   showScrollToTop = true
 
 [homepage]
-  layout = "custom" # valid options: page, profile, hero, card, background, custom
-  #homepageImage = "IMAGE.jpg" # used in: hero, and card
+  layout = "custom" #layouts/partials/home/custom.html 
   showRecent = true
   showRecentItems = 5
   showMoreLink = false
   showMoreLinkDest = "/posts/"
   cardView = true
   cardViewScreenWidth = false
-  layoutBackgroundBlur = false # only used when layout equals background
-  disableHeroImageFilter = false # only used when layout equals hero
+  layoutBackgroundBlur = false
+  disableHeroImageFilter = false
 
 [article]
   showDate = true
@@ -163,9 +136,8 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
 
 [list]
   showHero = false
-  # heroStyle = "background" # valid options: basic, big, background, thumbAndBackground
-  layoutBackgroundBlur = true # only used when heroStyle equals background or thumbAndBackground
-  layoutBackgroundHeaderSpace = true # only used when heroStyle equals background
+  layoutBackgroundBlur = true
+  layoutBackgroundHeaderSpace = true
   showBreadcrumbs = false
   showSummary = false
   showViews = false
@@ -184,7 +156,6 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
 [taxonomy]
   showTermCount = true
   showHero = false
-  # heroStyle = "background" # valid options: basic, big, background, thumbAndBackground
   showBreadcrumbs = false
   showViews = false
   showLikes = false
@@ -193,7 +164,6 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
 
 [term]
   showHero = false
-  # heroStyle = "background" # valid options: basic, big, background, thumbAndBackground
   showBreadcrumbs = false
   showViews = false
   showLikes = false
@@ -203,9 +173,3 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
   cardViewScreenWidth = false
 
 [umamiAnalytics]
-  # websiteid = "ABC12345"
-  # domain = "llama.yoursite.com"
-  # dataDomains = "yoursite.com,yoursite2.com"
-  # scriptName = ""
-  # enableTrackEvent = true
-  # enableTrackEvent = true

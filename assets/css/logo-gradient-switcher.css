@@ -86,19 +86,7 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Dynamic gradient classes for switcher - highest specificity */
-.logo.custom-logo-text.gradient-override,
-.dark .logo.custom-logo-text.gradient-override {
-  background: var(--dynamic-gradient) !important;
-  background-size: 200% 200% !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-  animation: gradientShift var(--logo-gradient-speed) ease-in-out infinite !important;
-}
-
-/* (debug border removed) */
+/* Legacy: gradient-override class no longer used. All presets use base CSS variables. */
 
 /* Prevent selecting the author-name easter-egg trigger */
 #footer-author-trigger {

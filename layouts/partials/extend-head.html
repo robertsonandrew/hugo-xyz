@@ -3,32 +3,48 @@
 
 <style>
 :root {
-  --logo-gradient-angle: {{ default 135 .Params.logoGradientAngle }}deg;
-  --logo-gradient-speed: {{ default "6s" .Params.logoAnimationSpeed }};
-  {{- with .Params.logoGradientStops -}}
+  --logo-gradient-angle: {{ default 135 (site.Params.logoGradientAngle | default .Params.logoGradientAngle) }}deg;
+  --logo-gradient-speed: {{ default "6s" (site.Params.logoAnimationSpeed | default .Params.logoAnimationSpeed) }};
+  {{- with (site.Params.logoGradientStops | default .Params.logoGradientStops) -}}
   --logo-gradient-stops: {{ delimit . "," }};
   {{- end -}}
 
-  {{- with .Params.defaultBackgroundImage -}}
+  {{- with (site.Params.defaultBackgroundImage | default .Params.defaultBackgroundImage) -}}
   --bg-image: url('{{ . | relURL }}');
   {{- else -}}
   --bg-image: none;
   {{- end -}}
 
-  --bg-color-light: {{ default "#CCCCCC" .Params.defaultBackgroundColorLight }};
-  --bg-color-dark: {{ default "#222222" .Params.defaultBackgroundColorDark }};
+  --bg-color-light: {{ default "#CCCCCC" (site.Params.defaultBackgroundColorLight | default .Params.defaultBackgroundColorLight) }};
+  --bg-color-dark: {{ default "#222222" (site.Params.defaultBackgroundColorDark | default .Params.defaultBackgroundColorDark) }};
 
   {{- /* Quote Banner Gradient Variables */ -}}
-  {{- with .Params.quoteBanner.lightModeGradient -}}
+  {{- with (site.Params.quoteBanner.lightModeGradient | default .Params.quoteBanner.lightModeGradient) -}}
   --quote-banner-light-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
   {{- end -}}
-  {{- with .Params.quoteBanner.darkModeGradient -}}
+  {{- with (site.Params.quoteBanner.darkModeGradient | default .Params.quoteBanner.darkModeGradient) -}}
   --quote-banner-dark-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
   {{- end -}}
 }
 </style>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Early init: apply saved logo gradient before first paint to prevent flash -->
+<script>
+  (function () {
+    try {
+      var savedStops = localStorage.getItem('logoGradientStops');
+      if (savedStops) {
+        // Apply immediately so initial paint uses the chosen preset
+        document.documentElement.style.setProperty('--logo-gradient-stops', savedStops);
+      }
+    } catch (e) {
+      // localStorage might be unavailable; ignore and use defaults
+    }
+  })();
+  // Note: main switcher JS still runs later to wire up interactions
+</script>
+
 
 {{- /* Load custom CSS */ -}}
 {{ $customCSS := resources.Get "css/custom.css" }}

@@ -125,34 +125,36 @@ function initLogoGradientSwitcher() {
 
     function applyPreset(index) {
         const preset = presets[index];
-        if (preset && preset.stops) {
-            const stops = preset.stops.join(', ');
-            
-            // Get the current gradient angle from CSS or use default
-            const currentAngle = getComputedStyle(document.documentElement).getPropertyValue('--logo-gradient-angle') || '120deg';
-            
-            // Create the full gradient string
-            const gradientValue = `linear-gradient(${currentAngle}, ${stops})`;
-            
-            // Set CSS variable for the dynamic gradient
-            document.documentElement.style.setProperty('--dynamic-gradient', gradientValue);
-            
-            // Add the override class to apply the new gradient
-            logo.classList.add('gradient-override');
-            
-            // Also update the original CSS variables for other parts of the site
-            document.documentElement.style.setProperty('--logo-gradient-stops', stops);
-            
-            // Avoid native title tooltip (can flash on initial paint). Use custom tooltip only.
-            // No visible button; use accessible label on trigger
+        if (!preset || !preset.stops) return;
+
+        const stops = preset.stops.join(', ');
+
+    // Single path: update the shared CSS variable used by base styles
+    document.documentElement.style.setProperty('--logo-gradient-stops', stops);
+
+    // Persist stops for early paint on next load
+    try { localStorage.setItem('logoGradientStops', stops); } catch (_) {}
+
+    // Update tooltip for all presets
         const label = `Switch logo gradient. Current: ${preset.name}`;
         triggerEl.setAttribute('aria-label', label);
         triggerEl.setAttribute('data-tooltip', label);
-        }
+
+        // Ensure animation is enabled and visibly restarts
+        logo.classList.remove('no-animate');
+        try {
+            // Restart animation to ensure immediate motion after switch
+            logo.style.animation = 'none';
+            // Force reflow
+            // eslint-disable-next-line no-unused-expressions
+            logo.offsetHeight;
+            logo.style.animation = '';
+        } catch (_) {}
     }
 
-    // Apply the initial preset
+    // Always call applyPreset for the initial preset, but the function now handles default differently
     applyPreset(currentPresetIndex);
+    
     // Mark tooltip ready only after first application to avoid flash
     triggerEl.setAttribute('data-ready', '1');
 
