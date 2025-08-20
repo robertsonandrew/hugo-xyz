@@ -25,6 +25,7 @@
   {{- with (site.Params.quoteBanner.darkModeGradient | default .Params.quoteBanner.darkModeGradient) -}}
   --quote-banner-dark-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
   {{- end -}}
+  
 }
 </style>
 
@@ -66,10 +67,5 @@
   <link rel="stylesheet" href="{{ $switcherCSS.RelPermalink }}" integrity="{{ $switcherCSS.Data.Integrity }}">
 {{ end }}
 
-{{/* Load screensaver CSS early to avoid FOUC */}}
-{{ $screensaverCSS := resources.Get "css/screensaver.css" }}
-{{ if $screensaverCSS }}
-  {{ $screensaverCSS = $screensaverCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $screensaverCSS.RelPermalink }}" integrity="{{ $screensaverCSS.Data.Integrity }}">
-{{ end }}
+
 
