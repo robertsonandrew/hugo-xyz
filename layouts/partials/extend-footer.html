@@ -30,8 +30,6 @@
   <script src="{{ $quoteBannerJS.RelPermalink }}" integrity="{{ $quoteBannerJS.Data.Integrity }}" defer></script>
 {{ end }}
 
-<!-- Load screensaver JavaScript -->
-{{- partial "custom/screensaver-loader.html" . -}}
 
 {{ $logoSwitcherJS := resources.Get "js/logo-gradient-switcher.js" }}
 {{ if $logoSwitcherJS }}
