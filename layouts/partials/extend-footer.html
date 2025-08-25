@@ -36,3 +36,10 @@
   {{ $logoSwitcherJS = $logoSwitcherJS | js.Build | resources.Minify | resources.Fingerprint }}
   <script src="{{ $logoSwitcherJS.RelPermalink }}" integrity="{{ $logoSwitcherJS.Data.Integrity }}" defer></script>
 {{ end }}
+
+{{/* Screensaver JS - loaded site-wide */}}
+{{ $screensaverJS := resources.Get "js/screensaver.js" }}
+{{ if $screensaverJS }}
+  {{ $screensaverJS = $screensaverJS | js.Build | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $screensaverJS.RelPermalink }}" integrity="{{ $screensaverJS.Data.Integrity }}" defer></script>
+{{ end }}

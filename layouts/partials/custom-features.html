@@ -12,4 +12,7 @@
 {{/* Status Dot - Link to status page */}}
 {{- partial "custom/status-dot.html" . -}}
 
-{{/* Note: Screensaver HTML is included directly in baseof.html and JS/CSS is loaded via extend-head.html and extend-footer.html */}}
+{{/* Screensaver overlay + config */}}
+{{- partial "custom/screensaver.html" . -}}
+
+{{/* Note: Screensaver CSS is loaded via extend-head.html; JS via extend-footer.html */}}

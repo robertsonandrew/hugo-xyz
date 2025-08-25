@@ -53,6 +53,12 @@
   <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
 {{ end }}
 
+{{- /* Load screensaver CSS */ -}}
+{{ $ssCSS := resources.Get "css/screensaver.css" }}
+{{ if $ssCSS }}
+  <link rel="stylesheet" href="{{ $ssCSS.RelPermalink }}">
+{{ end }}
+
 {{- /* Load quote banner CSS early to avoid unstyled flashes */ -}}
 {{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
 {{ if $quoteBannerCSS }}

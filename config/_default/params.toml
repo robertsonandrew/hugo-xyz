@@ -49,16 +49,17 @@ defaultBackgroundColorDark = "#1f1f1fff"
 
 # -- Screensaver --
 [screensaver]
-  idleTimeout = 30000
-  starCount = 111
-  starMinSize = 1
-  starMaxSize = 4
-  starSpeed = 0.1
-  fadeDuration = 10000
-  backgroundOpacity = 0.95
-  pauseOnBlur = true #set false to keep screensaver "always alive" regardless of tab visibilty
-  showHint = true
-  parallaxIntensity = 0.2
+enabled = true
+idleTimeout = 5000
+fadeDuration = 10000
+backgroundOpacity = 0.95
+pauseOnBlur = false
+starCount = 100
+starMinSize = 0.5
+starMaxSize = 3
+motionSpeed = 0.15
+
+
 
 # -- Quote Banner ---
 [quoteBanner]
