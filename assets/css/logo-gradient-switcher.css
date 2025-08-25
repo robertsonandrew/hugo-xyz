@@ -45,14 +45,14 @@
 }
 
 /* Minimal tooltip (hover/focus), gated until JS sets data-ready */
-#logo-gradient-switcher-button[data-tooltip],
-#footer-author-trigger[data-tooltip] {
+#logo-gradient-switcher-button[data-logo-tooltip],
+#footer-author-trigger[data-logo-tooltip] {
   position: relative;
 }
 
-#logo-gradient-switcher-button[data-tooltip][data-ready="1"]::after,
-#footer-author-trigger[data-tooltip][data-ready="1"]::after {
-  content: attr(data-tooltip);
+#logo-gradient-switcher-button[data-logo-tooltip][data-ready="1"]::after,
+#footer-author-trigger[data-logo-tooltip][data-ready="1"]::after {
+  content: attr(data-logo-tooltip);
   position: absolute;
   left: 50%;
   bottom: 135%;
@@ -71,16 +71,16 @@
   z-index: 10;
 }
 
-.dark #logo-gradient-switcher-button[data-tooltip][data-ready="1"]::after,
-.dark #footer-author-trigger[data-tooltip][data-ready="1"]::after {
+.dark #logo-gradient-switcher-button[data-logo-tooltip][data-ready="1"]::after,
+.dark #footer-author-trigger[data-logo-tooltip][data-ready="1"]::after {
   background: var(--color-neutral-200);
   color: var(--color-neutral-900);
 }
 
-#logo-gradient-switcher-button[data-tooltip][data-ready="1"]:hover::after,
-#logo-gradient-switcher-button[data-tooltip][data-ready="1"]:focus-visible::after,
-#footer-author-trigger[data-tooltip][data-ready="1"]:hover::after,
-#footer-author-trigger[data-tooltip][data-ready="1"]:focus-visible::after {
+#logo-gradient-switcher-button[data-logo-tooltip][data-ready="1"]:hover::after,
+#logo-gradient-switcher-button[data-logo-tooltip][data-ready="1"]:focus-visible::after,
+#footer-author-trigger[data-logo-tooltip][data-ready="1"]:hover::after,
+#footer-author-trigger[data-logo-tooltip][data-ready="1"]:focus-visible::after {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);

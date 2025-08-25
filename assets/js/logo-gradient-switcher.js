@@ -137,8 +137,10 @@ function initLogoGradientSwitcher() {
 
     // Update tooltip for all presets
         const label = `Switch logo gradient. Current: ${preset.name}`;
+        // Always keep the accessible name current
         triggerEl.setAttribute('aria-label', label);
-        triggerEl.setAttribute('data-tooltip', label);
+        // Use a namespaced data attribute so theme-wide tooltip CSS doesn't target it
+        triggerEl.setAttribute('data-logo-tooltip', label);
 
         // Ensure animation is enabled and visibly restarts
         logo.classList.remove('no-animate');
@@ -152,11 +154,17 @@ function initLogoGradientSwitcher() {
         } catch (_) {}
     }
 
-    // Always call applyPreset for the initial preset, but the function now handles default differently
+    // Apply initial preset; defer enabling tooltip until user intent (hover/focus)
     applyPreset(currentPresetIndex);
-    
-    // Mark tooltip ready only after first application to avoid flash
-    triggerEl.setAttribute('data-ready', '1');
+
+    const enableTooltipOnce = () => {
+        try { triggerEl.setAttribute('data-ready', '1'); } catch (_) {}
+        triggerEl.removeEventListener('pointerenter', enableTooltipOnce);
+        triggerEl.removeEventListener('focus', enableTooltipOnce, true);
+    };
+    // Enable tooltip on first user intent to interact
+    triggerEl.addEventListener('pointerenter', enableTooltipOnce);
+    triggerEl.addEventListener('focus', enableTooltipOnce, true);
 
     // Handle trigger click
     const advance = (e) => {
