@@ -49,15 +49,15 @@ defaultBackgroundColorDark = "#1f1f1fff"
 
 # -- Screensaver --
 [screensaver]
-enabled = true
-idleTimeout = 5000
+enabled = false
+idleTimeout = 10000
 fadeDuration = 10000
-backgroundOpacity = 0.95
+backgroundOpacity = 0.90
 pauseOnBlur = false
 starCount = 100
-starMinSize = 0.5
+starMinSize = 1
 starMaxSize = 3
-motionSpeed = 0.15
+motionSpeed = 0.10
 
 
 

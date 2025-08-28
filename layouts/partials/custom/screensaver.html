@@ -14,6 +14,6 @@
 </div>
 
 {{/* Provide JSON config for JS to read (lowercase keys handled in JS) */}}
-<script id="screensaver-config" type="application/json">{{ $cfg | jsonify }}</script>
+<script id="screensaver-config" type="application/json">{{ $cfg | jsonify | safeJS }}</script>
 
 

@@ -1,0 +1,48 @@
+<script>
+  // Handle user preference for screensaver - wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('screensaver-toggle.html DOMContentLoaded');
+    window.screensaverConfig = window.screensaverConfig || {};
+
+    const userDisabled = localStorage.getItem('screensaverDisabled');
+    console.log('userDisabled from localStorage:', userDisabled);
+
+    if (userDisabled === 'true') {
+      // User has explicitly disabled screensaver
+      window.screensaverConfig.enabled = false;
+      console.log('Set screensaverConfig.enabled = false (user disabled)');
+    } else if (userDisabled === 'false') {
+      // User has explicitly enabled screensaver (overrides config)
+      window.screensaverConfig.enabled = true;
+      console.log('Set screensaverConfig.enabled = true (user enabled)');
+    } else {
+      // No user preference, read from JSON config
+      const cfgTag = document.getElementById('screensaver-config');
+      if (cfgTag) {
+        try {
+          const raw = cfgTag.textContent.trim();
+          let config = JSON.parse(raw);
+          if (typeof config === 'string') {
+            try { config = JSON.parse(config); } catch (e) { /* leave as-is */ }
+          }
+          console.log('Raw config.enabled:', config && config.enabled, 'type:', typeof (config && config.enabled));
+          window.screensaverConfig.enabled = config && (config.enabled === true || config.enabled === 'true');
+          console.log('Read from JSON config:', config, 'set enabled =', window.screensaverConfig.enabled);
+        } catch (e) {
+          // Fallback to false if parsing fails
+          window.screensaverConfig.enabled = false;
+          console.error('Failed to parse JSON config:', e);
+        }
+      } else {
+        console.log('No screensaver-config element found');
+      }
+    }
+  });
+</script>
+
+{{/* Load the JS that handles the click and reload */}}
+{{ $screensaverToggleJS := resources.Get "js/screensaver-toggle.js" }}
+{{ if $screensaverToggleJS }}
+  {{ $screensaverToggleJS = $screensaverToggleJS | js.Build | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $screensaverToggleJS.RelPermalink }}" integrity="{{ $screensaverToggleJS.Data.Integrity }}" defer></script>
+{{ end }}

@@ -53,10 +53,11 @@
   <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
 {{ end }}
 
-{{- /* Load screensaver CSS */ -}}
+{{- /* Load screensaver CSS once, minified & fingerprinted for integrity/cache-busting */ -}}
 {{ $ssCSS := resources.Get "css/screensaver.css" }}
 {{ if $ssCSS }}
-  <link rel="stylesheet" href="{{ $ssCSS.RelPermalink }}">
+  {{ $ssCSS = $ssCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $ssCSS.RelPermalink }}" integrity="{{ $ssCSS.Data.Integrity }}">
 {{ end }}
 
 {{- /* Load quote banner CSS early to avoid unstyled flashes */ -}}
@@ -72,6 +73,8 @@
   {{ $switcherCSS = $switcherCSS | resources.Minify | resources.Fingerprint }}
   <link rel="stylesheet" href="{{ $switcherCSS.RelPermalink }}" integrity="{{ $switcherCSS.Data.Integrity }}">
 {{ end }}
+
+{{- /* screensaver toggle CSS intentionally uses the same screensaver.css loaded above */ -}}
 
 
 

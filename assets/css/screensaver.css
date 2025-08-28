@@ -269,4 +269,15 @@
   opacity: 0.6;
 }
 
+/* Screensaver Toggle */
+
+#copyright-year {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#copyright-year.disabled {
+  color: rgb(0, 0, 0); /* subtle disable  */
+}
+
 

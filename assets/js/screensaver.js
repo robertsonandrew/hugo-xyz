@@ -37,6 +37,8 @@ if (typeof config === 'string') {
 	}
 }
 
+
+
 // Config values (keys lowercased by Hugo)
 const IDLE_TIMEOUT = config.idletimeout !== undefined ? config.idletimeout : 15000;
 const FADE_DURATION = config.fadeduration !== undefined ? config.fadeduration : 10000;
@@ -54,15 +56,38 @@ const DEFAULT_PARALLAX_INTENSITY = config.parallaxintensity !== undefined ? Math
 let parallaxIntensity = DEFAULT_PARALLAX_INTENSITY;
 const PAUSE_ON_BLUR = config.pauseonblur !== undefined ? !!config.pauseonblur : true;
 const SHOW_HINT = config.showhint !== undefined ? !!config.showhint : true;
-const ENABLED = config.enabled !== undefined ? !!config.enabled : true;
+
+// Function to get the current enabled state (checks live config)
+function getCurrentEnabledState() {
+	// Check window.screensaverConfig first (may be modified by toggle)
+	if (window.screensaverConfig && typeof window.screensaverConfig.enabled === 'boolean') {
+		return window.screensaverConfig.enabled;
+	}
+
+	// Fallback to localStorage toggle
+	const userDisabled = localStorage.getItem('screensaverDisabled') === 'true';
+	if (userDisabled) return false;
+
+	// Finally check original config setting
+	return config.enabled !== undefined ? Boolean(config.enabled) : true;
+}
+
+// Function to check if screensaver is actually enabled (respects both config and localStorage)
+function isScreensaverEnabled() {
+	return getCurrentEnabledState();
+}
 // Legacy constant for backward compatibility
 const PARALLAX_INTENSITY = DEFAULT_PARALLAX_INTENSITY;
 // Gravity removed in simplified version; legacy param ignored if present
 const GRAVITY_STRENGTH = 0;
 // spawn fade removed for simplicity
 
-let effectiveStarCount = ENABLED ? STAR_COUNT : 0;
+// Function to update effective star count based on current enabled state
+function updateEffectiveStarCount() {
+	effectiveStarCount = getCurrentEnabledState() ? STAR_COUNT : 0;
+}
 
+let effectiveStarCount = 0;
 let idleTimer = null;
 let screensaverActive = false;
 let fadeStart = null;
@@ -293,6 +318,11 @@ function drawStarfield(ctx, width, height, centerX, centerY) {
 }
 
 function showScreensaver() {
+	// Don't show screensaver if it's disabled
+	if (!isScreensaverEnabled()) {
+		return;
+	}
+
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	const canvas = document.getElementById(CANVAS_ID);
 	if (!overlay || !canvas) return;
@@ -377,6 +407,32 @@ function resetIdleTimer() {
 	idleTimer = setTimeout(showScreensaver, IDLE_TIMEOUT);
 }
 
+// Function to dynamically update screensaver state (called by toggle)
+function updateScreensaverState() {
+	const wasEnabled = effectiveStarCount > 0;
+	updateEffectiveStarCount(); // Update based on current config
+	const nowEnabled = getCurrentEnabledState();
+
+	if (wasEnabled !== nowEnabled) {
+		if (nowEnabled) {
+			// If newly enabled, start the idle timer
+			resetIdleTimer();
+		} else {
+			// If newly disabled, clear any existing timer and hide if active
+			if (idleTimer) {
+				clearTimeout(idleTimer);
+				idleTimer = null;
+			}
+			if (screensaverActive) {
+				hideScreensaver();
+			}
+		}
+	}
+}
+
+// Make updateScreensaverState available globally for the toggle script
+window.updateScreensaverState = updateScreensaverState;
+
 window.addEventListener('mousemove', (e) => {
 	resetIdleTimer();
 	// Enhanced mouse position tracking for parallax effect
@@ -445,7 +501,12 @@ window.addEventListener('focus', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-	resetIdleTimer();
+	// Initialize effective star count and only start idle timer if enabled
+	updateEffectiveStarCount();
+	if (getCurrentEnabledState()) {
+		resetIdleTimer();
+	}
+
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	if (overlay) {
 		// Inject hint element if configured
