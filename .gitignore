@@ -8,7 +8,6 @@ resources/_gen/
 # Personal documentation (not for version control)
 README_BACKUP.md
 README_v2.md
-README.md
 TODO.md
 
 # Environment variables & secrets (IMPORTANT!)
