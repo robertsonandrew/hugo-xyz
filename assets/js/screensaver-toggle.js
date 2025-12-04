@@ -16,53 +16,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Set initial visual state based on whether screensaver is currently enabled
   function updateVisualState() {
-    const userPreference = localStorage.getItem('screensaverDisabled');
+  const userPreference = sessionStorage.getItem('screensaverDisabled');
     let isEnabled = false;
 
-    console.log('updateVisualState - userPreference:', userPreference);
-    console.log('window.screensaverConfig:', window.screensaverConfig);
+    // Debug info removed for production
 
     if (userPreference === 'false') {
       // User explicitly enabled it
       isEnabled = true;
-      console.log('User explicitly enabled screensaver');
+      // User explicitly enabled screensaver
     } else if (userPreference === 'true') {
       // User explicitly disabled it
       isEnabled = false;
-      console.log('User explicitly disabled screensaver');
+      // User explicitly disabled screensaver
     } else {
-      // No user preference, read config from JSON script tag
-      const cfgTag = document.getElementById('screensaver-config');
-      if (cfgTag) {
-        try {
-          // JSON on the page may be double-encoded ("{...}"), so parse defensively.
-          const raw = cfgTag.textContent.trim();
-          let config = JSON.parse(raw);
-          if (typeof config === 'string') {
-            // second parse to unwrap double-encoded JSON
-            try { config = JSON.parse(config); } catch (e) { /* keep original string */ }
-          }
-          console.log('Raw config.enabled:', config && config.enabled, 'type:', typeof (config && config.enabled));
-          isEnabled = config && (config.enabled === true || config.enabled === 'true');
-          console.log('Read from JSON config:', config, 'isEnabled:', isEnabled);
-        } catch (e) {
-          console.error('Failed to parse JSON config:', e);
-          isEnabled = false;
-        }
-      } else {
-        console.log('No screensaver-config element found');
+      // No user preference, read config from JSON script tag (use shared helper when available)
+      try {
+        const config = (typeof window.parseScreensaverConfig === 'function') ? window.parseScreensaverConfig() : (function() {
+          const cfgTag = document.getElementById('screensaver-config');
+          if (!cfgTag) return {};
+          try { return JSON.parse(cfgTag.textContent.trim()); } catch (e) { return {}; }
+        })();
+        // Parse config enabled state
+        isEnabled = config && (config.enabled === true || config.enabled === 'true');
+      } catch (e) {
+        console.error('Failed to parse JSON config:', e);
+        isEnabled = false;
       }
     }
-
-    console.log('Final isEnabled:', isEnabled);
 
     // Show disabled state if screensaver is not enabled
     if (!isEnabled) {
       yearSpan.classList.add('disabled');
-      console.log('Added disabled class to copyright year');
     } else {
       yearSpan.classList.remove('disabled');
-      console.log('Removed disabled class from copyright year');
     }
   }
 
@@ -70,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
   updateVisualState();
 
   yearSpan.addEventListener('click', () => {
-    const userPreference = localStorage.getItem('screensaverDisabled');
+  const userPreference = sessionStorage.getItem('screensaverDisabled');
 
     // Determine current enabled state
     let isCurrentlyEnabled = false;
@@ -79,32 +66,25 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (userPreference === 'true') {
       isCurrentlyEnabled = false;
       } else {
-        // No user preference, read config from JSON script tag (defensive parse)
-        const cfgTag = document.getElementById('screensaver-config');
-        if (cfgTag) {
-          try {
-            const raw = cfgTag.textContent.trim();
-            let config = JSON.parse(raw);
-            if (typeof config === 'string') {
-              try { config = JSON.parse(config); } catch (e) { /* leave as-is */ }
-            }
-            isCurrentlyEnabled = config && (config.enabled === true || config.enabled === 'true');
-          } catch (e) {
-            console.error('Failed to parse screensaver config for click handler:', e);
-            isCurrentlyEnabled = false;
-          }
+        // No user preference, read config from JSON script tag (use shared helper when available)
+        try {
+          const config = (typeof window.parseScreensaverConfig === 'function') ? window.parseScreensaverConfig() : {};
+          isCurrentlyEnabled = config && (config.enabled === true || config.enabled === 'true');
+        } catch (e) {
+          console.error('Failed to parse screensaver config for click handler:', e);
+          isCurrentlyEnabled = false;
         }
       }
 
     if (isCurrentlyEnabled) {
       // User wants to DISABLE screensaver
-      localStorage.setItem('screensaverDisabled', 'true');
+  sessionStorage.setItem('screensaverDisabled', 'true');
       if (window.screensaverConfig) {
         window.screensaverConfig.enabled = false;
       }
     } else {
       // User wants to ENABLE screensaver
-      localStorage.setItem('screensaverDisabled', 'false');
+  sessionStorage.setItem('screensaverDisabled', 'false');
       if (window.screensaverConfig) {
         window.screensaverConfig.enabled = true;
       }

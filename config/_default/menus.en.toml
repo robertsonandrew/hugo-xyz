@@ -4,11 +4,6 @@
   weight = 10
 
 [[main]]
-  name = "Blog"
-  pageRef = "/blog"
-  weight = 20
-
-[[main]]
   name = "Docs"
   pageRef = "/docs"
-  weight = 30
+  weight = 20

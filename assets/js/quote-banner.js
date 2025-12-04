@@ -193,8 +193,8 @@ class QuoteBanner {
   const raw = String(quote.text || '');
   const clipped = (max > 0 && raw.length > max) ? raw.slice(0, Math.max(0, max - 1)).trimEnd() + '…' : raw;
   this.elements.textEl.textContent = `"${clipped}"`;
-        const showAuthor = quote && quote.category === 'quotes' && quote.author;
-        this.elements.authorEl.textContent = showAuthor ? `— ${quote.author}` : '';
+        // Hide all authors for cleaner, consistent appearance
+        this.elements.authorEl.textContent = '';
         this.elements.quoteContent.classList.remove('fade');
         resolve();
       }, 400);

@@ -19,14 +19,42 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
+// Load .env file if it exists
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    line = line.trim();
+    if (line && !line.startsWith('#')) {
+      const [key, ...valueParts] = line.split('=');
+      if (key && valueParts.length > 0) {
+        const value = valueParts.join('=').trim();
+        if (!process.env[key]) {
+          process.env[key] = value;
+        }
+      }
+    }
+  });
+}
+
 // Configuration
 const QUOTES_FILE = path.join(__dirname, '..', 'data', 'quotes.json');
-const API_KEY = process.env.API_NINJAS_KEY || 'lD0ZnWbn5+h9fBVTsfpnog==wz6e6diLupIYn9o6'; // TEMPORARY: Replace with your actual key
-const ADVICE_LIMIT = Number(process.env.ADVICE_LIMIT || 10);
+const API_KEY = process.env.API_NINJAS_KEY;
+const ADVICE_LIMIT = Number(process.env.ADVICE_LIMIT || 30);
 const DADJOKES_LIMIT = Number(process.env.DADJOKES_LIMIT || 10);
-const QUOTES_LIMIT = Number(process.env.QUOTES_LIMIT || 10);
+const QUOTES_LIMIT = Number(process.env.QUOTES_LIMIT || 5);
 const MAX_LENGTH = Number(process.env.MAX_LENGTH || 140); // Filter quotes by length during processing
 const REQUEST_TIMEOUT_MS = 10000;
+
+// Validate API key
+if (!API_KEY) {
+  console.error('❌ Error: API_NINJAS_KEY environment variable is required.');
+  console.error('\nUsage:');
+  console.error('  API_NINJAS_KEY=your_key node scripts/update-quotes.js');
+  console.error('\nOr create a .env file in the scripts directory with:');
+  console.error('  API_NINJAS_KEY=your_key');
+  process.exit(1);
+}
 
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {

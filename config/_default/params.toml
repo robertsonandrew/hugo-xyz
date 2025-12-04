@@ -20,7 +20,7 @@ disableTextInHeader = true
 # -- Custom Logo --
 customLogo = "arobertsonxyz"
 logoStyle = "gradient"
-logoGradientStops = ["#496affff", "#a76ee0ff", "#764ba2"]
+logoGradientStops = ["#ffffff", "#ffffff", "#ffffff"]
 logoGradientAngle = 120
 logoAnimationSpeed = "2s"
 logoAnimate = true
@@ -35,7 +35,10 @@ defaultBackgroundColorDark = "#1f1f1fff"
 
 # -- Logo Gradient Presets --
 [[logo.presets]]
-  name = "Default"
+  name = "White"
+  stops = ["#ffffff", "#ffffff", "#ffffff"]
+[[logo.presets]]
+  name = "Blue Gradient"
   stops = ["#496affff", "#a76ee0ff", "#764ba2"]
 [[logo.presets]]
   name = "Sunrise"
@@ -49,15 +52,15 @@ defaultBackgroundColorDark = "#1f1f1fff"
 
 # -- Screensaver --
 [screensaver]
-enabled = false
-idleTimeout = 10000
-fadeDuration = 10000
-backgroundOpacity = 0.90
-pauseOnBlur = false
-starCount = 100
+enabled = true
+idleTimeout = 45000
+fadeDuration = 8000
+backgroundOpacity = 0.75
+pauseOnBlur = true
+starCount = 75
 starMinSize = 1
 starMaxSize = 3
-motionSpeed = 0.10
+motionSpeed = 0.08
 
 
 
@@ -94,7 +97,7 @@ forgejoDefaultServer = "https://v11.next.forgejo.org"
 
 [homepage]
   layout = "custom" #layouts/partials/home/custom.html 
-  showRecent = true
+  showRecent = false
   showRecentItems = 5
   showMoreLink = false
   showMoreLinkDest = "/posts/"

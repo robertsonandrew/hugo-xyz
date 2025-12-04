@@ -277,7 +277,8 @@
 }
 
 #copyright-year.disabled {
-  color: rgb(0, 0, 0); /* subtle disable  */
+  opacity: 0.5;
+  /* color: rgb(0, 0, 0); /* subtle disable  */
 }
 
 

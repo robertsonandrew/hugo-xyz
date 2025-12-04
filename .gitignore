@@ -1,5 +1,28 @@
+# macOS system files
 **/.DS_Store
+
+# Hugo generated files
 public/
-.DS_Store
 resources/_gen/
 
+# Personal documentation (not for version control)
+README_BACKUP.md
+README_v2.md
+README.md
+TODO.md
+
+# Environment variables & secrets (IMPORTANT!)
+.env
+.env.local
+.env.*.local
+scripts/.env
+**/api-keys.txt
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if using npm scripts)
+node_modules/

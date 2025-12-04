@@ -1,7 +1,7 @@
 /* Custom Logo Styling: Gradient (default) */
 /* The default gradient class uses CSS variables (overridable inline) */
 .logo.custom-logo-text {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; /* Fast system stack */
+  font-family: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; /* Space Grotesk with system fallbacks */
   font-size: 1.5rem; /* Increase size from 2xl (1.5rem) to 2.5rem */
   font-weight: 800; /* Extra bold */
   line-height: 1.2; /* Ensure proper line height */

@@ -4,17 +4,17 @@
     console.log('screensaver-toggle.html DOMContentLoaded');
     window.screensaverConfig = window.screensaverConfig || {};
 
-    const userDisabled = localStorage.getItem('screensaverDisabled');
-    console.log('userDisabled from localStorage:', userDisabled);
+  const userDisabled = sessionStorage.getItem('screensaverDisabled');
+  console.log('userDisabled from sessionStorage:', userDisabled);
 
     if (userDisabled === 'true') {
       // User has explicitly disabled screensaver
       window.screensaverConfig.enabled = false;
-      console.log('Set screensaverConfig.enabled = false (user disabled)');
+      console.log('Set screensaverConfig.enabled = false (user disabled - session)');
     } else if (userDisabled === 'false') {
       // User has explicitly enabled screensaver (overrides config)
       window.screensaverConfig.enabled = true;
-      console.log('Set screensaverConfig.enabled = true (user enabled)');
+      console.log('Set screensaverConfig.enabled = true (user enabled - session)');
     } else {
       // No user preference, read from JSON config
       const cfgTag = document.getElementById('screensaver-config');

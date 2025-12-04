@@ -137,34 +137,31 @@ function initLogoGradientSwitcher() {
 
     // Update tooltip for all presets
         const label = `Switch logo gradient. Current: ${preset.name}`;
-        // Always keep the accessible name current
-        triggerEl.setAttribute('aria-label', label);
-        // Use a namespaced data attribute so theme-wide tooltip CSS doesn't target it
-        triggerEl.setAttribute('data-logo-tooltip', label);
+    // Always keep the accessible name current
+    triggerEl.setAttribute('aria-label', label);
+    // Do NOT set a visual tooltip attribute; keep the control subtle while retaining ARIA.
 
-        // Ensure animation is enabled and visibly restarts
+        // Ensure animation is enabled and visibly restarts (debounced to avoid forced reflow thrash)
         logo.classList.remove('no-animate');
-        try {
-            // Restart animation to ensure immediate motion after switch
-            logo.style.animation = 'none';
-            // Force reflow
-            // eslint-disable-next-line no-unused-expressions
-            logo.offsetHeight;
-            logo.style.animation = '';
-        } catch (_) {}
+        // Debounced restart helper
+        if (!window.__logoAnimationRestartDebounce) window.__logoAnimationRestartDebounce = null;
+        const restartAnimation = () => {
+            try {
+                logo.style.animation = 'none';
+                // Force reflow once
+                // eslint-disable-next-line no-unused-expressions
+                logo.offsetHeight;
+                logo.style.animation = '';
+            } catch (_) {}
+        };
+        if (window.__logoAnimationRestartDebounce) clearTimeout(window.__logoAnimationRestartDebounce);
+        window.__logoAnimationRestartDebounce = setTimeout(restartAnimation, 60);
     }
 
     // Apply initial preset; defer enabling tooltip until user intent (hover/focus)
     applyPreset(currentPresetIndex);
 
-    const enableTooltipOnce = () => {
-        try { triggerEl.setAttribute('data-ready', '1'); } catch (_) {}
-        triggerEl.removeEventListener('pointerenter', enableTooltipOnce);
-        triggerEl.removeEventListener('focus', enableTooltipOnce, true);
-    };
-    // Enable tooltip on first user intent to interact
-    triggerEl.addEventListener('pointerenter', enableTooltipOnce);
-    triggerEl.addEventListener('focus', enableTooltipOnce, true);
+    // No visual tooltip behavior required; do not attach pointerenter/focus listeners.
 
     // Handle trigger click
     const advance = (e) => {

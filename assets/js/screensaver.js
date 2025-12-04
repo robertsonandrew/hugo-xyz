@@ -12,11 +12,29 @@ const SCREENSAVER_ID = 'screensaver';
 const CANVAS_ID = 'screensaver-canvas';
 
 let config = window.screensaverConfig || {};
-if (!Object.keys(config).length) {
+
+// Defensive config parser: reads #screensaver-config and handles double-encoded JSON
+function parseScreensaverConfigFromTag() {
 	const cfgTag = document.getElementById('screensaver-config');
-	if (cfgTag) {
-		try { config = JSON.parse(cfgTag.textContent.trim()); } catch (e) { /* ignore */ }
+	if (!cfgTag) return {};
+	try {
+		const raw = cfgTag.textContent.trim();
+		let parsed = JSON.parse(raw);
+		if (typeof parsed === 'string') {
+			try { parsed = JSON.parse(parsed); } catch (e) { /* keep string */ }
+		}
+		return parsed && typeof parsed === 'object' ? parsed : {};
+	} catch (e) {
+		return {};
 	}
+}
+
+// Expose helper for other modules
+window.parseScreensaverConfig = parseScreensaverConfigFromTag;
+
+if (!Object.keys(config).length) {
+	const parsed = parseScreensaverConfigFromTag();
+	if (parsed && Object.keys(parsed).length) config = parsed;
 }
 // Normalize keys to lowercase (Hugo params can vary in case)
 if (config && typeof config === 'object') {
@@ -64,8 +82,8 @@ function getCurrentEnabledState() {
 		return window.screensaverConfig.enabled;
 	}
 
-	// Fallback to localStorage toggle
-	const userDisabled = localStorage.getItem('screensaverDisabled') === 'true';
+	// Fallback to sessionStorage toggle (session-only preference)
+	const userDisabled = sessionStorage.getItem('screensaverDisabled') === 'true';
 	if (userDisabled) return false;
 
 	// Finally check original config setting

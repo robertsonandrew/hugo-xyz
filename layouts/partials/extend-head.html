@@ -1,80 +1,73 @@
 <!-- eslint-disable -->
 <!-- @format:off -->
 
+{{/* Load Space Grotesk font from Google Fonts */}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{{/* Inject CSS Variables for Logo Gradients & Backgrounds */}}
 <style>
 :root {
-  --logo-gradient-angle: {{ default 135 (site.Params.logoGradientAngle | default .Params.logoGradientAngle) }}deg;
-  --logo-gradient-speed: {{ default "6s" (site.Params.logoAnimationSpeed | default .Params.logoAnimationSpeed) }};
-  {{- with (site.Params.logoGradientStops | default .Params.logoGradientStops) -}}
-  --logo-gradient-stops: {{ delimit . "," }};
-  {{- end -}}
-
-  {{- with (site.Params.defaultBackgroundImage | default .Params.defaultBackgroundImage) -}}
-  --bg-image: url('{{ . | relURL }}');
+  --logo-gradient-angle: {{ .Params.logoGradientAngle | default 120 }}deg;
+  --logo-gradient-speed: {{ .Params.logoAnimationSpeed | default "2s" }};
+  {{- $stops := .Params.logoGradientStops | default (slice "#ffffff" "#ffffff" "#ffffff") -}}
+  {{- $stopsStr := delimit $stops "," -}}
+  --logo-gradient-stops: {{ $stopsStr }};
+  {{- if .Params.backgroundImageURL -}}
+  --bg-image: url('{{ .Params.backgroundImageURL }}');
   {{- else -}}
   --bg-image: none;
   {{- end -}}
-
-  --bg-color-light: {{ default "#CCCCCC" (site.Params.defaultBackgroundColorLight | default .Params.defaultBackgroundColorLight) }};
-  --bg-color-dark: {{ default "#222222" (site.Params.defaultBackgroundColorDark | default .Params.defaultBackgroundColorDark) }};
-
-  {{- /* Quote Banner Gradient Variables */ -}}
-  {{- with (site.Params.quoteBanner.lightModeGradient | default .Params.quoteBanner.lightModeGradient) -}}
-  --quote-banner-light-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
+  --bg-color-light: {{ .Params.defaultBackgroundColorLight | default "#CCCCCC" }};
+  --bg-color-dark: {{ .Params.defaultBackgroundColorDark | default "#1f1f1fff" }};
+  {{- with .Params.quoteBanner -}}
+  {{- if .lightModeGradient -}}
+  {{- $lightStops := delimit .lightModeGradient ", " -}}
+  --quote-banner-light-gradient: linear-gradient(135deg, {{ $lightStops }});
   {{- end -}}
-  {{- with (site.Params.quoteBanner.darkModeGradient | default .Params.quoteBanner.darkModeGradient) -}}
-  --quote-banner-dark-gradient: linear-gradient(135deg, {{ range $i, $color := . }}{{ if $i }}, {{ end }}{{ $color }}{{ end }});
+  {{- if .darkModeGradient -}}
+  {{- $darkStops := delimit .darkModeGradient ", " -}}
+  --quote-banner-dark-gradient: linear-gradient(135deg, {{ $darkStops }});
   {{- end -}}
-  
+  {{- end -}}
 }
 </style>
 
-
-<!-- Early init: apply saved logo gradient before first paint to prevent flash -->
+{{/* Early-load saved gradient from localStorage for FOUC prevention */}}
 <script>
   (function () {
     try {
       var savedStops = localStorage.getItem('logoGradientStops');
       if (savedStops) {
-        // Apply immediately so initial paint uses the chosen preset
+        {{/* Apply saved gradient immediately to prevent flash */}}
         document.documentElement.style.setProperty('--logo-gradient-stops', savedStops);
       }
     } catch (e) {
-      // localStorage might be unavailable; ignore and use defaults
+      {{/* Silently fail if localStorage is unavailable */}}
     }
   })();
-  // Note: main switcher JS still runs later to wire up interactions
+  {{/* JS intentionally runs synchronously to prevent FOUC */}}
 </script>
 
-
-{{- /* Load custom CSS */ -}}
+{{- /* Bundle all custom CSS files together for performance */ -}}
 {{ $customCSS := resources.Get "css/custom.css" }}
-{{ if $customCSS }}
-  <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
-{{ end }}
-
-{{- /* Load screensaver CSS once, minified & fingerprinted for integrity/cache-busting */ -}}
 {{ $ssCSS := resources.Get "css/screensaver.css" }}
-{{ if $ssCSS }}
-  {{ $ssCSS = $ssCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $ssCSS.RelPermalink }}" integrity="{{ $ssCSS.Data.Integrity }}">
-{{ end }}
-
-{{- /* Load quote banner CSS early to avoid unstyled flashes */ -}}
 {{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
-{{ if $quoteBannerCSS }}
-  {{ $quoteBannerCSS = $quoteBannerCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $quoteBannerCSS.RelPermalink }}" integrity="{{ $quoteBannerCSS.Data.Integrity }}">
-{{ end }}
-
-{{/* Inject Logo Gradient Switcher CSS */}}
 {{ $switcherCSS := resources.Get "css/logo-gradient-switcher.css" }}
-{{ if $switcherCSS }}
-  {{ $switcherCSS = $switcherCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $switcherCSS.RelPermalink }}" integrity="{{ $switcherCSS.Data.Integrity }}">
-{{ end }}
 
-{{- /* screensaver toggle CSS intentionally uses the same screensaver.css loaded above */ -}}
+{{- /* Create a slice of all CSS resources that exist */ -}}
+{{ $cssFiles := slice }}
+{{ if $customCSS }}{{ $cssFiles = $cssFiles | append $customCSS }}{{ end }}
+{{ if $ssCSS }}{{ $cssFiles = $cssFiles | append $ssCSS }}{{ end }}
+{{ if $quoteBannerCSS }}{{ $cssFiles = $cssFiles | append $quoteBannerCSS }}{{ end }}
+{{ if $switcherCSS }}{{ $cssFiles = $cssFiles | append $switcherCSS }}{{ end }}
+
+{{- /* Concatenate, minify, and fingerprint all CSS into one bundle */ -}}
+{{ if gt (len $cssFiles) 0 }}
+  {{ $bundledCSS := $cssFiles | resources.Concat "css/custom-bundle.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $bundledCSS.RelPermalink }}" integrity="{{ $bundledCSS.Data.Integrity }}">
+{{ end }}
 
 
 
