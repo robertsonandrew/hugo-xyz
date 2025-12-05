@@ -559,16 +559,60 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Wire opacity slider controls
 		const sliderWrap = document.getElementById('screensaver-opacity-wrap');
 		const slider = document.getElementById('screensaver-opacity-slider');
+		const valueDisplay = document.getElementById('screensaver-opacity-value');
+		let sliderTimeout;
+		
 		if (sliderWrap && slider) {
 			// Hidden by default until screensaver shows
 			sliderWrap.style.display = 'none';
+			
+			// Detect if device is touch-enabled
+			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+			
+			// Function to show slider and reset auto-hide timer
+			const showSliderControls = () => {
+				sliderWrap.classList.add('visible');
+				clearTimeout(sliderTimeout);
+				sliderTimeout = setTimeout(() => {
+					sliderWrap.classList.remove('visible');
+				}, isTouchDevice ? 5000 : 3000); // Longer timeout on mobile
+			};
+			
+			// Show slider on interaction
+			sliderWrap.addEventListener('mouseenter', showSliderControls);
+			sliderWrap.addEventListener('mousemove', showSliderControls);
+			sliderWrap.addEventListener('touchstart', (e) => {
+				showSliderControls();
+				// On mobile, tapping the icon should toggle visibility
+				if (!sliderWrap.classList.contains('visible')) {
+					e.preventDefault();
+					sliderWrap.classList.add('visible');
+				}
+			});
+			
 			// Prevent clicks on slider from closing the overlay
 			['click','mousedown','mouseup','touchstart','touchend'].forEach(evt => {
 				sliderWrap.addEventListener(evt, (e) => { e.stopPropagation(); }, { passive: false });
 			});
-			// Update user opacity live
+			
+			// Update user opacity live with percentage display
 			slider.addEventListener('input', () => {
 				overlay.dataset.userOpacity = slider.value;
+				
+				// Update percentage display
+				if (valueDisplay) {
+					const percent = Math.round(parseFloat(slider.value) * 100);
+					valueDisplay.textContent = `${percent}%`;
+				}
+				
+				// Reset auto-hide timer
+				showSliderControls();
+				
+				// Immediate visual feedback
+				if (screensaverActive && fadeAlpha >= 1) {
+					const opacity = parseFloat(slider.value);
+					overlay.style.background = `rgba(0,0,0,${opacity})`;
+				}
 			});
 		}
 

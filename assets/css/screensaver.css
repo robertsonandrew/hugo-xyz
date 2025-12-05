@@ -62,9 +62,34 @@
   padding: 15px;
   border-radius: 50%;
   background-color: transparent;
+  transition: opacity 0.3s ease;
 }
 
+#screensaver-opacity-wrap:not(.visible) {
+  opacity: 0.3;
+}
 
+#screensaver-opacity-wrap.visible {
+  opacity: 1;
+}
+
+#screensaver-opacity-value {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s ease;
+  margin-bottom: -4px;
+}
+
+#screensaver-opacity-wrap.visible #screensaver-opacity-value {
+  height: 16px;
+  opacity: 1;
+}
 
 #screensaver-opacity-icon {
   width: 10px;
@@ -76,7 +101,24 @@
   transition: all 0.3s cubic-bezier(0.4, 0.12, 0.2, 1);
 }
 
-#screensaver-opacity-wrap:hover #screensaver-opacity-icon {
+/* Mobile: Make icon more visible and tappable */
+@media (max-width: 768px) {
+  #screensaver-opacity-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.25;
+    border-width: 2px;
+  }
+  
+  #screensaver-opacity-wrap {
+    padding: 20px;
+    right: 8px;
+    bottom: 8px;
+  }
+}
+
+#screensaver-opacity-wrap:hover #screensaver-opacity-icon,
+#screensaver-opacity-wrap.visible #screensaver-opacity-icon {
   opacity: 0.4;
   border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.05);
@@ -95,7 +137,8 @@
   padding: 0;
 }
 
-#screensaver-opacity-wrap:hover #screensaver-opacity-slider-wrap {
+#screensaver-opacity-wrap:hover #screensaver-opacity-slider-wrap,
+#screensaver-opacity-wrap.visible #screensaver-opacity-slider-wrap {
   height: 150px;
   opacity: 1;
 }
@@ -166,6 +209,23 @@
   backdrop-filter: blur(2px);
   transition: all 0.25s cubic-bezier(0.4, 0.12, 0.2, 1);
   cursor: grab;
+}
+
+/* Mobile: Larger touch target */
+@media (max-width: 768px) {
+  #screensaver-opacity-slider::-webkit-slider-thumb {
+    width: 32px;
+    height: 32px;
+    margin-top: -10px;
+  }
+  
+  #screensaver-opacity-value {
+    font-size: 14px;
+  }
+  
+  #screensaver-opacity-slider {
+    height: 16px;
+  }
 }
 
 #screensaver-opacity-slider:hover::-webkit-slider-thumb {
