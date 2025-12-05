@@ -361,6 +361,10 @@ function showScreensaver() {
 	const slider = document.getElementById('screensaver-opacity-slider');
 	if (sliderWrap && slider) {
 		sliderWrap.style.display = 'flex';
+		// Add visible class to trigger CSS animation
+		setTimeout(() => {
+			sliderWrap.classList.add('visible');
+		}, 50);
 		// Reset to config default on each show
 		try {
 			slider.value = String(BACKGROUND_OPACITY);
