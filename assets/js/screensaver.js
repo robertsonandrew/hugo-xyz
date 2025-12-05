@@ -560,78 +560,142 @@ document.addEventListener('DOMContentLoaded', () => {
 		const sliderWrap = document.getElementById('screensaver-opacity-wrap');
 		const slider = document.getElementById('screensaver-opacity-slider');
 		const valueDisplay = document.getElementById('screensaver-opacity-value');
+		const sliderSection = document.getElementById('screensaver-opacity-slider-wrap');
+		const presetButtons = document.querySelectorAll('.opacity-preset');
+		const sliderLabel = document.getElementById('screensaver-opacity-label');
 		let sliderTimeout;
+		let sliderExpanded = false;
 		
-		if (sliderWrap && slider) {
+		if (sliderWrap && slider && presetButtons.length > 0) {
 			// Hidden by default until screensaver shows
 			sliderWrap.style.display = 'none';
 			
 			// Detect if device is touch-enabled
 			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 			
-			// Function to show slider and reset auto-hide timer
+			// Load saved opacity from localStorage
+			const savedOpacity = localStorage.getItem('screensaverOpacity');
+			if (savedOpacity !== null) {
+				const opacity = parseFloat(savedOpacity);
+				slider.value = opacity;
+				if (valueDisplay) {
+					valueDisplay.textContent = `${Math.round(opacity * 100)}%`;
+				}
+			}
+			
+			// Function to update active preset button
+			const updateActivePreset = (value) => {
+				const opacity = parseFloat(value);
+				presetButtons.forEach(btn => {
+					const presetValue = parseFloat(btn.dataset.opacity);
+					if (Math.abs(presetValue - opacity) < 0.01) {
+						btn.classList.add('active');
+					} else {
+						btn.classList.remove('active');
+					}
+				});
+			};
+			
+			// Function to show controls and reset auto-hide timer
 			const showSliderControls = () => {
 				sliderWrap.classList.add('visible');
 				clearTimeout(sliderTimeout);
 				sliderTimeout = setTimeout(() => {
 					sliderWrap.classList.remove('visible');
-				}, isTouchDevice ? 5000 : 3000); // Longer timeout on mobile
+					sliderSection.classList.remove('visible');
+					sliderExpanded = false;
+				}, isTouchDevice ? 8000 : 5000); // Longer timeout on mobile
 			};
 			
-			// Show slider on interaction
-			sliderWrap.addEventListener('mouseenter', showSliderControls);
-			sliderWrap.addEventListener('mousemove', showSliderControls);
-			sliderWrap.addEventListener('touchstart', (e) => {
-				showSliderControls();
-				// On mobile, tapping the icon should toggle visibility
-				if (!sliderWrap.classList.contains('visible')) {
-					e.preventDefault();
-					sliderWrap.classList.add('visible');
-				}
-			});
-			
-			// Add tap-anywhere functionality for mobile with expanded touch area
-			if (isTouchDevice) {
-				sliderWrap.addEventListener('touchstart', function(e) {
-					// Expand the touch area when tapped
-					this.style.padding = '30px';
-					this.style.margin = '-30px';
+			// Preset button click handlers
+			presetButtons.forEach(btn => {
+				btn.addEventListener('click', (e) => {
+					e.stopPropagation();
+					const opacity = btn.dataset.opacity;
+					slider.value = opacity;
+					overlay.dataset.userOpacity = opacity;
+					
+					// Update display
+					if (valueDisplay) {
+						const percent = Math.round(parseFloat(opacity) * 100);
+						valueDisplay.textContent = `${percent}%`;
+					}
+					
+					// Update active state
+					updateActivePreset(opacity);
+					
+					// Save to localStorage
+					localStorage.setItem('screensaverOpacity', opacity);
+					
+					// Apply immediately
+					if (screensaverActive && fadeAlpha >= 1) {
+						const opacityValue = parseFloat(opacity);
+						overlay.style.background = `rgba(0,0,0,${opacityValue})`;
+					}
+					
+					// Reset auto-hide timer
 					showSliderControls();
 				});
-				
-				sliderWrap.addEventListener('touchend', function(e) {
-					// Reset padding after a delay
-					setTimeout(() => {
-						this.style.padding = '';
-						this.style.margin = '';
-					}, 300);
-				});
-			}
-			
-			// Prevent clicks on slider from closing the overlay
-			['click','mousedown','mouseup','touchstart','touchend'].forEach(evt => {
-				sliderWrap.addEventListener(evt, (e) => { e.stopPropagation(); }, { passive: false });
 			});
 			
-			// Update user opacity live with percentage display
+			// Clicking percentage or label toggles slider visibility
+			const toggleSlider = (e) => {
+				e.stopPropagation();
+				sliderExpanded = !sliderExpanded;
+				if (sliderExpanded) {
+					sliderSection.classList.add('visible');
+				} else {
+					sliderSection.classList.remove('visible');
+				}
+				showSliderControls();
+			};
+			
+			if (valueDisplay) {
+				valueDisplay.addEventListener('click', toggleSlider);
+			}
+			
+			if (sliderLabel) {
+				sliderLabel.addEventListener('click', toggleSlider);
+			}
+			
+			// Show controls on interaction with wrap
+			sliderWrap.addEventListener('mouseenter', showSliderControls);
+			sliderWrap.addEventListener('touchstart', showSliderControls);
+			
+			// Prevent clicks from closing screensaver
+			sliderWrap.addEventListener('click', (e) => e.stopPropagation());
+			sliderWrap.addEventListener('mousedown', (e) => e.stopPropagation());
+			sliderWrap.addEventListener('touchstart', (e) => e.stopPropagation());
+			
+			// Slider input handler
 			slider.addEventListener('input', () => {
-				overlay.dataset.userOpacity = slider.value;
+				const opacity = slider.value;
+				overlay.dataset.userOpacity = opacity;
 				
 				// Update percentage display
 				if (valueDisplay) {
-					const percent = Math.round(parseFloat(slider.value) * 100);
+					const percent = Math.round(parseFloat(opacity) * 100);
 					valueDisplay.textContent = `${percent}%`;
 				}
+				
+				// Update active preset button
+				updateActivePreset(opacity);
+				
+				// Save to localStorage
+				localStorage.setItem('screensaverOpacity', opacity);
 				
 				// Reset auto-hide timer
 				showSliderControls();
 				
 				// Immediate visual feedback
 				if (screensaverActive && fadeAlpha >= 1) {
-					const opacity = parseFloat(slider.value);
-					overlay.style.background = `rgba(0,0,0,${opacity})`;
+					const opacityValue = parseFloat(opacity);
+					overlay.style.background = `rgba(0,0,0,${opacityValue})`;
 				}
 			});
+			
+			// Initialize active preset on load
+			updateActivePreset(slider.value);
 		}
 
 	}

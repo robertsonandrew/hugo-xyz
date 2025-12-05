@@ -48,262 +48,236 @@
   50% { opacity: 0.6; }
 }
 
-/* Screensaver Opacity Slider Styles */
+/* Bottom Toast Opacity Control */
 #screensaver-opacity-wrap {
   position: fixed;
-  right: 12px;
-  bottom: 12px;
+  left: 50%;
+  bottom: 80px; /* Above "Click to exit" text */
+  transform: translateX(-50%) translateY(100px);
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
   z-index: 2147483647;
-  font-family: system-ui, sans-serif;
-  padding: 15px;
-  border-radius: 50%;
-  background-color: transparent;
-  transition: opacity 0.3s ease;
-}
-
-#screensaver-opacity-wrap:not(.visible) {
-  opacity: 0.3;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.4s ease;
+  pointer-events: none;
+  min-width: 320px;
+  max-width: 90vw;
 }
 
 #screensaver-opacity-wrap.visible {
   opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
 
-#screensaver-opacity-value {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: height 0.3s ease, opacity 0.3s ease;
-  margin-bottom: -4px;
+/* Preset Buttons Row */
+#screensaver-opacity-presets {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
 }
 
-#screensaver-opacity-wrap.visible #screensaver-opacity-value {
-  height: 16px;
-  opacity: 1;
-}
-
-#screensaver-opacity-icon {
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.4) 70%, transparent 100%);
-  border-radius: 50%;
+.opacity-preset {
+  flex: 1;
+  min-width: 48px;
+  height: 48px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-  opacity: 0.6;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile: Make icon more visible and tappable */
-@media (max-width: 768px) {
-  #screensaver-opacity-wrap {
-    right: 24px;
-    bottom: 24px;
-  }
-  
-  #screensaver-opacity-icon {
-    width: 24px;
-    height: 24px;
-    opacity: 0.7;
-    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 0.3) 100%);
-  }
-
-#screensaver-opacity-wrap:hover #screensaver-opacity-icon,
-#screensaver-opacity-wrap.visible #screensaver-opacity-icon {
-  opacity: 0.4;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.05);
+.opacity-preset:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.15) 100%);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.opacity-preset:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.opacity-preset.active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.25) 100%);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2),
+              0 2px 8px rgba(255, 255, 255, 0.15);
+}
+
+/* Fine-tune Slider Section */
 #screensaver-opacity-slider-wrap {
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: height 0.45s cubic-bezier(0.4, 0.12, 0.2, 1), 
-              opacity 0.45s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 42px;
-  padding: 0;
+  gap: 12px;
+  width: 100%;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+  padding-top: 0;
 }
 
-#screensaver-opacity-wrap:hover #screensaver-opacity-slider-wrap,
-#screensaver-opacity-wrap.visible #screensaver-opacity-slider-wrap {
-  height: 150px;
+#screensaver-opacity-slider-wrap.visible {
   opacity: 1;
+  max-height: 50px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#screensaver-opacity-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
 }
 
 #screensaver-opacity-slider {
+  flex: 1;
   appearance: none;
   -webkit-appearance: none;
-  width: 150px;
-  height: 12px;
-  transform: rotate(90deg);
-  transform-origin: center;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.04) 50%,
-    rgba(255, 255, 255, 0.01) 100%
-  );
-  border: none; /* Remove border to reduce clickable appearance */
-  border-radius: 8px;
+  height: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-radius: 4px;
   outline: none;
-  padding: 0;
-  margin: 0;
   cursor: pointer;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset, /* Very subtle inner border */
-    0 1px 3px rgba(0, 0, 0, 0.1); /* Minimal shadow */
-  backdrop-filter: blur(2px); /* Reduced blur */
-  transition: all 0.3s cubic-bezier(0.4, 0.12, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#screensaver-opacity-slider:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  /* Removed border-color and reduced hover effects */
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-    0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle hover shadow */
-}
-
-#screensaver-opacity-slider:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.4);
-  outline-offset: 3px;
-}
-
-/* WebKit Slider Thumb */
 #screensaver-opacity-slider::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 22px; /* Increased from 18px to 22px */
-  height: 22px; /* Increased from 18px to 22px */
-  margin-top: -5px; /* Adjusted for larger thumb */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.7) 50%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  backdrop-filter: blur(2px);
-  transition: all 0.25s cubic-bezier(0.4, 0.12, 0.2, 1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+  border: 2px solid rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   cursor: grab;
+  transition: all 0.2s ease;
 }
 
-/* Mobile: Larger touch target */
-@media (max-width: 768px) {
-  #screensaver-opacity-slider::-webkit-slider-thumb {
-    width: 32px;
-    height: 32px;
-    margin-top: -10px;
-  }
-  
-  #screensaver-opacity-value {
-    font-size: 14px;
-  }
-  
-  #screensaver-opacity-slider {
-    height: 16px;
-  }
-}
-
-#screensaver-opacity-slider:hover::-webkit-slider-thumb {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0.6) 100%
-  );
-  transform: scale(1.05);
-  box-shadow: 
-    0 3px 12px rgba(0, 0, 0, 0.35),
-    0 1px 3px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-#screensaver-opacity-slider:active::-webkit-slider-thumb {
+#screensaver-opacity-slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  cursor: grabbing;
-  box-shadow: 
-    0 1px 4px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
-/* Firefox Slider */
-#screensaver-opacity-slider::-moz-range-track {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.04) 50%,
-    rgba(255, 255, 255, 0.01) 100%
-  );
-  height: 12px;
-  border: none; /* Remove border */
-  border-radius: 8px;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset, /* Very subtle inner border */
-    0 1px 3px rgba(0, 0, 0, 0.1); /* Minimal shadow */
+#screensaver-opacity-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.05);
 }
 
 #screensaver-opacity-slider::-moz-range-thumb {
-  width: 22px; /* Increased from 18px to 22px */
-  height: 22px; /* Increased from 18px to 22px */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.7) 50%,
-    rgba(255, 255, 255, 0.5) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  transition: all 0.25s cubic-bezier(0.4, 0.12, 0.2, 1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+  border: 2px solid rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   cursor: grab;
+  transition: all 0.2s ease;
 }
 
-#screensaver-opacity-slider:hover::-moz-range-thumb {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0.6) 100%
-  );
-  transform: scale(1.05);
-  box-shadow: 
-    0 3px 12px rgba(0, 0, 0, 0.35),
-    0 1px 3px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-#screensaver-opacity-slider:active::-moz-range-thumb {
+#screensaver-opacity-slider::-moz-range-thumb:hover {
   transform: scale(1.1);
+}
+
+#screensaver-opacity-slider::-moz-range-thumb:active {
   cursor: grabbing;
-  box-shadow: 
-    0 1px 4px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+  transform: scale(1.05);
+}
+
+#screensaver-opacity-value {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 48px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  #screensaver-opacity-wrap {
+    bottom: 100px;
+    padding: 16px 20px;
+    min-width: 280px;
+  }
+  
+  .opacity-preset {
+    min-width: 44px;
+    height: 52px;
+    font-size: 15px;
+  }
+  
+  #screensaver-opacity-label {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+  
+  #screensaver-opacity-slider {
+    height: 12px;
+  }
+  
+  #screensaver-opacity-slider::-webkit-slider-thumb {
+    width: 32px;
+    height: 32px;
+  }
+  
+  #screensaver-opacity-slider::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+  }
+  
+  #screensaver-opacity-value {
+    font-size: 18px;
+    min-width: 52px;
+  }
+}
+
+@media (max-width: 400px) {
+  #screensaver-opacity-wrap {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  
+  #screensaver-opacity-presets {
+    gap: 6px;
+  }
+  
+  .opacity-preset {
+    min-width: 40px;
+    height: 48px;
+    font-size: 13px;
+  }
+}
+
+/* Legacy styles removed - replaced with toast design above */
+}
 }
 
 /* Screensaver Hint Text */

@@ -3,12 +3,19 @@
 <div id="screensaver" class="screensaver-overlay">
   <canvas id="screensaver-canvas" class="screensaver-canvas"></canvas>
   <div class="screensaver-particles"></div>
-  {{/* Optional on-screen opacity slider: minimal DOM only; styling already in CSS */}}
+  {{/* Bottom toast opacity control with presets */}}
   <div id="screensaver-opacity-wrap" aria-label="Screensaver opacity control" role="group">
-    <div id="screensaver-opacity-icon"></div>
-    <div id="screensaver-opacity-value">{{ with $cfg.backgroundOpacity }}{{ mul . 100 | math.Round }}{{ else }}95{{ end }}%</div>
+    <div id="screensaver-opacity-presets">
+      <button class="opacity-preset" data-opacity="1.0" aria-label="100% opacity">100%</button>
+      <button class="opacity-preset" data-opacity="0.75" aria-label="75% opacity">75%</button>
+      <button class="opacity-preset" data-opacity="0.5" aria-label="50% opacity">50%</button>
+      <button class="opacity-preset" data-opacity="0.25" aria-label="25% opacity">25%</button>
+      <button class="opacity-preset" data-opacity="0" aria-label="0% opacity">0%</button>
+    </div>
     <div id="screensaver-opacity-slider-wrap">
-      <input id="screensaver-opacity-slider" type="range" min="0" max="1" step="0.01" value="{{ with $cfg.backgroundOpacity }}{{ . }}{{ else }}0.95{{ end }}" aria-label="Background opacity" />
+      <label for="screensaver-opacity-slider" id="screensaver-opacity-label">Fine-tune</label>
+      <input id="screensaver-opacity-slider" type="range" min="0" max="1" step="0.01" value="{{ with $cfg.backgroundOpacity }}{{ . }}{{ else }}0.95{{ end }}" aria-label="Background opacity slider" />
+      <span id="screensaver-opacity-value">{{ with $cfg.backgroundOpacity }}{{ mul . 100 | math.Round }}{{ else }}95{{ end }}%</span>
     </div>
   </div>
   
