@@ -590,6 +590,24 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 			});
 			
+			// Add tap-anywhere functionality for mobile with expanded touch area
+			if (isTouchDevice) {
+				sliderWrap.addEventListener('touchstart', function(e) {
+					// Expand the touch area when tapped
+					this.style.padding = '30px';
+					this.style.margin = '-30px';
+					showSliderControls();
+				});
+				
+				sliderWrap.addEventListener('touchend', function(e) {
+					// Reset padding after a delay
+					setTimeout(() => {
+						this.style.padding = '';
+						this.style.margin = '';
+					}, 300);
+				});
+			}
+			
 			// Prevent clicks on slider from closing the overlay
 			['click','mousedown','mouseup','touchstart','touchend'].forEach(evt => {
 				sliderWrap.addEventListener(evt, (e) => { e.stopPropagation(); }, { passive: false });
