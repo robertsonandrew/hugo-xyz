@@ -36,18 +36,6 @@
 }
 /* end screensaver */
 
-/* Screensaver hint */
-.screensaver-hint {
-  font-family: system-ui, sans-serif;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  animation: hintFade 4s ease-in-out infinite;
-}
-@keyframes hintFade {
-  0%,100% { opacity: 0.15; }
-  50% { opacity: 0.6; }
-}
-
 /* Bottom Toast Opacity Control */
 #screensaver-opacity-wrap {
   position: fixed;
@@ -300,6 +288,12 @@
 .screensaver-hint.visible {
   display: block;
   opacity: 0.6;
+  animation: hintFade 4s ease-in-out infinite;
+}
+
+@keyframes hintFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
 }
 
 /* Screensaver Toggle */

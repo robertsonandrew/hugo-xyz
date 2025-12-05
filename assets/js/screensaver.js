@@ -356,12 +356,12 @@ function showScreensaver() {
 	}
 	canvas.style.display = 'block';
 
-	// Show opacity slider and initialize value
+	// Show opacity slider and reset to default
 	const sliderWrap = document.getElementById('screensaver-opacity-wrap');
 	const slider = document.getElementById('screensaver-opacity-slider');
 	if (sliderWrap && slider) {
 		sliderWrap.style.display = 'flex';
-		// Reset to default/background opacity on each show (no persistence)
+		// Reset to config default on each show
 		try {
 			slider.value = String(BACKGROUND_OPACITY);
 			overlay.dataset.userOpacity = slider.value;
@@ -573,16 +573,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			// Detect if device is touch-enabled
 			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 			
-			// Load saved opacity from localStorage
-			const savedOpacity = localStorage.getItem('screensaverOpacity');
-			if (savedOpacity !== null) {
-				const opacity = parseFloat(savedOpacity);
-				slider.value = opacity;
-				if (valueDisplay) {
-					valueDisplay.textContent = `${Math.round(opacity * 100)}%`;
-				}
-			}
-			
 			// Function to update active preset button
 			const updateActivePreset = (value) => {
 				const opacity = parseFloat(value);
@@ -623,9 +613,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					
 					// Update active state
 					updateActivePreset(opacity);
-					
-					// Save to localStorage
-					localStorage.setItem('screensaverOpacity', opacity);
 					
 					// Apply immediately
 					if (screensaverActive && fadeAlpha >= 1) {
@@ -680,9 +667,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				
 				// Update active preset button
 				updateActivePreset(opacity);
-				
-				// Save to localStorage
-				localStorage.setItem('screensaverOpacity', opacity);
 				
 				// Reset auto-hide timer
 				showSliderControls();
