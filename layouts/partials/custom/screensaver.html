@@ -6,6 +6,7 @@
   {{/* Optional on-screen opacity slider: minimal DOM only; styling already in CSS */}}
   <div id="screensaver-opacity-wrap" aria-label="Screensaver opacity control" role="group">
     <div id="screensaver-opacity-icon"></div>
+    <div id="screensaver-opacity-value">{{ with $cfg.backgroundOpacity }}{{ mul . 100 | math.Round }}{{ else }}95{{ end }}%</div>
     <div id="screensaver-opacity-slider-wrap">
       <input id="screensaver-opacity-slider" type="range" min="0" max="1" step="0.01" value="{{ with $cfg.backgroundOpacity }}{{ . }}{{ else }}0.95{{ end }}" aria-label="Background opacity" />
     </div>
