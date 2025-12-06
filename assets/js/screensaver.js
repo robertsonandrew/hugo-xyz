@@ -356,19 +356,19 @@ function showScreensaver() {
 	}
 	canvas.style.display = 'block';
 
-	// Show opacity slider and reset to default
-	const sliderWrap = document.getElementById('screensaver-opacity-wrap');
+	// Show opacity control dot and reset to default
+	const opacityDot = document.getElementById('screensaver-opacity-dot');
 	const slider = document.getElementById('screensaver-opacity-slider');
-	if (sliderWrap && slider) {
-		sliderWrap.style.display = 'flex';
-		// Add visible class to trigger CSS animation
-		setTimeout(() => {
-			sliderWrap.classList.add('visible');
-		}, 50);
+	if (opacityDot && slider) {
+		opacityDot.style.display = 'block';
+		opacityDot.classList.add('visible');
 		// Reset to config default on each show
 		try {
 			slider.value = String(BACKGROUND_OPACITY);
 			overlay.dataset.userOpacity = slider.value;
+			// Set initial visual level
+			const level = Math.round(parseFloat(slider.value) / 0.33);
+			opacityDot.dataset.level = Math.min(3, level);
 		} catch (e) { /* ignore */ }
 	}
 
@@ -416,9 +416,9 @@ function hideScreensaver() {
 	fadeAlpha = 0;
 	if (animationFrame) cancelAnimationFrame(animationFrame);
 
-	// Hide opacity slider and clear user override
-	const sliderWrap = document.getElementById('screensaver-opacity-wrap');
-	if (sliderWrap) sliderWrap.style.display = 'none';
+	// Hide opacity dot and clear user override
+	const opacityDot = document.getElementById('screensaver-opacity-dot');
+	if (opacityDot) opacityDot.style.display = 'none';
 	if (overlay.dataset.userOpacity) delete overlay.dataset.userOpacity;
 
 }
@@ -560,130 +560,66 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		});
 
-		// Wire opacity slider controls
-		const sliderWrap = document.getElementById('screensaver-opacity-wrap');
+		// Wire single-tap cycle opacity control
+		const opacityDot = document.getElementById('screensaver-opacity-dot');
 		const slider = document.getElementById('screensaver-opacity-slider');
-		const valueDisplay = document.getElementById('screensaver-opacity-value');
-		const sliderSection = document.getElementById('screensaver-opacity-slider-wrap');
-		const presetButtons = document.querySelectorAll('.opacity-preset');
-		const sliderLabel = document.getElementById('screensaver-opacity-label');
-		let sliderTimeout;
-		let sliderExpanded = false;
 		
-		if (sliderWrap && slider && presetButtons.length > 0) {
+		// Opacity levels to cycle through: 100% → 60% → 30% → 0% → 100%...
+		const opacityLevels = [1.0, 0.6, 0.3, 0];
+		let currentLevelIndex = 0;
+		
+		if (opacityDot && slider) {
 			// Hidden by default until screensaver shows
-			sliderWrap.style.display = 'none';
+			opacityDot.style.display = 'none';
 			
-			// Detect if device is touch-enabled
-			const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-			
-			// Function to update active preset button
-			const updateActivePreset = (value) => {
-				const opacity = parseFloat(value);
-				presetButtons.forEach(btn => {
-					const presetValue = parseFloat(btn.dataset.opacity);
-					if (Math.abs(presetValue - opacity) < 0.01) {
-						btn.classList.add('active');
-					} else {
-						btn.classList.remove('active');
+			// Find closest level index for initial value
+			const findClosestLevel = (value) => {
+				const val = parseFloat(value);
+				let closest = 0;
+				let minDiff = Math.abs(opacityLevels[0] - val);
+				opacityLevels.forEach((level, i) => {
+					const diff = Math.abs(level - val);
+					if (diff < minDiff) {
+						minDiff = diff;
+						closest = i;
 					}
 				});
+				return closest;
 			};
 			
-			// Function to show controls and reset auto-hide timer
-			const showSliderControls = () => {
-				sliderWrap.classList.add('visible');
-				clearTimeout(sliderTimeout);
-				sliderTimeout = setTimeout(() => {
-					sliderWrap.classList.remove('visible');
-					sliderSection.classList.remove('visible');
-					sliderExpanded = false;
-				}, isTouchDevice ? 8000 : 5000); // Longer timeout on mobile
+			// Update visual level indicator
+			const updateDotVisual = (levelIndex) => {
+				opacityDot.dataset.level = 3 - levelIndex; // Reverse: 0=full(3), 3=off(0)
 			};
 			
-			// Preset button click handlers
-			presetButtons.forEach(btn => {
-				btn.addEventListener('click', (e) => {
-					e.stopPropagation();
-					const opacity = btn.dataset.opacity;
-					slider.value = opacity;
-					overlay.dataset.userOpacity = opacity;
-					
-					// Update display
-					if (valueDisplay) {
-						const percent = Math.round(parseFloat(opacity) * 100);
-						valueDisplay.textContent = `${percent}%`;
-					}
-					
-					// Update active state
-					updateActivePreset(opacity);
-					
-					// Apply immediately
-					if (screensaverActive && fadeAlpha >= 1) {
-						const opacityValue = parseFloat(opacity);
-						overlay.style.background = `rgba(0,0,0,${opacityValue})`;
-					}
-					
-					// Reset auto-hide timer
-					showSliderControls();
-				});
-			});
+			// Initialize
+			currentLevelIndex = findClosestLevel(slider.value);
+			updateDotVisual(currentLevelIndex);
 			
-			// Clicking percentage or label toggles slider visibility
-			const toggleSlider = (e) => {
+			// Single tap cycles through levels
+			opacityDot.addEventListener('click', (e) => {
 				e.stopPropagation();
-				sliderExpanded = !sliderExpanded;
-				if (sliderExpanded) {
-					sliderSection.classList.add('visible');
-				} else {
-					sliderSection.classList.remove('visible');
-				}
-				showSliderControls();
-			};
-			
-			if (valueDisplay) {
-				valueDisplay.addEventListener('click', toggleSlider);
-			}
-			
-			if (sliderLabel) {
-				sliderLabel.addEventListener('click', toggleSlider);
-			}
-			
-			// Show controls on interaction with wrap
-			sliderWrap.addEventListener('mouseenter', showSliderControls);
-			sliderWrap.addEventListener('touchstart', showSliderControls);
-			
-			// Prevent clicks from closing screensaver
-			sliderWrap.addEventListener('click', (e) => e.stopPropagation());
-			sliderWrap.addEventListener('mousedown', (e) => e.stopPropagation());
-			sliderWrap.addEventListener('touchstart', (e) => e.stopPropagation());
-			
-			// Slider input handler
-			slider.addEventListener('input', () => {
-				const opacity = slider.value;
+				
+				// Cycle to next level
+				currentLevelIndex = (currentLevelIndex + 1) % opacityLevels.length;
+				const opacity = opacityLevels[currentLevelIndex];
+				
+				// Update slider and overlay
+				slider.value = opacity;
 				overlay.dataset.userOpacity = opacity;
 				
-				// Update percentage display
-				if (valueDisplay) {
-					const percent = Math.round(parseFloat(opacity) * 100);
-					valueDisplay.textContent = `${percent}%`;
-				}
+				// Update visual
+				updateDotVisual(currentLevelIndex);
 				
-				// Update active preset button
-				updateActivePreset(opacity);
-				
-				// Reset auto-hide timer
-				showSliderControls();
-				
-				// Immediate visual feedback
+				// Apply immediately if screensaver is fully faded in
 				if (screensaverActive && fadeAlpha >= 1) {
-					const opacityValue = parseFloat(opacity);
-					overlay.style.background = `rgba(0,0,0,${opacityValue})`;
+					overlay.style.background = `rgba(0,0,0,${opacity})`;
 				}
 			});
 			
-			// Initialize active preset on load
-			updateActivePreset(slider.value);
+			// Prevent clicks from closing screensaver
+			opacityDot.addEventListener('mousedown', (e) => e.stopPropagation());
+			opacityDot.addEventListener('touchstart', (e) => e.stopPropagation());
 		}
 
 	}

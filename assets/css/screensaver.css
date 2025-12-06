@@ -36,236 +36,95 @@
 }
 /* end screensaver */
 
-/* Bottom Toast Opacity Control */
-#screensaver-opacity-wrap {
+/* Minimal Single-Tap Opacity Dot */
+#screensaver-opacity-dot {
   position: fixed;
-  left: 50%;
-  bottom: 80px; /* Above "Click to exit" text */
-  transform: translateX(-50%) translateY(100px);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  right: 24px;
+  bottom: 24px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
   z-index: 2147483647;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 20px 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 0.4s ease;
-  pointer-events: none;
-  min-width: 320px;
-  max-width: 90vw;
-}
-
-#screensaver-opacity-wrap.visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-  pointer-events: auto;
-}
-
-/* Preset Buttons Row */
-#screensaver-opacity-presets {
-  display: flex;
-  gap: 8px;
-  width: 100%;
-  justify-content: center;
-}
-
-.opacity-preset {
-  flex: 1;
-  min-width: 48px;
-  height: 48px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  font-weight: 600;
+  display: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: system-ui, -apple-system, sans-serif;
-  letter-spacing: 0.02em;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.3s ease, background 0.3s ease;
+  
+  /* Clean green border style */
+  background: transparent;
+  border: 2px solid rgba(57, 255, 20, 0.3);
+  box-shadow: none;
+  animation: dotPulse 4s ease-in-out infinite;
 }
 
-.opacity-preset:hover {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.15) 100%);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+#screensaver-opacity-dot.visible {
+  display: block;
 }
 
-.opacity-preset:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+@keyframes dotPulse {
+  0%, 100% { 
+    opacity: 0.4;
+  }
+  50% { 
+    opacity: 0.8;
+  }
 }
 
-.opacity-preset.active {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.25) 100%);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #fff;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2),
-              0 2px 8px rgba(255, 255, 255, 0.15);
+#screensaver-opacity-dot:hover {
+  transform: scale(1.3);
+  animation: none;
+  opacity: 1;
 }
 
-/* Fine-tune Slider Section */
-#screensaver-opacity-slider-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  opacity: 0;
-  max-height: 0;
+#screensaver-opacity-dot:active {
+  transform: scale(1.1);
+}
+
+/* Visual feedback for opacity levels - border becomes more visible as opacity decreases */
+#screensaver-opacity-dot[data-level="3"] {
+  /* Full darkness - subtle border, filled */
+  background: rgba(57, 255, 20, 0.15);
+  border-color: rgba(57, 255, 20, 0.25);
+}
+
+#screensaver-opacity-dot[data-level="2"] {
+  /* Medium - slightly more visible border */
+  background: rgba(57, 255, 20, 0.08);
+  border-color: rgba(57, 255, 20, 0.45);
+}
+
+#screensaver-opacity-dot[data-level="1"] {
+  /* Low - more visible border */
+  background: transparent;
+  border-color: rgba(57, 255, 20, 0.65);
+}
+
+#screensaver-opacity-dot[data-level="0"] {
+  /* Off (transparent background) - brightest border */
+  background: transparent;
+  border-color: rgba(57, 255, 20, 0.9);
+}
+
+/* Hide the range slider visually but keep for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
-  transition: opacity 0.3s ease, max-height 0.3s ease;
-  padding-top: 0;
-}
-
-#screensaver-opacity-slider-wrap.visible {
-  opacity: 1;
-  max-height: 50px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#screensaver-opacity-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-weight: 500;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  cursor: pointer;
-  user-select: none;
+  border: 0;
 }
 
-#screensaver-opacity-slider {
-  flex: 1;
-  appearance: none;
-  -webkit-appearance: none;
-  height: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#screensaver-opacity-slider::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
-  border: 2px solid rgba(255, 255, 255, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  cursor: grab;
-  transition: all 0.2s ease;
-}
-
-#screensaver-opacity-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-#screensaver-opacity-slider::-webkit-slider-thumb:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-}
-
-#screensaver-opacity-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
-  border: 2px solid rgba(255, 255, 255, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  cursor: grab;
-  transition: all 0.2s ease;
-}
-
-#screensaver-opacity-slider::-moz-range-thumb:hover {
-  transform: scale(1.1);
-}
-
-#screensaver-opacity-slider::-moz-range-thumb:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-}
-
-#screensaver-opacity-value {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 16px;
-  font-weight: 600;
-  min-width: 48px;
-  text-align: center;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* Mobile Optimizations */
+/* Mobile: slightly larger touch target */
 @media (max-width: 768px) {
-  #screensaver-opacity-wrap {
-    bottom: 100px;
-    padding: 16px 20px;
-    min-width: 280px;
+  #screensaver-opacity-dot {
+    right: 20px;
+    bottom: 20px;
+    width: 18px;
+    height: 18px;
   }
-  
-  .opacity-preset {
-    min-width: 44px;
-    height: 52px;
-    font-size: 15px;
-  }
-  
-  #screensaver-opacity-label {
-    font-size: 16px; /* Prevent iOS zoom */
-  }
-  
-  #screensaver-opacity-slider {
-    height: 12px;
-  }
-  
-  #screensaver-opacity-slider::-webkit-slider-thumb {
-    width: 32px;
-    height: 32px;
-  }
-  
-  #screensaver-opacity-slider::-moz-range-thumb {
-    width: 32px;
-    height: 32px;
-  }
-  
-  #screensaver-opacity-value {
-    font-size: 18px;
-    min-width: 52px;
-  }
-}
-
-@media (max-width: 400px) {
-  #screensaver-opacity-wrap {
-    gap: 12px;
-    padding: 14px 16px;
-  }
-  
-  #screensaver-opacity-presets {
-    gap: 6px;
-  }
-  
-  .opacity-preset {
-    min-width: 40px;
-    height: 48px;
-    font-size: 13px;
-  }
-}
-
-/* Legacy styles removed - replaced with toast design above */
-}
 }
 
 /* Screensaver Hint Text */
@@ -274,6 +133,7 @@
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 3; /* Above canvas (z:1) and particles (z:2) */
   font-size: 0.9rem;
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.6);
