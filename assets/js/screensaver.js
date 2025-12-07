@@ -61,14 +61,16 @@ if (typeof config === 'string') {
 const IDLE_TIMEOUT = config.idletimeout !== undefined ? config.idletimeout : 15000;
 const FADE_DURATION = config.fadeduration !== undefined ? config.fadeduration : 10000;
 const BACKGROUND_OPACITY = config.backgroundopacity !== undefined ? config.backgroundopacity : 0.95;
-const STAR_COUNT = config.starcount !== undefined ? config.starcount : 25;
+const DEFAULT_STAR_COUNT = config.starcount !== undefined ? config.starcount : 25;
+let STAR_COUNT = DEFAULT_STAR_COUNT; // Now mutable for presets
 const STAR_MIN_SIZE = config.starminsize !== undefined ? config.starminsize : 2;
 const STAR_MAX_SIZE = config.starmaxsize !== undefined ? config.starmaxsize : 5;
 // Unified rotation speed (radians/second). Support legacy starspeed and new motionspeed.
-const ROTATION_SPEED = (
+const DEFAULT_MOTION_SPEED = (
 	config.motionspeed !== undefined ? config.motionspeed :
 	(config.starspeed !== undefined ? config.starspeed : 0.05)
 );
+let ROTATION_SPEED = DEFAULT_MOTION_SPEED; // Now mutable for presets
 // Parallax intensity (0-2.0 range, default 1.0)
 const DEFAULT_PARALLAX_INTENSITY = config.parallaxintensity !== undefined ? Math.max(0.1, Math.min(2.0, config.parallaxintensity)) : 1.0;
 let parallaxIntensity = DEFAULT_PARALLAX_INTENSITY;
@@ -177,13 +179,46 @@ function resetStars(centerX, centerY) {
 	}
 }
 
+// Smooth star transition support
+let smoothTransitionEnabled = false;
+const STAR_FADE_DURATION = 500; // ms for fade in/out
+
 function reconcileStarCount(centerX, centerY) {
 	const target = effectiveStarCount;
+	const currentTime = performance.now();
+	
 	if (stars.length < target) {
-		const toAdd = Math.min(5, target - stars.length); // add a few per frame to avoid sudden pop
-		for (let i = 0; i < toAdd; i++) stars.push(createStar(centerX, centerY));
+		// Add stars gradually with fade-in
+		const toAdd = smoothTransitionEnabled ? Math.min(3, target - stars.length) : Math.min(5, target - stars.length);
+		for (let i = 0; i < toAdd; i++) {
+			const star = createStar(centerX, centerY);
+			if (smoothTransitionEnabled) {
+				star.fadeStartTime = currentTime;
+				star.fadeInDelay = 0;
+				star.fadeInDuration = STAR_FADE_DURATION;
+			}
+			stars.push(star);
+		}
 	} else if (stars.length > target) {
-		stars.length = target; // trim extras
+		if (smoothTransitionEnabled) {
+			// Mark excess stars for fade-out instead of instant removal
+			const toRemove = Math.min(5, stars.length - target);
+			for (let i = 0; i < toRemove; i++) {
+				const idx = stars.length - 1 - i;
+				if (idx >= 0 && !stars[idx].fadingOut) {
+					stars[idx].fadingOut = true;
+					stars[idx].fadeOutStart = currentTime;
+				}
+			}
+			// Remove fully faded stars
+			stars = stars.filter(star => {
+				if (!star.fadingOut) return true;
+				const fadeProgress = (currentTime - star.fadeOutStart) / STAR_FADE_DURATION;
+				return fadeProgress < 1;
+			});
+		} else {
+			stars.length = target; // trim extras instantly
+		}
 	}
 	window.__stars = stars;
 }
@@ -223,10 +258,17 @@ function drawStarfield(ctx, width, height, centerX, centerY) {
 		// Calculate fade-in progress for this star
 		const currentTime = performance.now();
 		const elapsedSinceStart = currentTime - star.fadeStartTime;
-		const fadeInProgress = Math.max(0, Math.min(1, (elapsedSinceStart - star.fadeInDelay) / star.fadeInDuration));
+		let fadeInProgress = Math.max(0, Math.min(1, (elapsedSinceStart - star.fadeInDelay) / star.fadeInDuration));
 		
-		// Apply fade-in to opacity
-		const fadeInAlpha = opacity * fadeInProgress;
+		// Handle fade-out for stars being removed
+		let fadeOutMultiplier = 1;
+		if (star.fadingOut) {
+			const fadeOutProgress = (currentTime - star.fadeOutStart) / STAR_FADE_DURATION;
+			fadeOutMultiplier = Math.max(0, 1 - fadeOutProgress);
+		}
+		
+		// Apply fade-in and fade-out to opacity
+		const fadeInAlpha = opacity * fadeInProgress * fadeOutMultiplier;
 		const depthAlpha = fadeInAlpha * (0.2 + depthFactor * 0.8);
 		const renderRadius = Math.min(size * 0.5, STAR_MAX_SIZE * 0.5);
 
@@ -356,21 +398,22 @@ function showScreensaver() {
 	}
 	canvas.style.display = 'block';
 
-	// Show opacity control dot and reset to default
-	const opacityDot = document.getElementById('screensaver-opacity-dot');
-	const slider = document.getElementById('screensaver-opacity-slider');
-	if (opacityDot && slider) {
-		opacityDot.style.display = 'block';
-		opacityDot.classList.add('visible');
-		// Reset to config default on each show
-		try {
-			slider.value = String(BACKGROUND_OPACITY);
-			overlay.dataset.userOpacity = slider.value;
-			// Set initial visual level
-			const level = Math.round(parseFloat(slider.value) / 0.33);
-			opacityDot.dataset.level = Math.min(3, level);
-		} catch (e) { /* ignore */ }
+	// Show arc menu controls and reset
+	const controls = document.getElementById('screensaver-controls');
+	if (controls) {
+		controls.style.display = 'block';
+		controls.classList.add('visible');
+		// Reset controls via screensaver-controls.js
+		if (window.screensaverControls && window.screensaverControls.reset) {
+			window.screensaverControls.reset();
+		}
 	}
+	
+	// Reset config values to defaults
+	STAR_COUNT = DEFAULT_STAR_COUNT;
+	ROTATION_SPEED = DEFAULT_MOTION_SPEED;
+	parallaxIntensity = DEFAULT_PARALLAX_INTENSITY;
+	overlay.dataset.userOpacity = BACKGROUND_OPACITY;
 
 	// Reset and initialize parallax mouse position smoothly
 	mouseX = 0;
@@ -416,11 +459,13 @@ function hideScreensaver() {
 	fadeAlpha = 0;
 	if (animationFrame) cancelAnimationFrame(animationFrame);
 
-	// Hide opacity dot and clear user override
-	const opacityDot = document.getElementById('screensaver-opacity-dot');
-	if (opacityDot) opacityDot.style.display = 'none';
+	// Hide arc menu controls
+	const controls = document.getElementById('screensaver-controls');
+	if (controls) {
+		controls.style.display = 'none';
+		controls.classList.remove('visible');
+	}
 	if (overlay.dataset.userOpacity) delete overlay.dataset.userOpacity;
-
 }
 
 function resetIdleTimer() {
@@ -529,6 +574,39 @@ document.addEventListener('DOMContentLoaded', () => {
 		resetIdleTimer();
 	}
 
+	// Listen for density changes from screensaver-controls.js
+	window.addEventListener('screensaver-density-change', (e) => {
+		if (e.detail) {
+			STAR_COUNT = e.detail.stars;
+			ROTATION_SPEED = e.detail.speed;
+			effectiveStarCount = STAR_COUNT;
+			// Enable smooth transitions if requested
+			smoothTransitionEnabled = !!e.detail.smooth;
+		}
+	});
+
+	// Listen for opacity changes from screensaver-controls.js
+	window.addEventListener('screensaver-opacity-change', (e) => {
+		if (e.detail && screensaverActive) {
+			const opacity = e.detail.opacity;
+			const overlay = document.getElementById(SCREENSAVER_ID);
+			if (overlay) {
+				overlay.dataset.userOpacity = opacity;
+				// Apply immediately if fully faded in
+				if (fadeAlpha >= 1) {
+					overlay.style.background = `rgba(0,0,0,${opacity})`;
+				}
+			}
+		}
+	});
+
+	// Listen for parallax changes from screensaver-controls.js
+	window.addEventListener('screensaver-parallax-change', (e) => {
+		if (e.detail) {
+			parallaxIntensity = e.detail.intensity;
+		}
+	});
+
 	const overlay = document.getElementById(SCREENSAVER_ID);
 	if (overlay) {
 		// Inject hint element if configured
@@ -559,68 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				hideScreensaver();
 			}
 		});
-
-		// Wire single-tap cycle opacity control
-		const opacityDot = document.getElementById('screensaver-opacity-dot');
-		const slider = document.getElementById('screensaver-opacity-slider');
-		
-		// Opacity levels to cycle through: 100% → 60% → 30% → 0% → 100%...
-		const opacityLevels = [1.0, 0.6, 0.3, 0];
-		let currentLevelIndex = 0;
-		
-		if (opacityDot && slider) {
-			// Hidden by default until screensaver shows
-			opacityDot.style.display = 'none';
-			
-			// Find closest level index for initial value
-			const findClosestLevel = (value) => {
-				const val = parseFloat(value);
-				let closest = 0;
-				let minDiff = Math.abs(opacityLevels[0] - val);
-				opacityLevels.forEach((level, i) => {
-					const diff = Math.abs(level - val);
-					if (diff < minDiff) {
-						minDiff = diff;
-						closest = i;
-					}
-				});
-				return closest;
-			};
-			
-			// Update visual level indicator
-			const updateDotVisual = (levelIndex) => {
-				opacityDot.dataset.level = 3 - levelIndex; // Reverse: 0=full(3), 3=off(0)
-			};
-			
-			// Initialize
-			currentLevelIndex = findClosestLevel(slider.value);
-			updateDotVisual(currentLevelIndex);
-			
-			// Single tap cycles through levels
-			opacityDot.addEventListener('click', (e) => {
-				e.stopPropagation();
-				
-				// Cycle to next level
-				currentLevelIndex = (currentLevelIndex + 1) % opacityLevels.length;
-				const opacity = opacityLevels[currentLevelIndex];
-				
-				// Update slider and overlay
-				slider.value = opacity;
-				overlay.dataset.userOpacity = opacity;
-				
-				// Update visual
-				updateDotVisual(currentLevelIndex);
-				
-				// Apply immediately if screensaver is fully faded in
-				if (screensaverActive && fadeAlpha >= 1) {
-					overlay.style.background = `rgba(0,0,0,${opacity})`;
-				}
-			});
-			
-			// Prevent clicks from closing screensaver
-			opacityDot.addEventListener('mousedown', (e) => e.stopPropagation());
-			opacityDot.addEventListener('touchstart', (e) => e.stopPropagation());
-		}
 
 	}
 });

@@ -49,18 +49,18 @@
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.3s ease, background 0.3s ease;
   
-  /* Clean green border style */
+  /* Green theme for opacity */
   background: transparent;
   border: 2px solid rgba(57, 255, 20, 0.3);
   box-shadow: none;
-  animation: dotPulse 4s ease-in-out infinite;
+  animation: opacityDotPulse 4s ease-in-out infinite;
 }
 
 #screensaver-opacity-dot.visible {
   display: block;
 }
 
-@keyframes dotPulse {
+@keyframes opacityDotPulse {
   0%, 100% { 
     opacity: 0.4;
   }

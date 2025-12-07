@@ -53,6 +53,7 @@
 {{- /* Bundle all custom CSS files together for performance */ -}}
 {{ $customCSS := resources.Get "css/custom.css" }}
 {{ $ssCSS := resources.Get "css/screensaver.css" }}
+{{ $ssControlsCSS := resources.Get "css/screensaver-controls.css" }}
 {{ $quoteBannerCSS := resources.Get "css/quote-banner.css" }}
 {{ $switcherCSS := resources.Get "css/logo-gradient-switcher.css" }}
 
@@ -60,6 +61,7 @@
 {{ $cssFiles := slice }}
 {{ if $customCSS }}{{ $cssFiles = $cssFiles | append $customCSS }}{{ end }}
 {{ if $ssCSS }}{{ $cssFiles = $cssFiles | append $ssCSS }}{{ end }}
+{{ if $ssControlsCSS }}{{ $cssFiles = $cssFiles | append $ssControlsCSS }}{{ end }}
 {{ if $quoteBannerCSS }}{{ $cssFiles = $cssFiles | append $quoteBannerCSS }}{{ end }}
 {{ if $switcherCSS }}{{ $cssFiles = $cssFiles | append $switcherCSS }}{{ end }}
 

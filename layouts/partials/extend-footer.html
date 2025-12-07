@@ -43,3 +43,10 @@
   {{ $screensaverJS = $screensaverJS | js.Build | resources.Minify | resources.Fingerprint }}
   <script src="{{ $screensaverJS.RelPermalink }}" integrity="{{ $screensaverJS.Data.Integrity }}" defer></script>
 {{ end }}
+
+{{/* Screensaver Controls JS (Arc Menu) */}}
+{{ $screensaverControlsJS := resources.Get "js/screensaver-controls.js" }}
+{{ if $screensaverControlsJS }}
+  {{ $screensaverControlsJS = $screensaverControlsJS | js.Build | resources.Minify | resources.Fingerprint }}
+  <script src="{{ $screensaverControlsJS.RelPermalink }}" integrity="{{ $screensaverControlsJS.Data.Integrity }}" defer></script>
+{{ end }}

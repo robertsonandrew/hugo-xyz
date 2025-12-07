@@ -1,0 +1,306 @@
+/**
+ * Screensaver Controls - Arc Menu
+ * Expandable radial menu for density, opacity, and parallax controls
+ */
+
+/* Main container */
+#screensaver-controls {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 2147483647;
+  display: none;
+}
+
+#screensaver-controls.visible {
+  display: block;
+}
+
+/* Center trigger dot */
+#screensaver-trigger {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: triggerPulse 4s ease-in-out infinite;
+  position: relative;
+  z-index: 10;
+}
+
+#screensaver-trigger:hover {
+  transform: scale(1.2);
+  animation: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#screensaver-trigger.expanded {
+  animation: none;
+  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes triggerPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+/* Arc menu container */
+.arc-menu {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+}
+
+/* Individual control dots - use fixed positioning within arc-menu */
+.arc-dot {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  border: 2px solid;
+  background: rgba(0, 0, 0, 0.3);
+  /* Separate transitions for different properties */
+  transition: 
+    opacity 0.25s ease,
+    bottom 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    right 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    transform 0.15s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+  /* Start at trigger position */
+  bottom: 0;
+  right: 0;
+  transform: scale(0.5);
+  /* Center the icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon inside the dot */
+.arc-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.arc-dot:hover .arc-icon {
+  opacity: 1;
+}
+
+/* Invisible hit area for easier clicking */
+.arc-dot::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+}
+
+/* Hover state - only affects scale, not position */
+.arc-dot:hover {
+  transform: scale(1.15);
+}
+
+.arc-dot:active {
+  transform: scale(1.0);
+}
+
+/* Expanded state - dots are interactive and visible */
+#screensaver-controls.expanded .arc-dot {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+#screensaver-controls.expanded .arc-dot:hover {
+  transform: scale(1.25);
+}
+
+/* Expanded positions - use bottom/right instead of transform */
+#screensaver-controls.expanded #arc-density {
+  /* Top-left of arc (135°) */
+  bottom: 50px;
+  right: 50px;
+}
+
+#screensaver-controls.expanded #arc-opacity {
+  /* Left of arc (180°) */
+  bottom: 0;
+  right: 70px;
+}
+
+#screensaver-controls.expanded #arc-parallax {
+  /* Top of arc (90°) */
+  bottom: 70px;
+  right: 0;
+}
+
+/* Staggered animation delays for expansion */
+#screensaver-controls.expanded #arc-parallax {
+  transition-delay: 0ms, 0ms, 0ms, 0ms, 0ms, 0ms;
+}
+#screensaver-controls.expanded #arc-density {
+  transition-delay: 0ms, 40ms, 40ms, 0ms, 0ms, 0ms;
+}
+#screensaver-controls.expanded #arc-opacity {
+  transition-delay: 0ms, 80ms, 80ms, 0ms, 0ms, 0ms;
+}
+
+/* Collapse delays (reverse order) */
+#screensaver-controls:not(.expanded) #arc-opacity {
+  transition-delay: 0ms, 0ms, 0ms, 0ms, 0ms, 0ms;
+}
+#screensaver-controls:not(.expanded) #arc-density {
+  transition-delay: 0ms, 40ms, 40ms, 0ms, 0ms, 0ms;
+}
+#screensaver-controls:not(.expanded) #arc-parallax {
+  transition-delay: 0ms, 80ms, 80ms, 0ms, 0ms, 0ms;
+}
+
+/* Density dot - Purple theme */
+#arc-density {
+  border-color: rgba(147, 112, 219, 0.6);
+}
+#arc-density .arc-icon {
+  color: rgba(147, 112, 219, 0.9);
+}
+
+#arc-density[data-level="0"] {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(147, 112, 219, 0.3);
+}
+#arc-density[data-level="1"] {
+  background: rgba(147, 112, 219, 0.15);
+  border-color: rgba(147, 112, 219, 0.5);
+}
+#arc-density[data-level="2"] {
+  background: rgba(147, 112, 219, 0.25);
+  border-color: rgba(147, 112, 219, 0.7);
+}
+#arc-density[data-level="3"] {
+  background: rgba(147, 112, 219, 0.35);
+  border-color: rgba(147, 112, 219, 0.9);
+}
+
+/* Opacity dot - Green theme */
+#arc-opacity {
+  border-color: rgba(57, 255, 20, 0.6);
+}
+#arc-opacity .arc-icon {
+  color: rgba(57, 255, 20, 0.9);
+}
+
+#arc-opacity[data-level="3"] {
+  background: rgba(57, 255, 20, 0.15);
+  border-color: rgba(57, 255, 20, 0.25);
+}
+#arc-opacity[data-level="2"] {
+  background: rgba(57, 255, 20, 0.08);
+  border-color: rgba(57, 255, 20, 0.45);
+}
+#arc-opacity[data-level="1"] {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(57, 255, 20, 0.65);
+}
+#arc-opacity[data-level="0"] {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(57, 255, 20, 0.9);
+}
+
+/* Parallax dot - Cyan theme */
+#arc-parallax {
+  border-color: rgba(0, 255, 255, 0.6);
+}
+#arc-parallax .arc-icon {
+  color: rgba(0, 255, 255, 0.9);
+}
+
+#arc-parallax[data-level="0"] {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(0, 255, 255, 0.3);
+}
+#arc-parallax[data-level="1"] {
+  background: rgba(0, 255, 255, 0.15);
+  border-color: rgba(0, 255, 255, 0.5);
+}
+#arc-parallax[data-level="2"] {
+  background: rgba(0, 255, 255, 0.25);
+  border-color: rgba(0, 255, 255, 0.7);
+}
+#arc-parallax[data-level="3"] {
+  background: rgba(0, 255, 255, 0.35);
+  border-color: rgba(0, 255, 255, 0.9);
+}
+
+/* Fixed Tooltip - positioned above the menu */
+#arc-tooltip {
+  position: absolute;
+  bottom: 100px;
+  right: 0;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.75);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-family: system-ui, sans-serif;
+  white-space: nowrap;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  text-align: right;
+  min-width: 80px;
+}
+
+#arc-tooltip.visible {
+  opacity: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  #screensaver-controls {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  #screensaver-trigger {
+    width: 18px;
+    height: 18px;
+  }
+
+  .arc-dot {
+    width: 16px;
+    height: 16px;
+  }
+
+  #screensaver-controls.expanded #arc-density {
+    bottom: 45px;
+    right: 45px;
+  }
+  #screensaver-controls.expanded #arc-opacity {
+    bottom: 0;
+    right: 60px;
+  }
+  #screensaver-controls.expanded #arc-parallax {
+    bottom: 60px;
+    right: 0;
+  }
+
+  /* Hide tooltips on mobile */
+  .arc-dot::after {
+    display: none;
+  }
+}

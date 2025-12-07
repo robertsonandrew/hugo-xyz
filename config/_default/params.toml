@@ -29,9 +29,22 @@ logoAnimate = true
 customHomepageImage = "images/homepage-image.png"
 customHomepageImageSwitch = "images/homepage-image-switch.png"
 
+# -- Background Image --
+defaultBackgroundImage = "images/bg.png"
+
 # -- Background Colors --
 defaultBackgroundColorLight = "#CCCCCC"
 defaultBackgroundColorDark = "#1f1f1fff"
+
+# -- Author --
+[author]
+  name = "Andrew Robertson"
+  image = "images/me.png"
+  # headline = "Web Developer"
+  # bio = ""
+  # links = [
+  #   { github = "https://github.com/robertsonandrew" },
+  # ]
 
 # -- Logo Gradient Presets --
 [[logo.presets]]
