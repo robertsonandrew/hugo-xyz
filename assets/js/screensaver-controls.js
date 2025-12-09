@@ -280,10 +280,10 @@
       densityDot.addEventListener('click', (e) => {
         e.stopPropagation();
         cycleDensity();
-        updateTooltip(densityPresets[currentDensityIndex].name);
+        updateTooltip(`Density: ${densityPresets[currentDensityIndex].name}`);
       });
       densityDot.addEventListener('mouseenter', () => {
-        updateTooltip(densityPresets[currentDensityIndex].name);
+        updateTooltip(`Density: ${densityPresets[currentDensityIndex].name}`);
         clearAutoCollapse();
       });
     }

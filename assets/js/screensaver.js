@@ -422,6 +422,7 @@ function showScreensaver() {
 	targetMouseY = 0;
 
 	screensaverActive = true;
+	animationPaused = false;
 	fadeStart = null;
 	fadeAlpha = 0;
 	globalRotation = 0;
@@ -455,6 +456,7 @@ function hideScreensaver() {
 	if (hint) hint.classList.remove('visible');
 	canvas.style.display = 'none';
 	screensaverActive = false;
+	animationPaused = false;
 	fadeStart = null;
 	fadeAlpha = 0;
 	if (animationFrame) cancelAnimationFrame(animationFrame);
@@ -540,30 +542,45 @@ window.addEventListener('touchmove', (e) => {
 
 // Mouse tracking for gravity removed
 
-// Visibility / blur handling
+// Paused state for animation
+let animationPaused = false;
+
+// Detect if device is mobile/touch
+function isMobileDevice() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+		|| (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+}
+
+function pauseAnimation() {
+	if (!animationPaused && screensaverActive) {
+		animationPaused = true;
+		lastTimestamp = null; // Reset timestamp so dt doesn't spike on resume
+		if (animationFrame) {
+			cancelAnimationFrame(animationFrame);
+			animationFrame = null;
+		}
+	}
+}
+
+function resumeAnimation() {
+	if (animationPaused && screensaverActive) {
+		animationPaused = false;
+		lastTimestamp = null; // Reset to prevent jump
+		if (!animationFrame) {
+			animationFrame = requestAnimationFrame(animateScreensaver);
+		}
+	}
+}
+
+// Visibility change - only pause on mobile (tab switch)
 document.addEventListener('visibilitychange', () => {
 	if (!PAUSE_ON_BLUR) return;
+	if (!isMobileDevice()) return; // Desktop: don't pause
+	
 	if (document.hidden) {
-		if (animationFrame) cancelAnimationFrame(animationFrame);
-		animationFrame = null;
-	} else if (screensaverActive && !animationFrame) {
-		// (maxFPS removed)
-		animationFrame = requestAnimationFrame(animateScreensaver);
-	}
-});
-
-window.addEventListener('blur', () => {
-	if (!PAUSE_ON_BLUR) return;
-	if (screensaverActive && animationFrame) {
-		cancelAnimationFrame(animationFrame);
-		animationFrame = null;
-	}
-});
-window.addEventListener('focus', () => {
-	if (!PAUSE_ON_BLUR) return;
-	if (screensaverActive && !animationFrame) {
-		// (maxFPS removed)
-		animationFrame = requestAnimationFrame(animateScreensaver);
+		pauseAnimation();
+	} else {
+		resumeAnimation();
 	}
 });
 
@@ -626,10 +643,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			} else {
 				overlay.addEventListener('screensaverfadecomplete', reveal);
 			}
+			
+			// Only the hint is clickable to exit
+			hint.addEventListener('click', (e) => {
+				e.stopPropagation();
+				if (screensaverActive) hideScreensaver();
+			});
 		}
-		overlay.addEventListener('click', () => {
-			if (screensaverActive) hideScreensaver();
-		});
 
 		// Accessibility: Keyboard exit (Escape key)
 		window.addEventListener('keydown', function escHandler(e) {

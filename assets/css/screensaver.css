@@ -127,7 +127,7 @@
   }
 }
 
-/* Screensaver Hint Text */
+/* Screensaver Hint Text - Clickable Exit Area */
 .screensaver-hint {
   position: absolute;
   bottom: 2rem;
@@ -140,15 +140,31 @@
   opacity: 0;
   display: none;
   pointer-events: none;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.6s ease, background 0.2s ease;
   font-family: system-ui, sans-serif;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  /* Generous tap target */
+  padding: 1rem 2.5rem;
+  border-radius: 2rem;
+  cursor: pointer;
 }
 
 .screensaver-hint.visible {
   display: block;
   opacity: 0.6;
+  pointer-events: auto;
   animation: hintFade 4s ease-in-out infinite;
+}
+
+.screensaver-hint:hover {
+  opacity: 1 !important;
+  animation: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.screensaver-hint:active {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-50%) scale(0.98);
 }
 
 @keyframes hintFade {
